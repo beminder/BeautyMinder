@@ -66,19 +66,18 @@ class _MyReviewPageState extends State<MyReviewPage> {
               ),
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  itemCount: reviews?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final reviewJson = reviews?[index];
-                    final review = ReviewModel.fromJson(reviewJson);
-
-                    return ReviewCard(
-                      review: review,
-                      updateParentVariable: updateParentVariable,
-                    );
-                  },
+                    padding: const EdgeInsets.only(bottom: 20),
+                    itemCount: reviews?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final reviewJson = reviews?[index];
+                      final review = ReviewModel.fromJson(reviewJson);
+                      return ReviewCard(
+                        review: review,
+                        updateParentVariable: updateParentVariable,
+                      );
+                    },
+                  ),
                 ),
-              ),
             ],
           );
   }

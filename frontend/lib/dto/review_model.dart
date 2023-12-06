@@ -35,13 +35,13 @@ ReviewModel {
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(
-      id: json['id'],
-      content: json['content'],
-      rating: json['rating'],
-      images: List<String>.from(json['images']),
-      user: User.fromJson(json['user']),
-      cosmetic: Cosmetic.fromJson(json['cosmetic']),
-      createdAt: json['createdAt'],
+      id: json['id'] ?? '',
+      content: json['content'] ?? '',
+      rating: json['rating'] ?? 0,
+      images: List<String>.from(json['images'] ?? ''),
+      user: User.fromJson(json['user'] ?? ''),
+      cosmetic: Cosmetic.fromJson(json['cosmetic'] ?? ''),
+      createdAt: json['createdAt'] ?? '',
     );
   }
 
@@ -81,9 +81,9 @@ Cosmetic {
 
   factory Cosmetic.fromJson(Map<String, dynamic> json) {
     return Cosmetic(
-      id: json['id'],
-      name: json['name'],
-      brand: json['brand'],
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      brand: json['brand'] ?? '',
     );
   }
 
