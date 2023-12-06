@@ -205,11 +205,12 @@ class _TodoAddPage extends State<TodoAddPage> {
   }
 
   Todo? createRoutine() {
+    print("createRoutine");
     createTasks();
     print("_dateController.text : ${_dateController.text}");
     print("picekd : $pickedDate");
     todo = Todo(date: formatDate(pickedDate!), tasks: tasks);
-    print("todo :${todo.toString()}");
+    print("todo in create Routine :${todo.toString()}");
     return todo;
   }
 
@@ -225,6 +226,7 @@ class _TodoAddPage extends State<TodoAddPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
       appBar: CommonAppBar(
         automaticallyImplyLeading: true,
@@ -382,7 +384,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                   MaterialPageRoute(builder: (context) => const MyPage()));
             }
           }),
-      floatingActionButton: Padding(
+      floatingActionButton: isKeyboardVisible ? null : Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: TextButton(
           child:
@@ -394,6 +396,7 @@ class _TodoAddPage extends State<TodoAddPage> {
           onPressed: () async {
             createRoutine();
             if (tasks.length == 0) {
+              // 입력한 task가 없으면 생성 x
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const CalendarPage()));
             } else if (tasks.length > 0 &&

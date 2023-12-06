@@ -53,6 +53,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return BlocProvider(
         create: (_) => TodoPageBloc()..add(TodoPageInitEvent()),
         lazy: false,
@@ -80,8 +83,7 @@ class _CalendarPageState extends State<CalendarPage> {
               child: Icon(Icons.add),
               shape: CircleBorder(),
             ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.endFloat,
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
             bottomNavigationBar: CommonBottomNavigationBar(
                 currentIndex: _currentIndex,
                 onTap: (int index) async {
@@ -133,17 +135,14 @@ class _todoListWidget extends State<todoListWidget> {
 
   Widget _todoList(List<Todo>? todos, Todo? todo) {
     if (todo == null) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "입력된 루틴이 없습니다.\n루틴을 등록해주세요.",
-              style: TextStyle(color: Colors.grey, fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-          ],
+      return SizedBox(
+        height: MediaQuery.sizeOf(context).height/4,
+        child: Center(
+          child: Text(
+            "입력된 루틴이 없습니다.\n루틴을 등록해주세요.",
+            style: TextStyle(color: Colors.grey, fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
         ),
       );
     }
@@ -461,12 +460,14 @@ class _todoListWidget extends State<todoListWidget> {
               children: [
                 _calendar(state.todos),
                 Buttons(),
-                SizedBox(height: 10,),
-                Container(
-                  height: MediaQuery.of(context).size.height/4,
-                  child: _todoList(state.todos, state.todo),
+                SizedBox(
+                  height: 10,
                 ),
-                // _todoList(state.todos, state.todo),
+                // Container(
+                //   height: MediaQuery.of(context).size.height / 4,
+                //   child: _todoList(state.todos, state.todo),
+                // ),
+                _todoList(state.todos, state.todo),
               ],
             );
           } else if (state is TodoDeletedState) {
@@ -475,7 +476,6 @@ class _todoListWidget extends State<todoListWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 _calendar(state.todos),
-                Text("else"),
                 Buttons(),
                 _todoList(state.todos, state.todo),
               ],
@@ -502,7 +502,7 @@ class Buttons extends StatelessWidget {
 
   void _takePhoto() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+        await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       // 임시 파일 가져오기
