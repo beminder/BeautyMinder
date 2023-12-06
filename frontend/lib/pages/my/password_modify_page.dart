@@ -121,21 +121,21 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
                                   5.0), // 적절한 값을 선택하세요
                             ),
                             side: const BorderSide(
-                                width: 1.0, color: Color(0xFFFF820E)),
+                                width: 1.0, color: Color(0xfffe9738)),
                           ),
                           onPressed: () {
                             Navigator.pop(context);
                           },
                           child: const Text('취소',
                               style: TextStyle(
-                                  color: Color(0xFFFF820E), fontSize: 18)),
+                                  color: Color(0xfffe9738), fontSize: 18)),
                         ),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF820E),
+                            backgroundColor: const Color(0xfffe9738),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
@@ -220,7 +220,7 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
             DefaultDialogButton(
               onTap: () => Navigator.pop(context),
               text: '확인',
-              backgroundColor: const Color(0xFFFF820E),
+              backgroundColor: const Color(0xfffe9738),
               textColor: Colors.white,
             )
           ],
@@ -238,7 +238,7 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
             DefaultDialogButton(
               onTap: () => Navigator.pop(context),
               text: '확인',
-              backgroundColor: const Color(0xFFFF820E),
+              backgroundColor: const Color(0xfffe9738),
               textColor: Colors.white,
             )
           ],
@@ -326,7 +326,7 @@ class UserInfoEditItem extends StatelessWidget {
                 validator: _validator,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange),
+                    borderSide: BorderSide(color: Color(0xfffe9738)),
                   ),
                 ),
               )

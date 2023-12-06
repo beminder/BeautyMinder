@@ -148,7 +148,7 @@ class _TodoAddPage extends State<TodoAddPage> {
           hour = pickedTime.hour;
           minute = pickedTime.minute;
           _dateController.text =
-              DateFormat('yyyy-MM-dd – HH:mm').format(finalDateTime);
+              DateFormat('날짜 yyyy-MM-dd  시간 HH:mm').format(finalDateTime);
         });
       }
     }
@@ -235,6 +235,7 @@ class _TodoAddPage extends State<TodoAddPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 20,),
             Padding(
                 padding: const EdgeInsets.all(20),
                 child: GestureDetector(
@@ -246,8 +247,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                       controller: _dateController,
                       decoration: InputDecoration(
                           prefixStyle: TextStyle(color: Color(0xffd86a04)),
-                          labelText: '날짜',
-                          hintText: '날짜 선택',
+                          labelText: '날짜 및 시간',
+                          hintText: '날짜 및 시간 선택',
                           icon: const Icon(
                             Icons.calendar_month,
                             color: Color(0xffd86a04),
@@ -256,7 +257,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(
                                   color: Colors.black, width: 1.0)),
-                          contentPadding: EdgeInsets.all(3)),
+                          contentPadding: EdgeInsets.all(10)),
                     ),
                   ),
                 )),
@@ -281,7 +282,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                               ),
                               focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.amber, width: 2.0))),
+                                      color: Color(0xfffe9738), width: 2.0))),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -290,9 +291,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                         onPressed: (int buttonIndex) {
                           setState(() {
                             if (!_toggleSelections[index][buttonIndex]) {
-                              for (int i = 0;
-                                  i < _toggleSelections[index].length;
-                                  i++) {
+                              for (int i = 0; i < _toggleSelections[index].length; i++) {
                                 _toggleSelections[index][i] = i == buttonIndex;
                               }
                             }
@@ -300,10 +299,10 @@ class _TodoAddPage extends State<TodoAddPage> {
                         },
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(10),
-                        selectedColor: Colors.white,
-                        fillColor: Colors.orange,
+                        // selectedColor: Colors.white,
+                        fillColor: Color(0xffd96a04),
                         borderColor: Colors.grey,
-                        selectedBorderColor: Colors.orange,
+                        selectedBorderColor: Color(0xffd96a04),
                         children: const <Widget>[
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -390,7 +389,7 @@ class _TodoAddPage extends State<TodoAddPage> {
           child:
               Text('등록', style: TextStyle(fontSize: 20, color: Colors.white)),
           style: TextButton.styleFrom(
-            backgroundColor: Color(0xffd96a04),
+            backgroundColor: Color(0xfffe9738),
             minimumSize: Size(MediaQuery.of(context).size.width - 50, 30),
           ),
           onPressed: () async {

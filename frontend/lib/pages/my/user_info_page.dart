@@ -112,7 +112,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF820E),
+                          backgroundColor: const Color(0xfffe9738),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
@@ -148,7 +148,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           ),
                           elevation: 0,
                           side: const BorderSide(
-                              width: 1.0, color: Color(0xFFFF820E)),
+                              width: 1.0, color: Color(0xfffe9738)),
                         ),
                         onPressed: () async {
                           final ok = await popUp(
@@ -164,7 +164,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         },
                         child: const Text('회원탈퇴',
                             style: TextStyle(
-                                color: Color(0xFFFF820E), fontSize: 18)),
+                                color: Color(0xfffe9738), fontSize: 18)),
                       ),
                     ),
                   ],
