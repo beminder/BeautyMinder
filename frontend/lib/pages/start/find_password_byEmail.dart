@@ -8,6 +8,8 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../dto/login_request_model.dart';
 import '../../services/api_service.dart';
+import '../../services/forget_password_service.dart';
+import 'find_password_byPhoneNum.dart';
 
 class FindPasswordByEmailPage extends StatefulWidget {
   const FindPasswordByEmailPage({Key? key}) : super(key: key);
@@ -18,12 +20,11 @@ class FindPasswordByEmailPage extends StatefulWidget {
 
 class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
 
-  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   Color emailIconColor = Colors.grey.withOpacity(0.7);
   FocusNode emailFocusNode = FocusNode();
   String? email;
-  String? password;
   bool isApiCallProcess = false;
 
 
@@ -34,10 +35,29 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   appBar: UsualAppBar(text: "비밀번호 재설정"),
+    //   backgroundColor: Colors.white,
+    //   body: _findPwdByEmailUI(context),
+    // );
     return Scaffold(
-      appBar: UsualAppBar(text: "비밀번호 재설정"),
+      appBar: UsualAppBar(text: "비밀번호 재설정",),
       backgroundColor: Colors.white,
-      body: _findPwdByEmailUI(context),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ProgressHUD(
+              child: Form(
+                key: globalFormKey,
+                child: _findPwdByEmailUI(context),
+              ),
+              inAsyncCall: isApiCallProcess,
+              opacity: 0.3,
+              key: UniqueKey(),
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -50,6 +70,8 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
           SizedBox(height: 200), // 여백 추가
           _buildEmailField(), // 이메일 필드
           _buildSendButton(),
+          _buildOrText(),
+          _buildSignupText(),
         ],
       ),
     );
@@ -119,7 +141,7 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
         ),
         child: Center(
           child: Text(
-            "로그인",
+            "이메일로 요청",
             style: TextStyle(
               color: Colors.white, // 텍스트 색상 설정
               fontSize: 18, // 텍스트 크기 설정
@@ -133,20 +155,19 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
             isApiCallProcess = true;
           });
           try {
-            // 로그인 API 호출
-            final model = LoginRequestModel(email: email, password: password);
-            final result = await APIService.login(model);
+            final response = await ForgetPasswordService.requestByEmailWhenForgetPwd(email!);
 
-            if (result.value == true) {
-              final userProfileResult = await APIService.getUserProfile();
-              print("Here is LoginPage : ${userProfileResult.value}");
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      HomePage(user: userProfileResult.value)));
+            if (response == true) {
+              print("Here is requestByEmailWhenForgetPwd : ${response}");
+              Fluttertoast.showToast(
+                msg: "이메일로 요청이 완료되었습니다. 이메일을 확인해주세요.",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+              );
             } else {
               // 에러 토스트 메시지
               Fluttertoast.showToast(
-                msg: "로그인에 실패하였습니다. 이메일과 비밀번호를 다시 확인해주세요.",
+                msg: "이메일 전송에 실패하였습니다. 입력된 이메일을 다시 확인해주세요.",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
               );
@@ -158,6 +179,49 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
           }
         }
       },
+    );
+  }
+
+  // OR 텍스트
+  Widget _buildOrText() {
+    return const Center(
+      child: Text(
+        "OR",
+        style: TextStyle(
+          fontSize: 15,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignupText() {
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 25, right: 25),
+        child: RichText(
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black, fontSize: 15.0),
+            children: <TextSpan>[
+              const TextSpan(text: '이메일을 잊어버리셨나요? '),
+              TextSpan(
+                text: '전화번호로 찾기',
+                style: const TextStyle(
+                  color: Color(0xffd86a04),
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            FindPasswordByPhoneNumberPage()));
+                  },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

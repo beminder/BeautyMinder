@@ -6,14 +6,14 @@ class ForgetPasswordService {
   //비밀번호 찾기 이메일로
   static Future<bool> requestByEmailWhenForgetPwd(String email) async {
 
-    final parameters = {
+    final body = {
       'email': '$email',
     };
 
-    final url = Uri.http(Config.apiURL, Config.uploadFavoritesAPI, parameters).toString();
+    final url = Uri.http(Config.apiURL, Config.uploadFavoritesAPI).toString();
 
     try {
-      final response = await DioClient.sendRequest('POST', url);
+      final response = await DioClient.sendRequest('POST', url, body:body);
 
       if (response.statusCode == 200) {
         return true;

@@ -51,73 +51,80 @@ class _MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     return isLoading
         ? SpinKitThreeInOut(
-            color: Color(0xffd86a04),
-            size: 50.0,
-            duration: Duration(seconds: 2),
-          )
+      color: Color(0xffd86a04),
+      size: 50.0,
+      duration: Duration(seconds: 2),
+    )
         : Scaffold(
-            appBar: CommonAppBar(automaticallyImplyLeading: false,),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const MyPageHeader('마이페이지'),
-                      const SizedBox(height: 20),
-                      MyPageProfile(
-                        nickname: user!.nickname ?? user!.email,
-                        profileImage: user!.profileImage ?? '',
-                        reload: getUserInfo,
-                      ),
-                      const SizedBox(height: 30),
-                      const MyDivider(),
-                      const SizedBox(height: 20),
-                      MyPageMenu(
-                        title: '즐겨찾기 제품',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyFavoritePage()),
-                          );
-                        },
-                      ),
-                      MyPageMenu(
-                        title: '내가 쓴 리뷰',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyReviewPage()),
-                          );
-                        },
-                      ),
-                      MyPageMenu(
-                        title: '나의 파우치',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CosmeticExpiryPage()),
-                          );
-                        },
-                      ),
-                      MyPageMenu(
-                        title: '로그아웃',
-                        onTap: () {
-                          SharedService.logout(context);
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ],
-              ),
+      appBar: CommonAppBar(
+        automaticallyImplyLeading: false,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ListView(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const MyPageHeader('마이페이지'),
+                const SizedBox(height: 20),
+                MyPageProfile(
+                  nickname: user!.nickname ?? user!.email,
+                  profileImage: user!.profileImage ?? '',
+                  reload: getUserInfo,
+                ),
+                const SizedBox(height: 30),
+                const MyDivider(),
+                const SizedBox(height: 20),
+                MyPageMenu(
+                  title: '즐겨찾기 제품',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyFavoritePage()),
+                    );
+                  },
+                ),
+                MyPageMenu(
+                  title: '내가 쓴 리뷰',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyReviewPage()),
+                    );
+                  },
+                ),
+                MyPageMenu(
+                  title: '나의 파우치',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CosmeticExpiryPage()),
+                    );
+                  },
+                ),
+                MyPageMenu(
+                  title: '로그아웃',
+                  onTap: () async {
+                    await APIService.logout();
+                    _gotoLoginPage();
+                  },
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-            bottomNavigationBar: _underNavigation(),
-          );
+          ],
+        ),
+      ),
+      bottomNavigationBar: _underNavigation(),
+    );
+  }
+
+  void _gotoLoginPage() {
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   Widget _underNavigation() {

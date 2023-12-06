@@ -51,8 +51,26 @@ class APIService {
   }
 
   //회원 탈퇴
+  // static Future<Result<bool>> delete(DeleteRequestModel model) async {
+  //
+  //   final accessToken = await SharedService.getAccessToken();
+  //   final refreshToken = await SharedService.getRefreshToken();
+  //
+  //   final url = Uri.http(Config.apiURL, Config.deleteAPI).toString();
+  //
+  //   final headers = {
+  //     'Authorization': 'Bearer $accessToken',
+  //     'Cookie': 'XRT=$refreshToken',
+  //   };
+  //
+  //   try {
+  //     await DioClient.sendRequest('DELETE', url, headers: headers);
+  //     return Result.success(true);
+  //   } catch (e) {
+  //     return Result.failure("An error occurred: $e");
+  //   }
+  // }
   static Future<Result<bool>> delete(DeleteRequestModel model) async {
-
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
@@ -65,6 +83,7 @@ class APIService {
 
     try {
       await DioClient.sendRequest('DELETE', url, headers: headers);
+      await SharedService.logout();
       return Result.success(true);
     } catch (e) {
       return Result.failure("An error occurred: $e");
@@ -239,16 +258,52 @@ class APIService {
     }
   }
 
+  // //비밀번호 변경
+  // static Future<Result<bool>> changePassword({
+  //   required String currentPassword,
+  //   required String newPassword,
+  // }) async {
+  //
+  //   final accessToken = await SharedService.getAccessToken();
+  //   final refreshToken = await SharedService.getRefreshToken();
+  //
+  //   final url = Uri.http(Config.apiURL, Config.changePassword).toString();
+  //
+  //   final headers = {
+  //     'Authorization': 'Bearer $accessToken',
+  //     'Cookie': 'XRT=$refreshToken',
+  //   };
+  //
+  //   final Map<String, dynamic> passwords = {
+  //     'current_password': currentPassword,
+  //     'new_password': newPassword,
+  //   };
+  //
+  //   try {
+  //     final response = await DioClient.sendRequest(
+  //       'POST',
+  //       url,
+  //       body: passwords,
+  //       headers: headers,
+  //     );
+  //     if (response.statusCode == 200) {
+  //       return Result.success(true);
+  //     }
+  //     return Result.failure("Failed to change password");
+  //   } catch (e) {
+  //     return Result.failure("An error occurred: $e");
+  //   }
+  // }
+
   //비밀번호 변경
-  static Future<Result<bool>> changePassword({
+  static Future<Result<bool>> updatePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
-
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.changePassword).toString();
+    final url = Uri.http(Config.apiURL, Config.updatePassword).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -256,8 +311,8 @@ class APIService {
     };
 
     final Map<String, dynamic> passwords = {
-      'current_password': currentPassword,
-      'new_password': newPassword,
+      'currentPassword': currentPassword,
+      'newPassword': newPassword,
     };
 
     try {
@@ -328,6 +383,34 @@ class APIService {
         return Result.success(true);
       }
       return Result.failure("Failed to update user profile");
+    } catch (e) {
+      return Result.failure("An error occurred: $e");
+    }
+  }
+
+  //로그아웃
+  static Future<Result<bool>> logout() async {
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
+
+    final url = Uri.http(Config.apiURL, Config.logoutAPI).toString();
+
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
+
+    try {
+      final response = await DioClient.sendRequest(
+        'GET',
+        url,
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        await SharedService.logout();
+        return Result.success(true);
+      }
+      return Result.failure("Logout failed");
     } catch (e) {
       return Result.failure("An error occurred: $e");
     }

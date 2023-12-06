@@ -68,9 +68,13 @@ class SharedService {
   }
 
   // 로그아웃 및 로그인 화면으로 이동
-  static Future<void> logout(BuildContext context) async {
+  // static Future<void> logout(BuildContext context) async {
+  //   await storage.delete(key: 'login_details');
+  //   Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  // }
+  // 로그아웃
+  static Future<void> logout() async {
     await storage.delete(key: 'login_details');
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   // refreshToken 가져오기. 값이 없을 경우 null 반환

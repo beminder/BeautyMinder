@@ -21,7 +21,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool isApiCallProcess = false;
   bool hidePassword = true;
-  static final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   bool isEmailVerified = false;
   String? expectedToken;

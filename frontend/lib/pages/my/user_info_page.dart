@@ -2,6 +2,7 @@ import 'package:beautyminder/dto/delete_request_model.dart';
 import 'package:beautyminder/dto/user_model.dart';
 import 'package:beautyminder/pages/my/password_modify_page.dart';
 import 'package:beautyminder/pages/my/widgets/change_dialog.dart';
+import 'package:beautyminder/pages/my/widgets/default_dialog.dart';
 import 'package:beautyminder/pages/my/widgets/my_divider.dart';
 import 'package:beautyminder/pages/my/widgets/my_page_header.dart';
 import 'package:beautyminder/pages/my/widgets/pop_up.dart';
@@ -54,124 +55,133 @@ class _UserInfoPageState extends State<UserInfoPage> {
   Widget build(BuildContext context) {
     print("hihi user info page3 : ${user?.baumann}");
     return Scaffold(
-        appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
+        appBar: CommonAppBar(
+          automaticallyImplyLeading: true,
+          context: context,
+        ),
         body: isLoading
             ? SpinKitThreeInOut(
-                color: Color(0xffd86a04),
-                size: 50.0,
-                duration: Duration(seconds: 2),
-              )
+          color: Color(0xffd86a04),
+          size: 50.0,
+          duration: Duration(seconds: 2),
+        )
             : Stack(
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView(children: [
-                        MyPageHeader('회원정보'),
-                        SizedBox(height: 20),
-                        UserInfoProfile(
-                          nickname: user!.nickname ?? user!.email,
-                          profileImage: user!.profileImage ?? '',
-                          onImageTap: _changeProfileImage,
-                          onButtonTap: _changeNickName,
-                        ),
-                        SizedBox(height: 20),
-                        MyDivider(),
-                        PhoneInfo(
-                          title: '전화번호',
-                          content: user!.phoneNumber ?? '',
-                          onTap: _changePhone,
-                        ),
-                        MyDivider(),
-                        UserInfoItem(title: '이메일', content: user!.email),
-                        MyDivider(),
-                        UserInfoItem(title: '피부타입', content: (baumannresultList.isEmpty)? "없음" : baumannresultList.last.baumannType),
-                        MyDivider(),
-                        UserInfoItem(title: '가입시각', content: user!.createdAt.toString()),
-                        MyDivider(),
-                        // SizedBox(height: 200),
-                      ])),
-                  Positioned(
-                    bottom: 70, // 원하는 위치에 배치
-                    left: 10, // 원하는 위치에 배치
-                    right: 10, // 원하는 위치에 배치
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFF820E),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // 적절한 값을 선택하세요
-                                ),
-                              ),
-                              onPressed: () async {
-                                if (user != null) {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PasswordModifyPage()),
-                                  );
-
-                                  getUserInfo();
-                                }
-                              },
-                              child: const Text(
-                                '비밀번호 변경',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18
-                                ),
-                              ),
-                            ),
+          children: [
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ListView(children: [
+                  MyPageHeader('회원정보'),
+                  SizedBox(height: 20),
+                  UserInfoProfile(
+                    nickname: user!.nickname ?? user!.email,
+                    profileImage: user!.profileImage ?? '',
+                    onImageTap: _changeProfileImage,
+                    onButtonTap: _changeNickName,
+                  ),
+                  SizedBox(height: 20),
+                  MyDivider(),
+                  PhoneInfo(
+                    title: '전화번호',
+                    content: user!.phoneNumber ?? '',
+                    onTap: _changePhone,
+                  ),
+                  MyDivider(),
+                  UserInfoItem(title: '이메일', content: user!.email),
+                  MyDivider(),
+                  UserInfoItem(
+                      title: '피부타입',
+                      content: (baumannresultList.isEmpty)
+                          ? "없음"
+                          : baumannresultList.last.baumannType),
+                  MyDivider(),
+                  UserInfoItem(
+                      title: '가입시각', content: user!.createdAt.toString()),
+                  MyDivider(),
+                  // SizedBox(height: 200),
+                ])),
+            Positioned(
+              bottom: 70, // 원하는 위치에 배치
+              left: 10, // 원하는 위치에 배치
+              right: 10, // 원하는 위치에 배치
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF820E),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                5.0), // 적절한 값을 선택하세요
                           ),
-                          const SizedBox(width: 20), // 간격 조절
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFFFFFF),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // 적절한 값을 선택하세요
-                                ),
-                                elevation: 0,
-                                side: const BorderSide(
-                                    width: 1.0, color: Color(0xFFFF820E)),
-                              ),
-                              onPressed: () async {
-                                final ok = await popUp(
-                                  title: '정말 탈퇴하시겠습니까?',
-                                  context: context,
-                                );
-                                if (ok) {
-                                  APIService.delete(
-                                      DeleteRequestModel(userId: user!.id));
-                                  SharedService.logout(context);
-                                }
-                              },
-                              child: const Text('회원탈퇴',
-                                style: TextStyle(
-                                    color: Color(0xFFFF820E),
-                                    fontSize: 18
-                                )),
-                            ),
-                          ),
-                        ],
+                        ),
+                        onPressed: () {
+                          if (user != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const PasswordModifyPage()),
+                            );
+                          }
+                        },
+                        child: const Text(
+                          '비밀번호 변경',
+                          style: TextStyle(
+                              color: Colors.white, fontSize: 18),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ));
+                    const SizedBox(width: 20), // 간격 조절
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFFFFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                5.0), // 적절한 값을 선택하세요
+                          ),
+                          elevation: 0,
+                          side: const BorderSide(
+                              width: 1.0, color: Color(0xFFFF820E)),
+                        ),
+                        onPressed: () async {
+                          final ok = await popUp(
+                            title: '정말 탈퇴하시겠습니까?',
+                            context: context,
+                          );
+                          if (ok) {
+                            await APIService.delete(
+                                DeleteRequestModel(userId: user!.id));
+
+                            _gotoLoginPage();
+                          }
+                        },
+                        child: const Text('회원탈퇴',
+                            style: TextStyle(
+                                color: Color(0xFFFF820E), fontSize: 18)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  void _gotoLoginPage() {
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   Future<void> _changeProfileImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final image = pickedFile.path;
@@ -210,11 +220,50 @@ class _UserInfoPageState extends State<UserInfoPage> {
     );
 
     if (newphoneNumber != null) {
-      await APIService.updateUserInfo({'phoneNumber': newphoneNumber});
-      await _updateUser(phoneNumber: newphoneNumber);
+      if (user!.phoneNumber == newphoneNumber) {
+        await _showAlertDialog(
+          title: '이전과 동일한 전화번호입니다',
+          body: '변경하시려면 다른 전화번호를 입력해주세요',
+        );
+      } else {
+        final result =
+        await APIService.updateUserInfo({'phoneNumber': newphoneNumber});
+
+        if (result.isSuccess) {
+          await _updateUser(phoneNumber: newphoneNumber);
+        } else {
+          await _showAlertDialog(
+            title: '이미 사용중인 전화번호입니다',
+            body: '전화번호를 확인해주세요',
+          );
+        }
+      }
     }
   }
 
+  Future<void> _showAlertDialog({
+    required String title,
+    required String body,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return DefaultDialog(
+          onBarrierTap: () => Navigator.pop(context),
+          title: title,
+          body: body,
+          buttons: [
+            DefaultDialogButton(
+              onTap: () => Navigator.pop(context),
+              text: '확인',
+              backgroundColor: const Color(0xFFFF820E),
+              textColor: Colors.white,
+            )
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _updateUser({
     String? imageUrl,
@@ -297,7 +346,7 @@ class UserInfoProfile extends StatelessWidget {
                   minWidth: 0,
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: const Color(0xFF868383),

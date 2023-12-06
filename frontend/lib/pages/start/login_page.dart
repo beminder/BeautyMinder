@@ -20,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isApiCallProcess = false;
   bool hidePassword = true;
-  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   String? email;
   String? password;
 

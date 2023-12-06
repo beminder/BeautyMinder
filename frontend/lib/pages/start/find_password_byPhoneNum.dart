@@ -26,7 +26,7 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(automaticallyImplyLeading: true),
+      appBar: UsualAppBar(),
       backgroundColor: Colors.white,
       body: Text('비밀번호를 잊으셨나요? 전화번호로 비밀번호 찾기'),
     );
