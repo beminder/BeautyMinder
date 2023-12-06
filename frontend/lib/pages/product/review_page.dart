@@ -357,7 +357,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(automaticallyImplyLeading: true,),
+      appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
       body: Column(
         children: [
           if (_isLoading)
@@ -371,7 +371,26 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
               ),
             )
           else
-            _buildReviewList(),
+            if(_cosmeticReviews.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "해당 제품의 리뷰가 존재하지 않습니다.\n리뷰를 등록해주세요.",
+                        style: TextStyle(color: Colors.grey, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  )
+                )
+              )
+
+            else
+              _buildReviewList(),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -379,7 +398,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
           _addReview(); // 리뷰 추가 다이얼로그를 여는 버튼으로 변경
         },
         child: Icon(Icons.edit),
-        backgroundColor: Color(0xffe7a470),
+        backgroundColor: Color(0xffd86a04),
       ),
     );
   }

@@ -138,7 +138,7 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
     return ElevatedButton(
       onPressed: previousPage,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xffff820e),
+        backgroundColor: const Color(0xfffe9738),
         elevation: 0,
       ),
       child: const Text(
@@ -155,7 +155,7 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
     return ElevatedButton(
       onPressed: nextPage,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xffff820e),
+        backgroundColor: const Color(0xfffe9738),
         elevation: 0,
       ),
       child: const Text(
@@ -181,7 +181,7 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
         // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BaumannResultPage()));
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xffff820e),
+        backgroundColor: const Color(0xfffe9738),
         elevation: 0,
       ),
       child: const Text(
@@ -196,27 +196,6 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
 
   // 새로운 함수: 데이터를 백엔드로 전송
   Future<void> sendSurveyToBackend(Map<String, int?> surveyData) async {
-    // 유저 정보 가지고 오기
-    // final user = await SharedService.getUser();
-    final accessToken = await SharedService.getAccessToken();
-    final refreshToken = await SharedService.getRefreshToken();
-
-    // AccessToken가지고오기
-    // final accessToken =
-    //     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE2OTk5NDQ2MzksImV4cCI6MTcwMDU0OTQzOSwic3ViIjoidG9rZW5AdGVzdCIsImlkIjoiNjU1MGFmZWYxYWI2ZDU4YjNmMTVmZTFjIn0.-tq20j-ZRmL9WRdBZEPrELjpxrbOJ0JUztzfGHCwLKM";
-    // //refreshToken 가지고오기
-    // final refreshToken =
-    //     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE2OTk5NDQ2MzksImV4cCI6MTcwMTE1NDIzOSwic3ViIjoidG9rZW5AdGVzdCIsImlkIjoiNjU1MGFmZWYxYWI2ZDU4YjNmMTVmZTFjIn0.dAXFUJI2vpjiQKakrRC_UTqgpG_BD_Df4vOeQq46HWQ";
-
-    // user.id가 있으면 userId에 user.id를 저장 없으면 -1을 저장
-    // final userId = user?.id ?? '-1';
-
-    // final url = Uri.http(Config.apiURL, Config.baumannTestAPI).toString();
-
-    // final headers = {
-    //   'Authorization': 'Bearer $accessToken',
-    //   'Cookie': 'XRT=$refreshToken',
-    // };
 
     try {
       // JSON 데이터 생성
@@ -240,7 +219,7 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
         Fluttertoast.showToast(
           msg: '서버로 데이터를 전송하는 중 문제가 발생했습니다',
           gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.red,
+          // backgroundColor: Colors.red,
           textColor: Colors.white,
         );
       }
