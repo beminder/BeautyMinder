@@ -1,4 +1,5 @@
 import 'package:beautyminder/pages/home/home_page.dart';
+import 'package:beautyminder/pages/start/login_page.dart';
 import 'package:beautyminder/widget/commonAppBar.dart';
 import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
@@ -27,7 +28,6 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
   String? email;
   bool isApiCallProcess = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -35,11 +35,6 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: UsualAppBar(text: "비밀번호 재설정"),
-    //   backgroundColor: Colors.white,
-    //   body: _findPwdByEmailUI(context),
-    // );
     return Scaffold(
       appBar: UsualAppBar(text: "비밀번호 재설정",),
       backgroundColor: Colors.white,
@@ -69,9 +64,14 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
         children: <Widget>[
           SizedBox(height: 200), // 여백 추가
           _buildEmailField(), // 이메일 필드
+          SizedBox(height: 50),
           _buildSendButton(),
+          SizedBox(height: 50),
           _buildOrText(),
-          _buildSignupText(),
+          SizedBox(height: 50),
+          _buildByPhoneNumText(),
+          SizedBox(height: 50),
+          _buildLoginText(),
         ],
       ),
     );
@@ -108,10 +108,10 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
                 decoration: InputDecoration(
                   hintText: "이메일을 입력하세요",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  prefixIcon: Icon(
-                    Icons.person,
-                    color: emailIconColor,
-                  ),
+                  // prefixIcon: Icon(
+                  //   Icons.person,
+                  //   color: emailIconColor,
+                  // ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
@@ -195,7 +195,7 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
     );
   }
 
-  Widget _buildSignupText() {
+  Widget _buildByPhoneNumText() {
     return Align(
       alignment: Alignment.center,
       child: Padding(
@@ -216,6 +216,36 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
                             FindPasswordByPhoneNumberPage()));
+                  },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginText() {
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 25, right: 25),
+        child: RichText(
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black, fontSize: 15.0),
+            children: <TextSpan>[
+              const TextSpan(text: '로그인 페이지로 이동하실 건가요? '),
+              TextSpan(
+                text: '로그인 하기',
+                style: const TextStyle(
+                  color: Color(0xffd86a04),
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            LoginPage()));
                   },
               ),
             ],
