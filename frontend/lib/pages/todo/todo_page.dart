@@ -58,7 +58,7 @@ class _CalendarPageState extends State<CalendarPage> {
         lazy: false,
         child: Scaffold(
             appBar: CommonAppBar(
-              automaticallyImplyLeading: true,
+              automaticallyImplyLeading: false,
               context: context,
             ),
             body: Column(

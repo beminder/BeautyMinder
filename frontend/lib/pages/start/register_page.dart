@@ -342,7 +342,7 @@ class _RegisterPageState extends State<RegisterPage> {
             obscureText: false,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              hintText: "전화번호를 입력하세요.(- 없이 입력하세요.)",
+              hintText: "전화번호를 입력하세요.('-' 없이 입력하세요.)",
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
