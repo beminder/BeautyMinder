@@ -197,7 +197,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       builder: (context) {
         return const ChangeDialog(
           title: '닉네임',
-          subtitle: '닉네임을 입력해주세요',
+          subtitle: '닉네임을 입력해주세요.',
         );
       },
     );
@@ -210,7 +210,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       } else {
         await _showSnackBar(
           title: '잘못된 형식입니다.',
-          body: '올바른 닉네임을 입력해주세요.',
+          body: '올바른 닉네임을 입력해주세요.(한글,영어,숫자 조합)',
         );
       }
     }
@@ -222,7 +222,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       builder: (context) {
         return const ChangeDialog(
           title: '전화번호',
-          subtitle: '전화번호를 입력해주세요',
+          subtitle: '전화번호를 입력해주세요.',
         );
       },
     );
@@ -231,8 +231,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
       if (_isPhoneNumberValid(newphoneNumber)) {
         if (user!.phoneNumber == newphoneNumber) {
           await _showSnackBar(
-            title: '이전과 동일한 전화번호입니다',
-            body: '변경하시려면 다른 전화번호를 입력해주세요',
+            title: '이전과 동일한 전화번호입니다.',
+            body: '변경하시려면 다른 전화번호를 입력해주세요.',
           );
         } else {
           final result = await APIService.updateUserInfo({
@@ -243,15 +243,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
             await _updateUser(phoneNumber: newphoneNumber);
           } else {
             await _showSnackBar(
-              title: '이미 사용 중인 전화번호입니다',
-              body: '전화번호를 확인해주세요',
+              title: '이미 사용 중인 전화번호입니다.',
+              body: '전화번호를 다시 확인해주세요.',
             );
           }
         }
       } else {
         await _showSnackBar(
           title: '잘못된 형식입니다.',
-          body: '올바른 전화번호를 입력해주세요.',
+          body: '올바른 전화번호를 입력해주세요. ex)01011112222',
         );
       }
     }
@@ -263,7 +263,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }) async {
     final snackBar = SnackBar(
       content: Text(
-        title+body,
+        '$title\n$body',
         style: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,

@@ -126,12 +126,17 @@ class _LoginPageState extends State<LoginPage> {
                   Icons.person,
                   color: emailIconColor,
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                    color: Color(0xffd86a04), // Change the color as needed
                   ),
                 ),
+                // focusedBorder: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(10),
+                //   borderSide: BorderSide(
+                //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                //   ),
+                // ),
               ),
             ),
           )
@@ -190,12 +195,17 @@ class _LoginPageState extends State<LoginPage> {
                         : Color(0xffd86a04),
                   ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                    color: Color(0xffd86a04), // Change the color as needed
                   ),
                 ),
+                // focusedBorder: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(10),
+                //   borderSide: BorderSide(
+                //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                //   ),
+                // ),
               ),
             ),
           ),

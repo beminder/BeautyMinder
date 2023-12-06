@@ -110,12 +110,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: InputDecoration(
                     hintText: "이메일을 입력하세요.",
                     hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
-                        color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                        color: Color(0xffd86a04), // Change the color as needed
                       ),
                     ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(10),
+                    //   borderSide: BorderSide(
+                    //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                    //   ),
+                    // ),
                   ),
                 ),
               ),
@@ -344,12 +349,17 @@ class _RegisterPageState extends State<RegisterPage> {
             decoration: InputDecoration(
               hintText: "전화번호를 입력하세요.('-' 없이 입력하세요.)",
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+              focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                  color: Color(0xffd86a04), // Change the color as needed
                 ),
               ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(
+              //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -373,19 +383,32 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           SizedBox(height: 5), // 제목과 입력 필드 사이의 간격 조절
           TextFormField(
-            validator: (val) => val!.isEmpty ? '닉네임이 입력되지 않았습니다.' : null,
+            validator: (val) {
+              if (val!.isEmpty) {
+                return '닉네임이 입력되지 않았습니다.';
+              }
+              else if(!isNicknameValid(val)) {
+                return '닉네임 형식을 다시 확인해주세요.';
+              }
+              return null;
+            },
             onChanged: (val) => nickname = val,
             obscureText: false,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              hintText: "사용하실 닉네임을 입력하세요.",
+              hintText: "사용하실 닉네임을 입력하세요.(한글,영어,숫자 조합)",
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+              focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                  color: Color(0xffd86a04), // Change the color as needed
                 ),
               ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(
+              //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -432,12 +455,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       : Color(0xffd86a04),
                 ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+              focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                  color: Color(0xffd86a04), // Change the color as needed
                 ),
               ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(
+              //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -466,12 +494,17 @@ class _RegisterPageState extends State<RegisterPage> {
             decoration: InputDecoration(
               hintText: "비밀번호를 한번 더 입력하세요.",
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+              focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                  color: Color(0xffd86a04), // Change the color as needed
                 ),
               ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(
+              //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -607,6 +640,12 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isValidPhoneNumber(String input) {
     final RegExp regex = RegExp(r'^010\d{8}$');
     return regex.hasMatch(input);
+  }
+
+  bool isNicknameValid(String nickname) {
+    // return nickname.isNotEmpty && nickname.length <= 20;
+    final RegExp validCharacters = RegExp(r'^[a-zA-Z가-힣0-9]+$');
+    return nickname.isNotEmpty && nickname.length <= 20 && validCharacters.hasMatch(nickname);
   }
 
 }
