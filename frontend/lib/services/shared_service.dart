@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:beautyminder/dto/login_response_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../dto/user_model.dart';
@@ -67,11 +66,6 @@ class SharedService {
     await storage.write(key: 'refreshToken', value: loginResponse.refreshToken);
   }
 
-  // 로그아웃 및 로그인 화면으로 이동
-  // static Future<void> logout(BuildContext context) async {
-  //   await storage.delete(key: 'login_details');
-  //   Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-  // }
   // 로그아웃
   static Future<void> logout() async {
     await storage.delete(key: 'login_details');
@@ -106,10 +100,7 @@ class SharedService {
   }
 
   static Future<void> refreshToken() async {
-    // Assuming you have a function to refresh the token and save it to secure storage
     final refreshedTokens = await SharedService.getRefreshToken();
-
-    // Update local storage with new tokens
     await SharedService.setRefreshToken(refreshedTokens ?? '');
   }
 

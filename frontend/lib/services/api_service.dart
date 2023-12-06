@@ -50,26 +50,6 @@ class APIService {
     }
   }
 
-  //회원 탈퇴
-  // static Future<Result<bool>> delete(DeleteRequestModel model) async {
-  //
-  //   final accessToken = await SharedService.getAccessToken();
-  //   final refreshToken = await SharedService.getRefreshToken();
-  //
-  //   final url = Uri.http(Config.apiURL, Config.deleteAPI).toString();
-  //
-  //   final headers = {
-  //     'Authorization': 'Bearer $accessToken',
-  //     'Cookie': 'XRT=$refreshToken',
-  //   };
-  //
-  //   try {
-  //     await DioClient.sendRequest('DELETE', url, headers: headers);
-  //     return Result.success(true);
-  //   } catch (e) {
-  //     return Result.failure("An error occurred: $e");
-  //   }
-  // }
   static Future<Result<bool>> delete(DeleteRequestModel model) async {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
@@ -257,43 +237,6 @@ class APIService {
       return Result.failure("An error occurred: $e");
     }
   }
-
-  // //비밀번호 변경
-  // static Future<Result<bool>> changePassword({
-  //   required String currentPassword,
-  //   required String newPassword,
-  // }) async {
-  //
-  //   final accessToken = await SharedService.getAccessToken();
-  //   final refreshToken = await SharedService.getRefreshToken();
-  //
-  //   final url = Uri.http(Config.apiURL, Config.changePassword).toString();
-  //
-  //   final headers = {
-  //     'Authorization': 'Bearer $accessToken',
-  //     'Cookie': 'XRT=$refreshToken',
-  //   };
-  //
-  //   final Map<String, dynamic> passwords = {
-  //     'current_password': currentPassword,
-  //     'new_password': newPassword,
-  //   };
-  //
-  //   try {
-  //     final response = await DioClient.sendRequest(
-  //       'POST',
-  //       url,
-  //       body: passwords,
-  //       headers: headers,
-  //     );
-  //     if (response.statusCode == 200) {
-  //       return Result.success(true);
-  //     }
-  //     return Result.failure("Failed to change password");
-  //   } catch (e) {
-  //     return Result.failure("An error occurred: $e");
-  //   }
-  // }
 
   //비밀번호 변경
   static Future<Result<bool>> updatePassword({

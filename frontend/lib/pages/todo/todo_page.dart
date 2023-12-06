@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:beautyminder/pages/todo/skin_Album_page.dart';
 import 'package:beautyminder/pages/todo/skin_timeline.dart';
-import 'package:beautyminder/services/notification.dart';
+import 'package:beautyminder/services/notification_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -139,7 +139,7 @@ class _todoListWidget extends State<todoListWidget> {
         height: MediaQuery.sizeOf(context).height/4,
         child: Center(
           child: Text(
-            "입력된 루틴이 없습니다.\n루틴을 등록해주세요.",
+            "등록된 루틴이 없습니다.\n루틴을 등록해주세요.",
             style: TextStyle(color: Colors.grey, fontSize: 18),
             textAlign: TextAlign.center,
           ),
