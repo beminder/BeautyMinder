@@ -23,7 +23,8 @@ import 'package:timezone/timezone.dart' as tz;
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  tz.initializeTimeZones();
+  tz.initializeTimeZones(); // 시간대 데이터 초기화
+  tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
 
   //if (defaultTargetPlatform == TargetPlatform.android) {
   //  await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
