@@ -412,16 +412,20 @@ class _TodoAddPage extends State<TodoAddPage> {
               print("addtodo 실행");
               print("todo : ${todo}");
               print("_dateController.text : ${_dateController.text}");
-              FlutterLocalNotification.showNotification_time(
-                  'BeautyMinder',
-                  _controllers[0].text,
-                  FlutterLocalNotification.makeDate(
-                    pickedDate!.year,
-                    pickedDate!.month,
-                    pickedDate!.day,
-                    hour,
-                    minute,
-                  ));
+
+              for(int i =0; i < todo!.tasks.length; i ++){
+                FlutterLocalNotification.showNotification_time(
+                    'BeautyMinder',
+                    _controllers[i].text,
+                    FlutterLocalNotification.makeDate(
+                      pickedDate!.year,
+                      pickedDate!.month,
+                      pickedDate!.day,
+                      hour,
+                      minute,
+                    ), i);
+              }
+
               await TodoService.addTodo(todo!);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const CalendarPage()));

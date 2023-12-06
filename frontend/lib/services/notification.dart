@@ -89,7 +89,7 @@ class FlutterLocalNotification {
   }
 
   static Future<void> showNotification_time(
-      String title, String description, tz.TZDateTime date) async {
+      String title, String description, tz.TZDateTime date, int id) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails('channel id', 'channel name',
             channelDescription: 'channel description',
@@ -102,7 +102,7 @@ class FlutterLocalNotification {
         iOS: DarwinNotificationDetails(badgeNumber: 1));
 
     flutterLocalNotificationsPlugin.zonedSchedule(
-        2,
+        id,
         title,
         description,
         date,
