@@ -20,6 +20,8 @@ import '../my/my_page.dart';
 import '../pouch/expiry_page.dart';
 import '../recommend/recommend_bloc_screen.dart';
 import 'FullScreenImagePage.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class skinAlbumPage extends StatefulWidget {
   const skinAlbumPage({Key? key}) : super(key: key);
@@ -69,60 +71,108 @@ class _skinAlbumPage extends State<skinAlbumPage> {
     }
   }
 
+
   Future<List<LocalImage>> getLocalImages() async {
+    tz.initializeTimeZones(); // 시간대 데이터 초기화
+    var seoul = tz.getLocation('Asia/Seoul'); // 서울 시간대 객체 생성
+
     lip.LocalImageProvider imageProvider = lip.LocalImageProvider();
     bool hasPermission = await imageProvider.initialize();
-    print("hasPermission : ${hasPermission}");
-    if (hasPermission) {
-      // 최근 이미지 30개 가져오기
-      List<LocalImage> images;
-
-      if (filter == 'all') {
-        images = images = await imageProvider.findLatest(365);
-      } else {
-        images = images = await imageProvider.findLatest(50);
-      }
-
-      List<LocalImage> filteredImages = images.where((image) {
-        return image.fileName!.contains('Skinrecord');
-      }).toList();
-
-      DateTime now = DateTime.now();
-      return filteredImages.where((image) {
-        DateTime? imageDate = DateTime.parse(image.creationDate!);
-        if (imageDate == null) return false;
-
-        switch (filter) {
-          case 'Today':
-            title = '오늘';
-            return imageDate.year == now.year &&
-                imageDate.month == now.month &&
-                imageDate.day == now.day;
-          case 'This Week':
-            title = '이번 주';
-            DateTime startOfWeek =
-                now.subtract(Duration(days: now.weekday - 1));
-            return imageDate.isAfter(startOfWeek) &&
-                imageDate.isBefore(now.add(Duration(days: 1)));
-          case 'This Month':
-            title = '이번 달';
-            return imageDate.year == now.year && imageDate.month == now.month;
-          default: // 'All'
-            title = '전체';
-            return true;
-        }
-      }).toList();
-    } else {
+    if (!hasPermission) {
       throw '이미지에 접근할 권한이 없습니다.';
-      print('이미지에 접근할 권한이 없습니다.');
     }
+
+    List<LocalImage> images = filter == 'all'
+        ? await imageProvider.findLatest(365)
+        : await imageProvider.findLatest(50);
+
+    List<LocalImage> filteredImages = images
+        .where((image) => image.fileName!.contains('Skinrecord'))
+        .toList();
+
+    DateTime now = tz.TZDateTime.now(seoul); // 현재 시간을 KST로 설정
+    return filteredImages.where((image) {
+      DateTime utcImageDate = DateTime.parse(image.creationDate!);
+      tz.TZDateTime kstImageDate = tz.TZDateTime.from(utcImageDate, seoul); // 이미지 생성 시간을 KST로 변환
+
+      switch (filter) {
+        case 'Today':
+          title = '오늘';
+          return kstImageDate.year == now.year &&
+              kstImageDate.month == now.month &&
+              kstImageDate.day == now.day;
+        case 'This Week':
+          title = '이번 주';
+          DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+          return kstImageDate.isAfter(startOfWeek) &&
+              kstImageDate.isBefore(now.add(Duration(days: 1)));
+        case 'This Month':
+          title = '이번 달';
+          return kstImageDate.year == now.year && kstImageDate.month == now.month;
+        default: // 'All'
+          title = '전체';
+          return true;
+      }
+    }).toList();
   }
 
-  Widget _filterButton(String filterValue, String titleValue) {
+
+  // Future<List<LocalImage>> getLocalImages() async {
+  //   lip.LocalImageProvider imageProvider = lip.LocalImageProvider();
+  //   bool hasPermission = await imageProvider.initialize();
+  //   print("hasPermission : ${hasPermission}");
+  //   if (hasPermission) {
+  //     // 최근 이미지 30개 가져오기
+  //     List<LocalImage> images;
+  //
+  //     if (filter == 'all') {
+  //       images = images = await imageProvider.findLatest(365);
+  //     } else {
+  //       images = images = await imageProvider.findLatest(50);
+  //     }
+  //
+  //     List<LocalImage> filteredImages = images.where((image) {
+  //       return image.fileName!.contains('Skinrecord');
+  //     }).toList();
+  //
+  //     DateTime now = DateTime.now();
+  //     return filteredImages.where((image) {
+  //       DateTime? imageDate = DateTime.parse(image.creationDate!);
+  //       if (imageDate == null) return false;
+  //
+  //       // KST로 변환
+  //       tz.TZDateTime kstTime = tz.TZDateTime.from(imageDate, tz.getLocation('Asia/Seoul'));
+  //
+  //       switch (filter) {
+  //         case 'Today':
+  //           title = '오늘';
+  //           return imageDate.year == now.year &&
+  //               imageDate.month == now.month &&
+  //               imageDate.day == now.day;
+  //         case 'This Week':
+  //           title = '이번 주';
+  //           DateTime startOfWeek =
+  //               now.subtract(Duration(days: now.weekday - 1));
+  //           return imageDate.isAfter(startOfWeek) &&
+  //               imageDate.isBefore(now.add(Duration(days: 1)));
+  //         case 'This Month':
+  //           title = '이번 달';
+  //           return imageDate.year == now.year && imageDate.month == now.month;
+  //         default: // 'All'
+  //           title = '전체';
+  //           return true;
+  //       }
+  //     }).toList();
+  //   } else {
+  //     throw '이미지에 접근할 권한이 없습니다.';
+  //     print('이미지에 접근할 권한이 없습니다.');
+  //   }
+  // }
+
+  Widget _filterButton(String title, String filterValue) {
     return TextButton(
       onPressed: () {
         setState(() {
-          title = titleValue;
           filter = filterValue;
           _updateImages();
         });
@@ -131,7 +181,7 @@ class _skinAlbumPage extends State<skinAlbumPage> {
           backgroundColor:
               filter == filterValue ? Color(0xffd86a04) : Color(0xffffecda)),
       child: Text(
-        filterValue,
+        title,
         style: TextStyle(
             color: filter == filterValue ? Colors.white : Color(0xffd86a04)),
       ),
@@ -154,7 +204,10 @@ class _skinAlbumPage extends State<skinAlbumPage> {
             return Center(child: Text('${snapshot.error}'));
           }
 
-          if (snapshot.hasData && snapshot.data != null) {
+          if (snapshot.hasData && snapshot.data?.length != 0) {
+            print("snapshot.hasData : ${snapshot.hasData}");
+            print("snapshot.data : ${snapshot.data}");
+            print(snapshot.data![0].creationDate);
             return Column(
               children: [
                 SizedBox(
@@ -168,18 +221,10 @@ class _skinAlbumPage extends State<skinAlbumPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // _filterButton('All', 'all'),
-                    // _filterButton('Month', 'This Month'),
-                    // _filterButton('Week', 'This Week'),
-                    // _filterButton('Today', 'Today'),
-                    // _filterButton('전체', 'All'),
-                    // _filterButton('이번 달', 'Month'),
-                    // _filterButton('이번 주', 'Week'),
-                    // _filterButton('오늘', 'Today'),
-                    _filterButton('All', '전체'),
-                    _filterButton('Month', '이번 달'),
-                    _filterButton('Week', '이번 주'),
-                    _filterButton('Today', '오늘'),
+                    _filterButton('전체', 'all'),
+                    _filterButton('이번 달', 'This Month'),
+                    _filterButton('이번 주', 'This Week'),
+                    _filterButton('오늘', 'Today'),
                   ],
                 ),
                 Expanded(
@@ -211,6 +256,10 @@ class _skinAlbumPage extends State<skinAlbumPage> {
                   ),
                 ),
               ],
+            );
+          }else if(snapshot.data?.length == 0){
+            return Center(
+              child: Text("기록된 사진이 없습니다. \n사진을 기록해주요.", style: TextStyle(fontSize: 30, color: Colors.grey),textAlign: TextAlign.center),
             );
           }
 
@@ -251,7 +300,6 @@ class _skinAlbumPage extends State<skinAlbumPage> {
       final newImageFile = await tempImageFile.copy(newFilePath);
 
       print("새로운 사진이 저장된 경로: ${newImageFile.path}");
-
       // 선택적: GallerySaver를 사용하여 갤러리에도 저장
       GallerySaver.saveImage(newImageFile.path);
 
