@@ -63,10 +63,8 @@ class CosmeticSearchService {
     final url = Uri.http(Config.apiURL, Config.RecommendAPI).toString();
 
     final headers = {
-      'Authorization': 'Bearer ${Config.acccessToken}',
-      'Cookie': 'XRT=${Config.refreshToken}',
-      // 'Authorization': 'Bearer $accessToken',
-      // 'Cookie': 'XRT=$refreshToken',
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
     };
 
 
