@@ -1,6 +1,6 @@
 import 'package:beautyminder/pages/home/home_page.dart';
 import 'package:beautyminder/widget/commonAppBar.dart';
-import 'package:beautyminder/widget/loginAppBar.dart';
+import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

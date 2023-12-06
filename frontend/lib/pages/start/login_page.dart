@@ -1,6 +1,6 @@
 import 'package:beautyminder/pages/home/home_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
-import 'package:beautyminder/widget/loginAppBar.dart';
+import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LoginAppBar(),
+      appBar: UsualAppBar(text: "BeautyMinder 로그인",),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
@@ -316,7 +316,7 @@ class _LoginPageState extends State<LoginPage> {
             children: <TextSpan>[
               const TextSpan(text: '등록된 계정이 없으신가요? '),
               TextSpan(
-                text: '회원 가입',
+                text: '회원가입 하기',
                 style: const TextStyle(
                   color: Color(0xffd86a04),
                   fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:beautyminder/dto/register_request_model.dart';
+import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -9,7 +10,6 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 import '../../config.dart';
 import '../../services/api_service.dart';
 import '../../services/email_verify_service.dart';
-import '../../widget/registerAppBar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: RegisterAppBar(),
+      appBar: UsualAppBar(text: "BeautyMinder 회원가입",),
       backgroundColor: Colors.white,
       body: ProgressHUD(
         child: Form(
@@ -562,14 +562,14 @@ class _RegisterPageState extends State<RegisterPage> {
     return Align(
       alignment: Alignment.center,
       child: Padding(
-        padding: const EdgeInsets.only(right: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 25),
         child: RichText(
           text: TextSpan(
             style: const TextStyle(color: Colors.black, fontSize: 14.0),
             children: <TextSpan>[
               const TextSpan(text: '이미 등록된 계정이 있으신가요? '),
               TextSpan(
-                text: '로그인',
+                text: '로그인 하기',
                 style: const TextStyle(
                   color: Color(0xffd86a04),
                   fontWeight: FontWeight.bold,
