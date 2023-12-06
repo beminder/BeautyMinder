@@ -2,6 +2,7 @@ import 'package:beautyminder/Bloc/RecommendPageBloc.dart';
 import 'package:beautyminder/State/RecommendState.dart';
 import 'package:beautyminder/event/RecommendPageEvent.dart';
 import 'package:beautyminder/pages/product/product_detail_page.dart';
+import 'package:beautyminder/services/Cosmetic_Recommend_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -101,6 +102,7 @@ class _RecPage extends State<RecPage> {
               IconButton(
                 icon: Icon(Icons.refresh),
                 onPressed: () {
+                  CosmeticSearchService.refreshCosmetics();
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => RecPage()),
                   );

@@ -49,7 +49,7 @@ Todo {
     List<Map<String, dynamic>> tasksJson =
         tasks.map((task) => task.toJson()).toList();
 
-    String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
     return {
       //'userId': user.id,
       'userId': '65499d8316f366541e3cc0a2',
@@ -59,9 +59,4 @@ Todo {
     };
   }
 
-// Map<String, dynamic> toJsonForAdd{
-//   return{
-//     "userId" : user.id,
-//     "date":
-// }
 }
