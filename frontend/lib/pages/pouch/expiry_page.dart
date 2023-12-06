@@ -1,5 +1,6 @@
 import 'package:beautyminder/pages/pouch/search_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 import '../../dto/cosmetic_expiry_model.dart';
@@ -208,90 +209,14 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
               onPressed: _addCosmetic,
             ),
           ]),
-      body: Stack(
-        children: [
-          Opacity(
-            opacity: isLoading ? 0.5 : 1.0, // 로딩 중일 때 투명도를 낮춤
-            child: expiries.isEmpty
-                ? Center(child: Text("등록된 화장품이 없습니다!")) // 비어있을 때의 메시지
-                :GridView.builder(
-              padding: EdgeInsets.all(8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.85,
-              ),
-              itemCount: expiries.length,
-              itemBuilder: (context, index) {
-                final cosmetic = expiries[index];
-
-                DateTime now = DateTime.now();
-                DateTime expiryDate = cosmetic.expiryDate ?? DateTime.now();
-                Duration difference = expiryDate.difference(now);
-                bool isDatePassed = difference.isNegative;
-
-                return GestureDetector(
-                  onTap: () {
-                    _showCosmeticDetailsCard(cosmetic, index);
-                  },
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    color: Color(0xffffffff),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // 이미지 표시
-                          cosmetic.imageUrl != null
-                              ? Image.network(cosmetic.imageUrl!,
-                              width: 120, height: 120, fit: BoxFit.cover)
-                              : Image.asset('assets/images/noImg.jpg',
-                              width: 120, height: 120, fit: BoxFit.cover),
-                          SizedBox(height: 8,),
-                          // 제품 이름
-                          Text(
-                            cosmetic.productName,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-
-                          SizedBox(height: 10,),
-
-                          // D-Day
-                          isDatePassed ?
-                          Text(
-                            'D+${difference.inDays.abs()}',
-                            style: TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
-                          ) : Text(
-                              'D-${difference.inDays+1}',
-                              style: (difference.inDays+1<=30) ?
-                              TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
-                                  : TextStyle(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.bold)
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  ),
-                );
-              },
-            ),
-          ),
-          isLoading
-              ? Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-            ),
-          )
-              : Container(), // 로딩이 아닐 때는 빈 컨테이너 표시
-        ],
-      ),
+      body: isLoading
+          ? Center(
+        child: SpinKitThreeInOut(
+          color: Color(0xffd86a04),
+          size: 50.0,
+          duration: Duration(seconds: 2),
+        ),
+      ) : _selectUI(),
       bottomNavigationBar: CommonBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (int index) async {
@@ -313,5 +238,81 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
         },
       ),
     );
+  }
+
+  Widget _selectUI() {
+    if(expiries.isNotEmpty && expiries.length != 0) {
+      return GridView.builder(
+        padding: EdgeInsets.all(8),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 0.85,
+        ),
+        itemCount: expiries.length,
+        itemBuilder: (context, index) {
+          final cosmetic = expiries[index];
+
+          DateTime now = DateTime.now();
+          DateTime expiryDate = cosmetic.expiryDate ?? DateTime.now();
+          Duration difference = expiryDate.difference(now);
+          bool isDatePassed = difference.isNegative;
+
+          return GestureDetector(
+            onTap: () {
+              _showCosmeticDetailsCard(cosmetic, index);
+            },
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              color: Color(0xffffffff),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 이미지 표시
+                    cosmetic.imageUrl != null
+                        ? Image.network(cosmetic.imageUrl!,
+                        width: 120, height: 120, fit: BoxFit.cover)
+                        : Image.asset('assets/images/noImg.jpg',
+                        width: 120, height: 120, fit: BoxFit.cover),
+                    SizedBox(height: 8,),
+                    // 제품 이름
+                    Text(
+                      cosmetic.productName,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+
+                    SizedBox(height: 10,),
+
+                    // D-Day
+                    isDatePassed ?
+                    Text(
+                      'D+${difference.inDays.abs()}',
+                      style: TextStyle(fontSize: 25, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
+                    ) : Text(
+                        'D-${difference.inDays+1}',
+                        style: (difference.inDays+1<=100) ?
+                        TextStyle(fontSize: 25, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
+                            : TextStyle(fontSize: 25, color: Colors.black54, fontWeight: FontWeight.bold)
+                    ),
+                  ],
+                ),
+              ),
+
+            ),
+          );
+        },
+      );
+    }
+    else {
+      return Center(child: Text("등록된 화장품이 없습니다!"));
+    }
   }
 }

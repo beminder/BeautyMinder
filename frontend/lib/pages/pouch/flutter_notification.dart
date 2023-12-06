@@ -6,7 +6,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
 
-import '../pages/pouch/expiry_page.dart';
+import 'expiry_page.dart';
 
 class FlutterLocalNotification {
   FlutterLocalNotification._();
