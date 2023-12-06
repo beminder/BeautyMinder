@@ -1,4 +1,5 @@
 
+import 'package:beautyminder/pages/pouch/expiry_page.dart';
 import 'package:beautyminder/pages/todo/todo_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -64,7 +65,7 @@ class FlutterLocalNotification {
   static void _navigateToRoutinePage() {
     // Use the navigatorKey to navigate
     navigatorKey.currentState?.push(MaterialPageRoute(
-      builder: (context) => CalendarPage(), // Replace with your actual page
+      builder: (context) => CosmeticExpiryPage(), // Replace with your actual page
     ));
   }
 
