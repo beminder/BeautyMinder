@@ -1,15 +1,11 @@
-import 'package:beautyminder/pages/home/home_page.dart';
 import 'package:beautyminder/pages/start/login_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
-import 'package:beautyminder/widget/commonAppBar.dart';
 import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
-import '../../dto/login_request_model.dart';
-import '../../services/api_service.dart';
 import '../../services/forget_password_service.dart';
 
 class FindPasswordByPhoneNumberPage extends StatefulWidget {
@@ -101,12 +97,20 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
               height: 60,
               child: TextFormField(
                 focusNode: emailFocusNode,
-                validator: (val) => val!.isEmpty ? '전화번호가 입력되지 않았습니다.' : null,
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return '전화번호가 입력되지 않았습니다.';
+                  }
+                  else if(!isValidPhoneNumber(val)) {
+                    return '전화번호 형식을 다시 확인해주세요. ex) 01011112222';
+                  }
+                  return null;
+                },
                 onChanged: (val) => email = val,
                 obscureText: false,
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  hintText: "전화번호를 입력하세요('-'없이 입력해주세요.)",
+                  hintText: "전화번호를 입력하세요.('-'없이 입력해주세요.)",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
                   // prefixIcon: Icon(
                   //   Icons.phone_android,
@@ -262,6 +266,11 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
       return true;
     }
     return false;
+  }
+
+  bool isValidPhoneNumber(String input) {
+    final RegExp regex = RegExp(r'^010\d{8}$');
+    return regex.hasMatch(input);
   }
 
 }

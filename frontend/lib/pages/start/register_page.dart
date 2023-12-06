@@ -329,7 +329,15 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           SizedBox(height: 5), // 제목과 입력 필드 사이의 간격 조절
           TextFormField(
-            validator: (val) => val!.isEmpty ? '전화번호가 입력되지 않았습니다.' : null,
+            validator: (val) {
+              if (val!.isEmpty) {
+                return '전화번호가 입력되지 않았습니다.';
+              }
+              else if(!isValidPhoneNumber(val)) {
+                return '전화번호 형식을 다시 확인해주세요. ex) 01011112222';
+              }
+              return null;
+            },
             onChanged: (val) => phoneNumber = val,
             obscureText: false,
             style: TextStyle(color: Colors.black),
@@ -595,4 +603,10 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return false;
   }
+
+  bool isValidPhoneNumber(String input) {
+    final RegExp regex = RegExp(r'^010\d{8}$');
+    return regex.hasMatch(input);
+  }
+
 }

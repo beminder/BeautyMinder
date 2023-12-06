@@ -1,14 +1,10 @@
-import 'package:beautyminder/pages/home/home_page.dart';
 import 'package:beautyminder/pages/start/login_page.dart';
-import 'package:beautyminder/widget/commonAppBar.dart';
 import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
-import '../../dto/login_request_model.dart';
-import '../../services/api_service.dart';
 import '../../services/forget_password_service.dart';
 import 'find_password_byPhoneNum.dart';
 
