@@ -26,10 +26,10 @@ class ExpiryContentCard extends StatelessWidget {
         margin: EdgeInsets.all(10.0), // Margin inside the card
         decoration: BoxDecoration(
           border: Border.all(
-            color:
+              color:
               (isDatePassed || (!isDatePassed && difference.inDays+1<=100)) ?
-                Colors.orange : Colors.black54,
-            width: 2.0),
+              Colors.orange : Colors.black54,
+              width: 2.0),
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: SingleChildScrollView(
@@ -65,7 +65,7 @@ class ExpiryContentCard extends StatelessWidget {
                         SizedBox(height: 30,),
 
                         Text(
-                            '브랜드 : ${cosmetic.brandName ?? 'NULL'}',
+                            '브랜드 : ${cosmetic.brandName ?? '알수없음'}',
                             style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20)
                         ),
 
@@ -86,12 +86,12 @@ class ExpiryContentCard extends StatelessWidget {
 
                         SizedBox(height: 20,),
 
-                        Text(
-                            cosmetic.opened == true
-                                ? '개봉일 : ${formatDate(cosmetic.openedDate)}'
-                                : '개봉일 : N/A',
-                            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20)
-                        ),
+                        // 개봉 일 때만 개봉 날짜 표시
+                        if (cosmetic.opened)
+                          Text(
+                              '개봉일 : ${formatDate(cosmetic.openedDate)}',
+                              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20)
+                          ),
                       ],
                     ),
                   ),

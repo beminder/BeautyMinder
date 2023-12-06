@@ -21,6 +21,7 @@ class ExpiryInputDialog extends StatefulWidget {
 
 class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
   bool isOpened = false;
+  bool isLoading = false;
 
   //DateTime expiryDate = DateTime.now().add(Duration(days: 365));
   DateTime? expiryDate = DateTime.now();
@@ -38,15 +39,33 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: (isExpiryDate ? expiryDate : openedDate) ?? DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       locale: myLocale,
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.orange, // 달력의 주요 색상을 오렌지로 설정
+            primaryColor: Colors.orange,
+            hintColor: Colors.orange,
+            colorScheme: ColorScheme.light(primary: Colors.orange),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.orange, // Button text color
+              ),
             ),
+            textTheme: TextTheme(
+              headline4: TextStyle(
+                fontFamily: 'YourFontFamily',
+                fontSize: 20.0,
+                color: Colors.black,
+              ),
+              button: TextStyle(
+                fontFamily: 'YourFontFamily',
+                color: Colors.orange,
+              ),
+            ),
+            dialogBackgroundColor: Colors.white,
           ),
           child: child!,
         );
@@ -68,6 +87,9 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
     final pickedFile = await ImagePicker().pickImage(source: source);
 
     if (pickedFile != null) {
+      setState((){
+        isLoading = true;
+      });
       // 이미지 자르기
       CroppedFile? croppedFile = await ImageCropper().cropImage(
           sourcePath: pickedFile.path,
@@ -112,10 +134,14 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             final expiryDateFromOCR = DateFormat('yyyy-MM-dd').parse(result.data);
 
             setState(() {
+              isLoading = false;
               expiryDate = expiryDateFromOCR;
             });
           }
         } catch (e) {
+          setState(() {
+            isLoading = false; // 로딩 종료
+          });
           // 오류 처리
           _showErrorDialog("이미지 인식에 실패하였습니다.");
         }
@@ -151,7 +177,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             height: 30,
             child: TextButton(
               style: TextButton.styleFrom(
-                padding: EdgeInsets.zero, // 내용물과의 간격을 없애기 위해 추가
+                padding: EdgeInsets.zero,
                 backgroundColor: Color(0xffdc7e00),
                 foregroundColor: Colors.white,
                 side: BorderSide(color: Color(0xffdc7e00)),
@@ -250,7 +276,14 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
           fontSize: 24,
         ),
       ),
-      content: Column(
+      content: isLoading
+          ? Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+          strokeWidth: 5.0,
+        ),
+      )
+          : Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
@@ -368,9 +401,9 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
           child: Text(
             '등록',
             style: TextStyle(
-              color: Colors.orange,
-              fontSize: 20,
-              fontWeight: FontWeight.bold
+                color: Colors.orange,
+                fontSize: 20,
+                fontWeight: FontWeight.bold
             ),
           ),
           style: TextButton.styleFrom(foregroundColor: Colors.orange),
