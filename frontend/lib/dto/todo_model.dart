@@ -49,19 +49,13 @@ Todo {
     List<Map<String, dynamic>> tasksJson =
         tasks.map((task) => task.toJson()).toList();
 
-    String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
     return {
-      //'userId': user.id,
-      'userId': '65499d8316f366541e3cc0a2',
+      'userId': user?.id,
       'date': date,
       'tasks': tasksJson, // Assuming you have a toJson in User model
       'createdAt': createdAt?.toIso8601String(),
     };
   }
 
-// Map<String, dynamic> toJsonForAdd{
-//   return{
-//     "userId" : user.id,
-//     "date":
-// }
 }

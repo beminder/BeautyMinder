@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:beautyminder/services/Cosmetic_Recommend_Service.dart';
 
 import 'Bloc/RecommendPageBloc.dart';
 import 'Bloc/TodoPageBloc.dart';
@@ -27,6 +28,7 @@ void main() async {
   //if (defaultTargetPlatform == TargetPlatform.android) {
   //  await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   //}
+
 
   runApp(MultiBlocProvider(
       providers: [
