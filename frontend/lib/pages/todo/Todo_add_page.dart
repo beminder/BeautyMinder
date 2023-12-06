@@ -233,53 +233,6 @@ class _TodoAddPage extends State<TodoAddPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(
-                  onPressed: () async {
-                    createRoutine();
-                    if (tasks.length == 0) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const CalendarPage()));
-                    } else if (tasks.length > 0 &&
-                        dates.contains(formatDate(pickedDate!))) {
-                      Todo? existing_todo = widget.todos!.firstWhere(
-                        (todo) =>
-                            todo.date ==
-                            formatDate(
-                                pickedDate!), // Provide a default value (null) if no match is found
-                      );
-                      await TodoService.taskAddInTodo(existing_todo, tasks);
-                      print("_dateController.text : ${_dateController.text}");
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const CalendarPage()));
-                    } else {
-                      print("addtodo 실행");
-                      print("todo : ${todo}");
-                      print("_dateController.text : ${_dateController.text}");
-                      FlutterLocalNotification.showNotification_time(
-                          'BeautyMinder',
-                          _controllers[0].text,
-                          FlutterLocalNotification.makeDate(
-                              pickedDate!.year,
-                              pickedDate!.month,
-                              pickedDate!.day,
-                              hour,
-                              minute,
-                              ));
-                      await TodoService.addTodo(todo!);
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const CalendarPage()));
-                    }
-                  },
-                  icon: const Icon(Icons.add_box_rounded,
-                      size: 50, color: Color(0xffd86a04)),
-                  label: const Text("완료",
-                      style: TextStyle(fontSize: 25, color: Color(0xffd86a04))),
-                )
-              ],
-            ),
             Padding(
                 padding: const EdgeInsets.all(20),
                 child: GestureDetector(
@@ -291,8 +244,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                       controller: _dateController,
                       decoration: InputDecoration(
                           prefixStyle: TextStyle(color: Color(0xffd86a04)),
-                          labelText: 'Date',
-                          hintText: 'Date',
+                          labelText: '날짜',
+                          hintText: '날짜 선택',
                           icon: const Icon(
                             Icons.calendar_month,
                             color: Color(0xffd86a04),
@@ -317,8 +270,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                         child: TextField(
                           controller: controller,
                           decoration: InputDecoration(
-                              labelText: 'Todo ${index + 1}',
-                              hintText: 'Enter Todo ${index + 1}',
+                              labelText: '루틴 ${index + 1}',
+                              hintText: '루틴 ${index + 1} 입력',
                               icon: const Icon(Icons.add_task_sharp,
                                   color: Color(0xffd86a04)),
                               border: OutlineInputBorder(
@@ -346,28 +299,28 @@ class _TodoAddPage extends State<TodoAddPage> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(10),
                         selectedColor: Colors.white,
-                        fillColor: const Color(0xffffecda),
+                        fillColor: Colors.orange,
                         borderColor: Colors.grey,
-                        selectedBorderColor: const Color(0xffffecda),
+                        selectedBorderColor: Colors.orange,
                         children: const <Widget>[
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              'Dinner',
+                              '저녁',
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              'Morning',
+                              '아침',
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              'Other',
+                              '기타',
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
@@ -381,12 +334,12 @@ class _TodoAddPage extends State<TodoAddPage> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   child: ElevatedButton(
                     style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xffffecda)),
+                        backgroundColor: const Color(0xffbbbbbb), elevation: 0),
                     onPressed: _addNewTextField,
-                    child: const Icon(Icons.add, color: Color(0xffd86a04)),
+                    child: const Icon(Icons.add, color: Colors.white),
                   ),
                 ),
                 if (_controllers.length > 1)
@@ -395,13 +348,12 @@ class _TodoAddPage extends State<TodoAddPage> {
                         horizontal: 20, vertical: 20),
                     child: ElevatedButton(
                       style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xffffecda)
-                          //Color(0xffffecda),
-                          ),
+                          backgroundColor: const Color(0xffbbbbbb),
+                          elevation: 0),
                       onPressed: _removeTextField,
                       child: const Icon(
                         Icons.remove,
-                        color: Color(0xffd86a04),
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -430,6 +382,53 @@ class _TodoAddPage extends State<TodoAddPage> {
                   MaterialPageRoute(builder: (context) => const MyPage()));
             }
           }),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: TextButton(
+          child:
+              Text('등록', style: TextStyle(fontSize: 20, color: Colors.white)),
+          style: TextButton.styleFrom(
+            backgroundColor: Color(0xffd96a04),
+            minimumSize: Size(MediaQuery.of(context).size.width - 50, 30),
+          ),
+          onPressed: () async {
+            createRoutine();
+            if (tasks.length == 0) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CalendarPage()));
+            } else if (tasks.length > 0 &&
+                dates.contains(formatDate(pickedDate!))) {
+              Todo? existing_todo = widget.todos!.firstWhere(
+                (todo) =>
+                    todo.date ==
+                    formatDate(
+                        pickedDate!), // Provide a default value (null) if no match is found
+              );
+              await TodoService.taskAddInTodo(existing_todo, tasks);
+              print("_dateController.text : ${_dateController.text}");
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CalendarPage()));
+            } else {
+              print("addtodo 실행");
+              print("todo : ${todo}");
+              print("_dateController.text : ${_dateController.text}");
+              FlutterLocalNotification.showNotification_time(
+                  'BeautyMinder',
+                  _controllers[0].text,
+                  FlutterLocalNotification.makeDate(
+                    pickedDate!.year,
+                    pickedDate!.month,
+                    pickedDate!.day,
+                    hour,
+                    minute,
+                  ));
+              await TodoService.addTodo(todo!);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CalendarPage()));
+            }
+          },
+        ),
+      ),
     );
   }
 }
