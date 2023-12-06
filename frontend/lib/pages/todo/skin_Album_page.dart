@@ -167,10 +167,10 @@ class _skinAlbumPage extends State<skinAlbumPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _filterButton('All', 'all'),
-                    _filterButton('Month', 'This Month'),
-                    _filterButton('Week', 'This Week'),
-                    _filterButton('Today', 'Today'),
+                    _filterButton('전체', 'all'),
+                    _filterButton('이번 달', 'This Month'),
+                    _filterButton('이번 주', 'This Week'),
+                    _filterButton('오늘', 'Today'),
                   ],
                 ),
                 Expanded(
