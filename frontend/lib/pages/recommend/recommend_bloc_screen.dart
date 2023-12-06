@@ -299,8 +299,8 @@ class _RecPageImageWidget extends State<RecPageImageWidget> {
           children: [
             Center(
               child: Text(
-                '추천할 수 있는 제품이 없습니다. \n 바우만 피부 테스트를 진행해주세요 ',
-                style: TextStyle(fontSize: 25, color: Colors.grey),
+                '추천 가능한 제품이 없습니다.\n바우만 피부 테스트를 진행해주세요.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
             ),

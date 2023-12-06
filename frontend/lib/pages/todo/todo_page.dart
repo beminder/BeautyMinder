@@ -134,9 +134,17 @@ class _todoListWidget extends State<todoListWidget> {
   Widget _todoList(List<Todo>? todos, Todo? todo) {
     if (todo == null) {
       return const Center(
-
-        child: Text("입력된 루틴이 없습니다. \n루틴을 등록해주세요",
-            style: TextStyle(color: Colors.grey, fontSize: 30), textAlign: TextAlign.center,),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "입력된 루틴이 없습니다.\n루틴을 등록해주세요.",
+              style: TextStyle(color: Colors.grey, fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       );
     }
 
@@ -453,7 +461,12 @@ class _todoListWidget extends State<todoListWidget> {
               children: [
                 _calendar(state.todos),
                 Buttons(),
-                _todoList(state.todos, state.todo),
+                SizedBox(height: 10,),
+                Container(
+                  height: MediaQuery.of(context).size.height/4,
+                  child: _todoList(state.todos, state.todo),
+                ),
+                // _todoList(state.todos, state.todo),
               ],
             );
           } else if (state is TodoDeletedState) {

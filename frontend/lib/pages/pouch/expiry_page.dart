@@ -312,7 +312,13 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
       );
     }
     else {
-      return Center(child: Text("등록된 화장품이 없습니다!"));
+      return Center(
+        child: Text(
+          "등록된 화장품이 없습니다.\n보유하신 제품을 등록해주세요.",
+          style: TextStyle(color: Colors.grey, fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
+      );
     }
   }
 }
