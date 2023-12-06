@@ -1,4 +1,4 @@
-import 'package:beautyminder/dto/review_model.dart';
+import 'package:beautyminder/dto/review_response_model.dart';
 import 'package:beautyminder/pages/my/widgets/review_card.dart';
 import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/widget/commonAppBar.dart';
@@ -70,7 +70,7 @@ class _MyReviewPageState extends State<MyReviewPage> {
                     itemCount: reviews?.length ?? 0,
                     itemBuilder: (context, index) {
                       final reviewJson = reviews?[index];
-                      final review = ReviewModel.fromJson(reviewJson);
+                      final review = ReviewResponse.fromJson(reviewJson);
                       return ReviewCard(
                         review: review,
                         updateParentVariable: updateParentVariable,

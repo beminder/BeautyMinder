@@ -269,13 +269,14 @@
 // }
 import 'dart:developer';
 
-import 'package:beautyminder/dto/review_model.dart';
 import 'package:beautyminder/dto/review_request_model.dart';
 import 'package:beautyminder/services/review_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../../dto/review_response_model.dart';
 
 class UpdateDialog extends StatefulWidget {
   const UpdateDialog({
@@ -294,7 +295,7 @@ class UpdateDialog extends StatefulWidget {
   final String? body;
   final String? caption;
   final Function() onBarrierTap;
-  final ReviewModel review;
+  final ReviewResponse review;
   final Function() callback;
 
   @override
@@ -304,7 +305,7 @@ class UpdateDialog extends StatefulWidget {
 class _UpdateDialogState extends State<UpdateDialog> {
   final _contentController = TextEditingController();
 
-  late ReviewModel review;
+  late ReviewResponse review;
   late int _localRating;
 
   List<PlatformFile>? _imageFiles;

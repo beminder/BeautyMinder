@@ -1,12 +1,12 @@
-import 'package:beautyminder/dto/review_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../dto/review_response_model.dart';
 import 'delete_popup.dart';
 import 'update_dialog.dart';
 
 class ReviewCard extends StatelessWidget {
-  final ReviewModel review;
+  final ReviewResponse review;
   final VoidCallback updateParentVariable;
 
   const ReviewCard({
