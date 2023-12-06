@@ -69,20 +69,19 @@ class _CalendarPageState extends State<CalendarPage> {
                 // Expanded(child: imageWidget()),
               ],
             ),
-            floatingActionButton: FloatingActionButton.extended(
+            floatingActionButton: FloatingActionButton(
               //foregroundColor: Color(0xffffecda),
               backgroundColor: Color(0xffd86a04),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => TodoAddPage(todos: global_todos)));
               },
-              label: Text('Routine'),
-              icon: Icon(Icons.add),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              tooltip: '등록',
+              child: Icon(Icons.add),
+              shape: CircleBorder(),
             ),
             floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
+                FloatingActionButtonLocation.endFloat,
             bottomNavigationBar: CommonBottomNavigationBar(
                 currentIndex: _currentIndex,
                 onTap: (int index) async {
@@ -185,17 +184,17 @@ class _todoListWidget extends State<todoListWidget> {
     }
 
     if (morningTasks.isNotEmpty) {
-      children.add(_row('morning'));
+      children.add(_row('아침'));
       children.addAll(morningTasks);
     }
 
     if (dinnerTasks.isNotEmpty) {
-      children.add(_row('dinner'));
+      children.add(_row('저녁'));
       children.addAll(dinnerTasks);
     }
 
     if (otherTasks.isNotEmpty) {
-      children.add(_row('other'));
+      children.add(_row('기타'));
       children.addAll(otherTasks);
     }
 
@@ -276,7 +275,7 @@ class _todoListWidget extends State<todoListWidget> {
         dragDismissible: false,
         children: [
           SlidableAction(
-            label: 'Update',
+            label: '수정',
             backgroundColor: Colors.orange,
             icon: Icons.archive,
             onPressed: (context) {
@@ -296,7 +295,7 @@ class _todoListWidget extends State<todoListWidget> {
                         child:
                             StatefulBuilder(builder: (context, setDialogState) {
                           return AlertDialog(
-                            title: Text('Update Todo'),
+                            title: Text('수정'),
                             content: SingleChildScrollView(
                               child: Column(
                                 children: [
@@ -323,17 +322,17 @@ class _todoListWidget extends State<todoListWidget> {
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10),
-                                        child: Text('Morning'),
+                                        child: Text('아침'),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10),
-                                        child: Text('Dinner'),
+                                        child: Text('저녁'),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10),
-                                        child: Text('Other'),
+                                        child: Text('기타'),
                                       ),
                                     ],
                                   ),
@@ -391,7 +390,7 @@ class _todoListWidget extends State<todoListWidget> {
         dismissible: DismissiblePane(onDismissed: () {}),
         children: [
           SlidableAction(
-            label: 'delete',
+            label: '삭제',
             backgroundColor: Colors.red,
             icon: Icons.delete,
             onPressed: (context) async {
@@ -524,7 +523,7 @@ class Buttons extends StatelessWidget {
           },
           icon: const Icon(Icons.camera_alt_outlined, color: Color(0xffd86a04)),
           label: const Text(
-            "SKIN",
+            "피부촬영",
             style: TextStyle(color: Color(0xffd86a04)),
           ),
           style: ElevatedButton.styleFrom(
@@ -541,7 +540,7 @@ class Buttons extends StatelessWidget {
           },
           icon: const Icon(Icons.album_rounded, color: Color(0xffd86a04)),
           label: const Text(
-            "ALBUM",
+            "앨범",
             style: TextStyle(color: Color(0xffd86a04)),
           ),
           style: ElevatedButton.styleFrom(
@@ -558,7 +557,7 @@ class Buttons extends StatelessWidget {
           },
           icon: const Icon(Icons.album_rounded, color: Color(0xffd86a04)),
           label: const Text(
-            "TimeLine",
+            "타임라인",
             style: TextStyle(color: Color(0xffd86a04)),
           ),
           style: ElevatedButton.styleFrom(
