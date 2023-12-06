@@ -118,10 +118,11 @@ class _skinAlbumPage extends State<skinAlbumPage> {
     }
   }
 
-  Widget _filterButton(String title, String filterValue) {
+  Widget _filterButton(String filterValue, String titleValue) {
     return TextButton(
       onPressed: () {
         setState(() {
+          title = titleValue;
           filter = filterValue;
           _updateImages();
         });
@@ -130,7 +131,7 @@ class _skinAlbumPage extends State<skinAlbumPage> {
           backgroundColor:
               filter == filterValue ? Color(0xffd86a04) : Color(0xffffecda)),
       child: Text(
-        title,
+        filterValue,
         style: TextStyle(
             color: filter == filterValue ? Colors.white : Color(0xffd86a04)),
       ),
@@ -167,10 +168,18 @@ class _skinAlbumPage extends State<skinAlbumPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _filterButton('전체', 'all'),
-                    _filterButton('이번 달', 'This Month'),
-                    _filterButton('이번 주', 'This Week'),
-                    _filterButton('오늘', 'Today'),
+                    // _filterButton('All', 'all'),
+                    // _filterButton('Month', 'This Month'),
+                    // _filterButton('Week', 'This Week'),
+                    // _filterButton('Today', 'Today'),
+                    // _filterButton('전체', 'All'),
+                    // _filterButton('이번 달', 'Month'),
+                    // _filterButton('이번 주', 'Week'),
+                    // _filterButton('오늘', 'Today'),
+                    _filterButton('All', '전체'),
+                    _filterButton('Month', '이번 달'),
+                    _filterButton('Week', '이번 주'),
+                    _filterButton('Today', '오늘'),
                   ],
                 ),
                 Expanded(
