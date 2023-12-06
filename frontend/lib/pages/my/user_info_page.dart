@@ -195,7 +195,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     final newNickname = await showDialog(
       context: context,
       builder: (context) {
-        return const ChnageDialog(
+        return const ChangeDialog(
           title: '닉네임',
           subtitle: '닉네임을 입력해주세요',
         );
@@ -212,7 +212,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     final newphoneNumber = await showDialog(
       context: context,
       builder: (context) {
-        return const ChnageDialog(
+        return const ChangeDialog(
           title: '전화번호',
           subtitle: '전화번호를 입력해주세요',
         );

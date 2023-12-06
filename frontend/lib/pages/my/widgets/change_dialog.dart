@@ -1,8 +1,8 @@
 import 'package:beautyminder/pages/my/widgets/default_dialog.dart';
 import 'package:flutter/material.dart';
 
-class ChnageDialog extends StatefulWidget {
-  const ChnageDialog({
+class ChangeDialog extends StatefulWidget {
+  const ChangeDialog({
     Key? key,
     this.icon,
     required this.title,
@@ -14,10 +14,10 @@ class ChnageDialog extends StatefulWidget {
   final String subtitle;
 
   @override
-  State<ChnageDialog> createState() => _ChnageDialogState();
+  State<ChangeDialog> createState() => _ChangeDialogState();
 }
 
-class _ChnageDialogState extends State<ChnageDialog> {
+class _ChangeDialogState extends State<ChangeDialog> {
   final _textEditingController = TextEditingController();
 
   @override
