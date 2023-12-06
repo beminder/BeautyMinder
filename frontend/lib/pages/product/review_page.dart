@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +27,9 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   bool _isLoading = false;
   final ImagePicker _picker = ImagePicker();
   List<PlatformFile>? _imageFiles;
+  final TextEditingController _contentController = TextEditingController();
+  int _localRating = 3;
+  String _warningMessage = '';
 
   @override
   void initState() {
@@ -37,16 +41,31 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     setState(() => _isLoading = true);
     try {
       var reviews = await ReviewService.getReviewsForCosmetic(cosmeticId);
+      User? currentUser = await SharedService.getUser();
+
+      if (currentUser != null) {
+        // 사용자가 작성한 리뷰를 맨 위로 이동
+        _moveCurrentUserReviewToTop(reviews, currentUser.id);
+      }
+
       setState(() {
         _cosmeticReviews = reviews;
         _isLoading = false;
       });
     } catch (e) {
       setState(() => _isLoading = false);
-      print('Failed to load reviews: $e');
-      _showSnackBar('리뷰를 불러오는 데 실패하였습니다.');
+      _showSnackBar('리뷰 불러오기 실패: $e');
     }
   }
+
+  void _moveCurrentUserReviewToTop(List<ReviewResponse> reviews, String userId) {
+    int userReviewIndex = reviews.indexWhere((review) => review.user.id == userId);
+    if (userReviewIndex != -1) {
+      ReviewResponse userReview = reviews.removeAt(userReviewIndex);
+      reviews.insert(0, userReview);
+    }
+  }
+
 
   Future<void> pickImage() async {
     try {
@@ -59,37 +78,38 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
           bytes: await image.readAsBytes(),
         );
         setState(() {
-          _imageFiles = [file]; // Store the selected image file.
+          _imageFiles = [file];
         });
       } else {
-        _showSnackBar('이미지가 선택되지 않았습니다.');
+        _showSnackBar('이미지가 선택되지 않았습니다');
       }
     } on PlatformException catch (e) {
       log('Unsupported operation : ' + e.toString());
     } catch (e) {
       log(e.toString());
-      print('Failed to pick image: $e');
-      _showSnackBar('이미지 선택에 실패하였습니다.');
+      _showSnackBar('이미지 선택에 실패: $e');
     }
   }
 
-  void _addOrEditReview(ReviewResponse? review) async {
+  void _addReview() async {
+    _imageFiles = []; // 이미지 목록 초기화
     User? user = await SharedService.getUser();
     if (user != null) {
-      String userId = user.id;
-      _showReviewDialog(reviewToUpdate: review, userId: userId);
+      // 중복 리뷰 확인
+      bool hasReviewed = _cosmeticReviews.any((review) => review.user.id == user.id);
+      if (hasReviewed) {
+        _showSnackBar('이미 리뷰를 작성하셨습니다.');
+        return;
+      }
+      _showReviewDialog(userId: user.id);
     } else {
-      _showSnackBar('리뷰를 작성하기 위해선 로그인이 필요합니다.');
+      _showSnackBar('리뷰 추가는 로그인이 필수입니다!');
     }
   }
 
-  void _showReviewDialog({ReviewResponse? reviewToUpdate, required String userId}) async {
-    final _contentController = TextEditingController();
-    int _localRating = reviewToUpdate?.rating ?? 3;
-    if (reviewToUpdate != null) {
-      _contentController.text = reviewToUpdate.content;
-    }
 
+  void _showReviewDialog({required String userId}) {
+    _warningMessage = '';
     showDialog(
       context: context,
       builder: (context) {
@@ -97,23 +117,21 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
           builder: (BuildContext context, StateSetter setDialogState) {
             return AlertDialog(
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder( // 모서리 둥글게
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
               title: Text(
-                reviewToUpdate == null ? '리뷰 작성' : '리뷰 수정',
+                '리뷰 작성',
                 style: TextStyle(
-                  fontFamily: 'YourCustomFont',
-                  fontWeight: FontWeight.bold
+                    fontFamily: 'YourCustomFont',
+                    fontWeight: FontWeight.bold
                 ),
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '*실제 사용 확인을 위해 이미지 등록은 필수입니다.'
-                    ),
+                    Text('*실제 사용 확인을 위해 이미지 등록은 필수입니다.'),
                     SizedBox(height: 15,),
                     TextField(
                       controller: _contentController,
@@ -121,7 +139,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                       decoration: InputDecoration(
                         hintText: '리뷰를 작성해주세요',
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey), // 테두리 색상을 회색(Colors.grey)으로 변경
+                          borderSide: BorderSide(color: Colors.grey),
                         ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffd77c00)),
@@ -140,118 +158,77 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                         ),
                       ),
                       onChanged: (value) {
-                        if (value != null) {
-                          setDialogState(() => _localRating = value);
-                        }
+                        setDialogState(() => _localRating = value!);
                       },
                     ),
+                    _buildImagePreview(setDialogState),
                     ElevatedButton(
-                      onPressed: pickImage,
+                      onPressed: () async {
+                        await pickImage();
+                        setDialogState(() {}); // Update StatefulBuilder state
+                      },
                       child: Text('사진 추가'),
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Color(0xfff3bb88), // 텍스트 색상을 흰색으로 설정
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xfff3bb88),
                       ),
                     ),
+                    // 경고 메시지
+                    if (_warningMessage.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          _warningMessage,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      )
+
                   ],
                 ),
               ),
               actions: [
-                Container(
-                  height: 30,
-                  width: 70,
-                  // color: Colors.white,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero, // 내용물과의 간격을 없애기 위해 추가
-                      // backgroundColor: Color(0xffdc7e00),
-                      foregroundColor: Color(0xffdc7e00),
-                      side: BorderSide(color: Color(0xffdc7e00)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                    ),
-                    child: Text(
-                      '취소',
-                      style: TextStyle(
-                        color: Color(0xffd77c00),
-                        fontSize: 18
-                      ),
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('취소',
+                    style: TextStyle(color: Color(0xfff3bb88)),),
                 ),
-                Container(
-                  height: 30,
-                  width: 70,
-                  color: Color(0xffd77c00),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero, // 내용물과의 간격을 없애기 위해 추가
-                      backgroundColor: Color(0xffdc7e00),
-                      foregroundColor: Colors.white,
-                      side: BorderSide(color: Color(0xffdc7e00)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                    ),
-                    child: Text(
-                      '제출',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18
-                      ),
-                    ),
-                    onPressed: () async {
-                      final String content = _contentController.text;
-                      if (content.isNotEmpty && widget.cosmeticId.isNotEmpty) {
-                        ReviewRequest newReviewRequest = ReviewRequest(
-                          content: content,
-                          rating: _localRating,
-                          cosmeticId: widget.cosmeticId,
-                        );
+                TextButton(
+                  onPressed: () async {
+                    final String content = _contentController.text;
+                    if (content.isEmpty) {
+                      setDialogState(() => _warningMessage = '리뷰 내용을 작성해주세요.');
+                      return;
+                    }
 
-                        if (_imageFiles == null || _imageFiles!.isEmpty) {
-                          _showSnackBar('리뷰 사진을 추가해주세요!');
-                          return;
-                        }
+                    if (_imageFiles == null || _imageFiles!.isEmpty) {
+                      setDialogState(() => _warningMessage = '리뷰 이미지를 추가해주세요.');
+                      return;
+                    }
 
-                        try {
-                          ReviewResponse responseReview;
-                          if (reviewToUpdate == null) {
-                            responseReview = await ReviewService.addReview(
-                                newReviewRequest, _imageFiles!);
-                          } else {
-                            responseReview = await ReviewService.updateReview(
-                                reviewToUpdate.id,
-                                newReviewRequest,
-                                _imageFiles!);
-                          }
+                    // 리뷰 추가 로직
+                    ReviewRequest newReviewRequest = ReviewRequest(
+                      content: content,
+                      rating: _localRating,
+                      cosmeticId: widget.cosmeticId,
+                    );
 
-                          setState(() {
-                            if (reviewToUpdate == null) {
-                              _cosmeticReviews.add(responseReview);
-                            } else {
-                              int index = _cosmeticReviews.indexWhere(
-                                      (review) => review.id == responseReview.id);
-                              if (index != -1) {
-                                _cosmeticReviews[index] = responseReview;
-                              }
-                            }
-                          });
-                          Navigator.of(context).pop();
-                          _showSnackBar(reviewToUpdate == null
-                              ? '성공적으로 리뷰가 등록되었습니다.'
-                              : '성공적으로 리뷰가 수정되었습니다.');
-                        } catch (e) {
-                          Navigator.of(context).pop();
-                          print("Failed to add/update review: $e");
-                          _showSnackBar('리뷰 등록/수정에 실패하였습니다.');
-                        }
-                      } else {
-                        _showSnackBar('형식을 올바르게 작성해주세요.');
-                      }
-                    },
-                  ),
+                    try {
+                      ReviewResponse responseReview = await ReviewService.addReview(
+                          newReviewRequest, _imageFiles!);
+
+                      setState(() {
+
+                        _cosmeticReviews.insert(0, responseReview);
+                      });
+
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      _showSnackBar('리뷰가 추가되었습니다');
+                    } catch (e) {
+                      _showSnackBar('리뷰 추가 실패: $e');
+                    }
+                  },
+                  child: Text('제출',
+                    style: TextStyle(color: Color(0xfff3bb88)),),
                 ),
               ],
             );
@@ -267,9 +244,8 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     }
   }
 
-
-
   Widget _buildReviewList() {
+    if (_cosmeticReviews.isEmpty){}
     return Expanded(
       child: ListView.separated(
         itemCount: _cosmeticReviews.length,
@@ -304,26 +280,23 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 리뷰 텍스트
                     Text(
                       review.content,
                       style: TextStyle(fontSize: 16),
                     ),
                     SizedBox(height: 10),
-                    // 리뷰 이미지
                     Wrap(
                       spacing: 8.0,
                       runSpacing: 4.0,
                       children: review.images.map((image) {
                         return ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0), // 모서리를 둥글게 처리
+                          borderRadius: BorderRadius.circular(8.0),
                           child: Image.network(
                             image,
                             width: 100,
                             height: 100,
-                            fit: BoxFit.cover, // 이미지가 공간을 가득 채우도록 조정
+                            fit: BoxFit.cover,
                             errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                              // 에러가 발생했을 때 동일한 크기의 아이콘을 표시
                               return SizedBox.shrink();
                             },
                           ),
@@ -331,9 +304,8 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                       }).toList(),
                     ),
                     SizedBox(height: 10),
-                    // 추가적인 정보 (예: NLP 분석 결과)
                     if (review.nlpAnalysis.isNotEmpty)
-                      Text('NLP 분석: ${review.nlpAnalysis}'),
+                      Text('바우만분석: ${review.nlpAnalysis}'),
                   ],
                 ),
               ),
@@ -344,28 +316,48 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     );
   }
 
-  Future<void> _deleteReview(String reviewId) async {
-    setState(() => _isLoading = true);
-    try {
-      // ReviewService를 사용하여 서버에 삭제 요청
-      await ReviewService.deleteReview(reviewId);
-      // UI의 리뷰 목록에서 해당 리뷰를 제거
-      setState(() {
-        _cosmeticReviews.removeWhere((review) => review.id == reviewId);
-        _isLoading = false;
-      });
-      _showSnackBar('성공적으로 리뷰가 삭제되었습니다.');
-    } catch (e) {
-      setState(() => _isLoading = false);
-      print("Failed to delete review: $e");
-      _showSnackBar('리뷰 삭제에 실패하였습니다.');
-    }
+
+  // 사진 선택 및 미리보기 위젯
+  Widget _buildImagePreview(StateSetter setDialogState) {
+    return Wrap(
+      spacing: 8.0,
+      runSpacing: 4.0,
+      children: _imageFiles?.map((file) {
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.file(
+                File(file.path!),
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: IconButton(
+                icon: Icon(Icons.remove_circle),
+                color: Colors.red,
+                onPressed: () {
+                  setState(() {
+                    _imageFiles!.remove(file);
+                  });
+                  setDialogState(() {}); // StatefulBuilder의 상태 업데이트
+                },
+              ),
+            ),
+          ],
+        );
+      }).toList() ?? [],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
+      appBar: CommonAppBar(automaticallyImplyLeading: true,),
       body: Column(
         children: [
           if (_isLoading)
@@ -384,7 +376,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _addOrEditReview(null); // 리뷰 추가 다이얼로그를 여는 버튼으로 변경
+          _addReview(); // 리뷰 추가 다이얼로그를 여는 버튼으로 변경
         },
         child: Icon(Icons.edit),
         backgroundColor: Color(0xffe7a470),
