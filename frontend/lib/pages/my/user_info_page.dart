@@ -203,8 +203,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     );
 
     if (newNickname != null) {
-      // await APIService.updateUserInfo({'nickname': newNickname});
-      // await _updateUser(nickname: newNickname);
+
       if (_isNicknameValid(newNickname)) {
         await APIService.updateUserInfo({'nickname': newNickname});
         await _updateUser(nickname: newNickname);
@@ -258,29 +257,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
     }
   }
 
-  // Future<void> _showAlertDialog({
-  //   required String title,
-  //   required String body,
-  // }) async {
-  //   await showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return DefaultDialog(
-  //         onBarrierTap: () => Navigator.pop(context),
-  //         title: title,
-  //         body: body,
-  //         buttons: [
-  //           DefaultDialogButton(
-  //             onTap: () => Navigator.pop(context),
-  //             text: '확인',
-  //             backgroundColor: const Color(0xFFFF820E),
-  //             textColor: Colors.white,
-  //           )
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
   Future<void> _showSnackBar({
     required String title,
     required String body,

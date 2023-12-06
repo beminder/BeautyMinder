@@ -25,6 +25,8 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -66,129 +68,123 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
           size: 50.0,
           duration: Duration(seconds: 2),
         )
-            : Stack(
-          children: [
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: SingleChildScrollView(
-                  child: Column(children: [
-                    const MyPageHeader('비밀번호 변경'),
-                    const SizedBox(height: 20),
-                    UserInfoProfile(
-                      nickname: user!.nickname ?? user!.email,
-                      profileImage: user!.profileImage ?? '',
-                    ),
-                    const SizedBox(height: 20),
-                    const MyDivider(),
-                    UserInfoEditItem(
+            : Form(
+          key: _formKey,
+          child: Stack(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      const MyPageHeader('비밀번호 변경'),
+                      const SizedBox(height: 20),
+                      UserInfoProfile(
+                        nickname: user!.nickname ?? user!.email,
+                        profileImage: user!.profileImage ?? '',
+                      ),
+                      const SizedBox(height: 20),
+                      const MyDivider(),
+                      UserInfoEditItem(
                         title: '현재 비밀번호',
-                        controller: _currentPasswordController),
-                    UserInfoEditItem(
+                        controller: _currentPasswordController,
+                        // formKey: _formKey,
+                      ),
+                      UserInfoEditItem(
                         title: '변경할 비밀번호',
-                        controller: _newPasswordController),
-                    UserInfoEditItem(
+                        controller: _newPasswordController,
+                        // formKey: _formKey,
+                      ),
+                      UserInfoEditItem(
                         title: '비밀번호 재확인',
-                        controller: _confirmPasswordController),
-                    const SizedBox(height: 150),
-                  ]),
-                )),
-            Positioned(
-              bottom: 50, // 원하는 위치에 배치
-              left: 10, // 원하는 위치에 배치
-              right: 10, // 원하는 위치에 배치
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFFFFF),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                5.0), // 적절한 값을 선택하세요
+                        controller: _confirmPasswordController,
+                        // formKey: _formKey,
+                      ),
+                      const SizedBox(height: 150),
+                    ]),
+                  )),
+              Positioned(
+                bottom: 50, // 원하는 위치에 배치
+                left: 10, // 원하는 위치에 배치
+                right: 10, // 원하는 위치에 배치
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFFFFF),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  5.0), // 적절한 값을 선택하세요
+                            ),
+                            side: const BorderSide(
+                                width: 1.0, color: Color(0xFFFF820E)),
                           ),
-                          side: const BorderSide(
-                              width: 1.0, color: Color(0xFFFF820E)),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('취소',
+                              style: TextStyle(
+                                  color: Color(0xFFFF820E), fontSize: 18)),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('취소',
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF820E),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  5.0), // 적절한 값을 선택하세요
+                            ),
+                          ),
+                          onPressed: _updatePassword,
+                          child: const Text(
+                            '수정',
                             style: TextStyle(
-                                color: Color(0xFFFF820E), fontSize: 18)),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF820E),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                5.0), // 적절한 값을 선택하세요
+                                color: Colors.white, fontSize: 18),
                           ),
                         ),
-                        onPressed: _updatePassword,
-                        child: const Text(
-                          '수정',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 18),
-                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ));
+            ],
+          ),
+        )
+    );
   }
 
   Future<void> _updatePassword() async {
+
+    //텍스트 필드가 비워져 있을 떄
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    //새 비밀번호와 재확인 비밀번호가 일치하지 않을 때
     if (_newPasswordController.text != _confirmPasswordController.text) {
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return DefaultDialog(
-            onBarrierTap: () => Navigator.pop(context),
-            title: '비밀번호가 일치하지 않습니다',
-            body: '비밀번호를 확인해주세요.',
-            buttons: [
-              DefaultDialogButton(
-                onTap: () => Navigator.pop(context),
-                text: '확인',
-                backgroundColor: const Color(0xFFFF820E),
-                textColor: Colors.white,
-              )
-            ],
-          );
-        },
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.'),
+          duration: const Duration(seconds: 3),
+        ),
       );
       return;
     }
 
+    //현재 비밀번호와 새 비밀번호가 같을 때
     if (_currentPasswordController.text == _newPasswordController.text) {
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return DefaultDialog(
-            onBarrierTap: () => Navigator.pop(context),
-            title: '현재 비밀번호와 동일합니다',
-            body: '새로운 비밀번호를 입력해주세요',
-            buttons: [
-              DefaultDialogButton(
-                onTap: () => Navigator.pop(context),
-                text: '확인',
-                backgroundColor: const Color(0xFFFF820E),
-                textColor: Colors.white,
-              )
-            ],
-          );
-        },
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('현재 비밀번호와 동일합니다. 새로운 비밀번호를 입력해주세요.'),
+          duration: const Duration(seconds: 3),
+        ),
       );
       return;
     }
@@ -298,9 +294,17 @@ class UserInfoProfile extends StatelessWidget {
 class UserInfoEditItem extends StatelessWidget {
   final String title;
   final TextEditingController controller;
+  // final GlobalKey<FormState> formKey;
 
   const UserInfoEditItem(
       {super.key, required this.title, required this.controller});
+
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) {
+      return '해당 항목이 입력되지 않았습니다.';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -317,9 +321,16 @@ class UserInfoEditItem extends StatelessWidget {
             ),
           ),
           Flexible(
-              child: TextField(
+              child: TextFormField(
                 controller: controller,
-              )),
+                validator: _validator,
+                decoration: InputDecoration(
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange),
+                  ),
+                ),
+              )
+          ),
         ],
       ),
     );
