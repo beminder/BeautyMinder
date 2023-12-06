@@ -31,7 +31,7 @@ class ForgetPasswordService {
     final url = Uri.http(Config.apiURL, Config.requestByPhoneNum + phoneNumber).toString();
 
     try {
-      final response = await DioClient.sendRequest('POST', url);
+      final response = await DioClient.sendRequest('GET', url);
 
       if (response.statusCode == 200) {
         return true;

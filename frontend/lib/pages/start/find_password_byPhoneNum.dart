@@ -160,7 +160,7 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
             if (response == true) {
               print("Here is requestByEmailWhenForgetPwd : ${response}");
               Fluttertoast.showToast(
-                msg: "메세지로 요청이 완료되었습니다. 메세를을 확인해주세요.",
+                msg: "메세지로 요청이 완료되었습니다. 메세지를 확인해주세요.",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
               );
