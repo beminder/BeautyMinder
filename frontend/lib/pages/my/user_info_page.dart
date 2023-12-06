@@ -203,8 +203,17 @@ class _UserInfoPageState extends State<UserInfoPage> {
     );
 
     if (newNickname != null) {
-      await APIService.updateUserInfo({'nickname': newNickname});
-      await _updateUser(nickname: newNickname);
+      // await APIService.updateUserInfo({'nickname': newNickname});
+      // await _updateUser(nickname: newNickname);
+      if (_isNicknameValid(newNickname)) {
+        await APIService.updateUserInfo({'nickname': newNickname});
+        await _updateUser(nickname: newNickname);
+      } else {
+        await _showSnackBar(
+          title: '잘못된 형식입니다.',
+          body: '올바른 닉네임을 입력해주세요.',
+        );
+      }
     }
   }
 
@@ -220,50 +229,76 @@ class _UserInfoPageState extends State<UserInfoPage> {
     );
 
     if (newphoneNumber != null) {
-      if (user!.phoneNumber == newphoneNumber) {
-        await _showAlertDialog(
-          title: '이전과 동일한 전화번호입니다',
-          body: '변경하시려면 다른 전화번호를 입력해주세요',
-        );
-      } else {
-        final result =
-        await APIService.updateUserInfo({'phoneNumber': newphoneNumber});
-
-        if (result.isSuccess) {
-          await _updateUser(phoneNumber: newphoneNumber);
-        } else {
-          await _showAlertDialog(
-            title: '이미 사용중인 전화번호입니다',
-            body: '전화번호를 확인해주세요',
+      if (_isPhoneNumberValid(newphoneNumber)) {
+        if (user!.phoneNumber == newphoneNumber) {
+          await _showSnackBar(
+            title: '이전과 동일한 전화번호입니다',
+            body: '변경하시려면 다른 전화번호를 입력해주세요',
           );
+        } else {
+          final result = await APIService.updateUserInfo({
+            'phoneNumber': newphoneNumber,
+          });
+
+          if (result.isSuccess) {
+            await _updateUser(phoneNumber: newphoneNumber);
+          } else {
+            await _showSnackBar(
+              title: '이미 사용 중인 전화번호입니다',
+              body: '전화번호를 확인해주세요',
+            );
+          }
         }
+      } else {
+        await _showSnackBar(
+          title: '잘못된 형식입니다.',
+          body: '올바른 전화번호를 입력해주세요.',
+        );
       }
     }
   }
 
-  Future<void> _showAlertDialog({
+  // Future<void> _showAlertDialog({
+  //   required String title,
+  //   required String body,
+  // }) async {
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return DefaultDialog(
+  //         onBarrierTap: () => Navigator.pop(context),
+  //         title: title,
+  //         body: body,
+  //         buttons: [
+  //           DefaultDialogButton(
+  //             onTap: () => Navigator.pop(context),
+  //             text: '확인',
+  //             backgroundColor: const Color(0xFFFF820E),
+  //             textColor: Colors.white,
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+  Future<void> _showSnackBar({
     required String title,
     required String body,
   }) async {
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return DefaultDialog(
-          onBarrierTap: () => Navigator.pop(context),
-          title: title,
-          body: body,
-          buttons: [
-            DefaultDialogButton(
-              onTap: () => Navigator.pop(context),
-              text: '확인',
-              backgroundColor: const Color(0xFFFF820E),
-              textColor: Colors.white,
-            )
-          ],
-        );
-      },
+    final snackBar = SnackBar(
+      content: Text(
+        title+body,
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      duration: const Duration(seconds: 3), // Adjust the duration as needed
     );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
 
   Future<void> _updateUser({
     String? imageUrl,
@@ -288,6 +323,18 @@ class _UserInfoPageState extends State<UserInfoPage> {
     setState(() {
       user = updatedUser;
     });
+  }
+
+  bool _isNicknameValid(String nickname) {
+    // return nickname.isNotEmpty && nickname.length <= 20;
+    final RegExp validCharacters = RegExp(r'^[a-zA-Z가-힣0-9]+$');
+    return nickname.isNotEmpty && nickname.length <= 20 && validCharacters.hasMatch(nickname);
+  }
+
+  bool _isPhoneNumberValid(String phoneNumber) {
+    // return phoneNumber.isNotEmpty && phoneNumber.length == 11;
+    final RegExp regex = RegExp(r'^010\d{8}$');
+    return regex.hasMatch(phoneNumber);
   }
 }
 
@@ -318,14 +365,6 @@ class UserInfoProfile extends StatelessWidget {
               backgroundImage: NetworkImage(profileImage),
             ),
           ),
-          // Container(
-          //     width: 58,
-          //     height: 58,
-          //     decoration: const BoxDecoration(
-          //       color: Color(0xFFD9D9D9),
-          //       shape: BoxShape.circle,
-          //     ),
-          //     child: const Icon(Icons.camera_alt_outlined, size: 35)),
           const SizedBox(width: 20),
           Expanded(
             child: Row(

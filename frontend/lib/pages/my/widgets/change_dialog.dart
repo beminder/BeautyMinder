@@ -19,6 +19,7 @@ class ChangeDialog extends StatefulWidget {
 
 class _ChangeDialogState extends State<ChangeDialog> {
   final _textEditingController = TextEditingController();
+  final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -56,37 +57,56 @@ class _ChangeDialogState extends State<ChangeDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
-            Container(
-              height: 45,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
+            Flexible(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: TextFormField(
-                  controller: _textEditingController,
-                  decoration: InputDecoration(
-                    hintText: widget.subtitle,
-                    border: InputBorder.none,
-                    isDense: true,
-                  ),
-                  cursorColor: Colors.grey,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                child: Form(
+                  key: globalFormKey,
+                  child: TextFormField(
+                    controller: _textEditingController,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        if(widget.title == '닉네임') {
+                          return '${widget.title}이 입력되지 않았습니다.';
+                        }
+                        else {
+                          return '${widget.title}가 입력되지 않았습니다.';
+                        }
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: widget.subtitle,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                        ),
+                      ),
+                      // isDense: true,
+                    ),
+                    cursorColor: Colors.grey,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             DefaultDialogButton(
-              onTap: () => Navigator.pop(context, _textEditingController.text),
+              onTap: () {
+                if (globalFormKey.currentState?.validate() ?? false) {
+                  Navigator.pop(context, _textEditingController.text);
+                }
+              },
               backgroundColor: const Color(0xFFFF820E),
               text: '변경하기',
               textColor: Colors.white,
