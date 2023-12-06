@@ -404,16 +404,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                     formatDate(
                         pickedDate!), // Provide a default value (null) if no match is found
               );
-              await TodoService.taskAddInTodo(existing_todo, tasks);
-              print("_dateController.text : ${_dateController.text}");
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const CalendarPage()));
-            } else {
-              print("addtodo 실행");
-              print("todo : ${todo}");
-              print("_dateController.text : ${_dateController.text}");
-
-              for(int i =0; i < todo!.tasks.length; i ++){
+              for (int i = 0; i < todo!.tasks.length; i++) {
                 FlutterLocalNotification.showNotification_time(
                     'BeautyMinder',
                     _controllers[i].text,
@@ -423,7 +414,30 @@ class _TodoAddPage extends State<TodoAddPage> {
                       pickedDate!.day,
                       hour,
                       minute,
-                    ), i);
+                    ),
+                    i);
+              }
+              await TodoService.taskAddInTodo(existing_todo, tasks);
+              print("_dateController.text : ${_dateController.text}");
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CalendarPage()));
+            } else {
+              print("addtodo 실행");
+              print("todo : ${todo}");
+              print("_dateController.text : ${_dateController.text}");
+
+              for (int i = 0; i < todo!.tasks.length; i++) {
+                FlutterLocalNotification.showNotification_time(
+                    'BeautyMinder',
+                    _controllers[i].text,
+                    FlutterLocalNotification.makeDate(
+                      pickedDate!.year,
+                      pickedDate!.month,
+                      pickedDate!.day,
+                      hour,
+                      minute,
+                    ),
+                    i);
               }
 
               await TodoService.addTodo(todo!);
