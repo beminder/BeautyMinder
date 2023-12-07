@@ -86,16 +86,17 @@ class FlutterLocalNotification {
         0, 'test title', 'test body', notificationDetails);
 
   }
+
   //유통기한 날짜 함수
   static makeDateForExpiry(DateTime expiryDate) {
-    var seoul = tz.getLocation('Asia/Seoul');
-    var now = tz.TZDateTime.now(seoul);
+    var now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime when;
 
-    if (expiryDate.isAtSameMomentAs(DateTime(now.year, now.month, now.day))) {
-      when = now.add(Duration(seconds: 15));
+    if (expiryDate.isAtSameMomentAs(DateTime(now.year, now.month, now.day)) ||
+        now.isAfter(tz.TZDateTime(tz.local, expiryDate.year, expiryDate.month, expiryDate.day))) {
+      when = now.add(Duration(seconds: 30));
     } else {
-      when = tz.TZDateTime(seoul, expiryDate.year, expiryDate.month, expiryDate.day);
+      when = tz.TZDateTime(tz.local, expiryDate.year, expiryDate.month, expiryDate.day);
     }
 
     return when;

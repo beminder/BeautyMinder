@@ -66,8 +66,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
-      //유저 정보 없데이트
-
       //유통기한
       List<CosmeticExpiry> loadedExpiries = await ExpiryService.getAllExpiries();
       for (var expiry in loadedExpiries) {
@@ -302,7 +300,7 @@ class _HomePageState extends State<HomePage> {
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: expiries.take(3).map((expiry) {
+        children: expiries.take(10).map((expiry) {
           DateTime now = DateTime.now();
           DateTime expiryDate = expiry.expiryDate ?? DateTime.now();
           Duration difference = expiryDate.difference(now);
@@ -456,11 +454,13 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 10),
               Container(
+                alignment: Alignment.center,
                 width: MediaQuery.of(context).size.width / 2 - 100,
                 child: Text(
                   item.name,
                   style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
