@@ -1,4 +1,5 @@
 import 'package:beautyminder/pages/todo/todo_page.dart';
+import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +9,6 @@ import '../../dto/todo_model.dart';
 import '../../services/api_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/todo_service.dart';
-import '../../widget/commonAppBar.dart';
 import '../../widget/commonBottomNavigationBar.dart';
 import '../home/home_page.dart';
 import '../my/my_page.dart';
@@ -76,26 +76,7 @@ class _TodoAddPage extends State<TodoAddPage> {
         _toggleSelections.add([false, false, true]);
       });
     } else {
-      // Optionally, you can show an alert or a message to the user
-      // indicating that they cannot add more than 20 text fields.
-      // For example:
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("루틴 등록"),
-            content: Text("루틴은 최대 20까지 등록할 수 있습니다."),
-            actions: [
-              TextButton(
-                child: Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      _showMaxTextFieldDialog(context);
     }
   }
 
@@ -105,7 +86,24 @@ class _TodoAddPage extends State<TodoAddPage> {
         _controllers.removeLast();
         _toggleSelections.removeLast();
       });
+    } else {
+      _showMinTextFieldSnackBar(context);
     }
+  }
+
+  void _showMaxTextFieldDialog(BuildContext context) {
+
+    final snackBar = SnackBar(
+      content: Text('루틴은 최대 20까지 등록할 수 있습니다.'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _showMinTextFieldSnackBar(BuildContext context) {
+    final snackBar = SnackBar(
+      content: Text('항목을 제거할 수 없습니다. 최소 하나의 항목이 존재해야 합니다.'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -217,9 +215,13 @@ class _TodoAddPage extends State<TodoAddPage> {
   Widget build(BuildContext context) {
     bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
-      appBar: CommonAppBar(
-        automaticallyImplyLeading: true,
-        context: context,
+      appBar: UsualAppBar(
+        onAddPressed: () {
+          _addNewTextField();
+        },
+        onMinusPressed: () {
+          _removeTextField();
+        },
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -323,36 +325,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                     ],
                   ));
             }).toList(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  child: ElevatedButton(
-                    style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xffbbbbbb), elevation: 0),
-                    onPressed: _addNewTextField,
-                    child: const Icon(Icons.add, color: Colors.white),
-                  ),
-                ),
-                if (_controllers.length > 1)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: ElevatedButton(
-                      style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xffbbbbbb),
-                          elevation: 0),
-                      onPressed: _removeTextField,
-                      child: const Icon(
-                        Icons.remove,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-              ],
-            )
+            SizedBox(height: 100,),
           ],
         ),
       ),
