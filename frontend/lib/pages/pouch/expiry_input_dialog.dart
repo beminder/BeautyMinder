@@ -336,9 +336,9 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             onChanged: (bool value) {
               setState(() {
                 isOpened = value;
-                if (!isOpened) {
-                  openedDate = null;
-                }
+                // if (!isOpened) {
+                //   openedDate = null;
+                // }
               });
             },
             activeColor: Colors.white,

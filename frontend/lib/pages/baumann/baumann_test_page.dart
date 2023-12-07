@@ -48,7 +48,16 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
     return Scaffold(
       appBar: BaumannTestAppBar(),
       body: SingleChildScrollView(
-        child: baumannTestUI(),
+        child: Column(
+          children: [
+            LinearProgressIndicator(
+              value: (currentPage + 1) / pages.length,
+              color: const Color(0xfffe9738),
+              backgroundColor: Colors.grey,
+            ),
+            baumannTestUI(),
+          ],
+        ),
       )
     );
   }
