@@ -117,57 +117,6 @@ class _skinAlbumPage extends State<skinAlbumPage> {
   }
 
 
-  // Future<List<LocalImage>> getLocalImages() async {
-  //   lip.LocalImageProvider imageProvider = lip.LocalImageProvider();
-  //   bool hasPermission = await imageProvider.initialize();
-  //   print("hasPermission : ${hasPermission}");
-  //   if (hasPermission) {
-  //     // 최근 이미지 30개 가져오기
-  //     List<LocalImage> images;
-  //
-  //     if (filter == 'all') {
-  //       images = images = await imageProvider.findLatest(365);
-  //     } else {
-  //       images = images = await imageProvider.findLatest(50);
-  //     }
-  //
-  //     List<LocalImage> filteredImages = images.where((image) {
-  //       return image.fileName!.contains('Skinrecord');
-  //     }).toList();
-  //
-  //     DateTime now = DateTime.now();
-  //     return filteredImages.where((image) {
-  //       DateTime? imageDate = DateTime.parse(image.creationDate!);
-  //       if (imageDate == null) return false;
-  //
-  //       // KST로 변환
-  //       tz.TZDateTime kstTime = tz.TZDateTime.from(imageDate, tz.getLocation('Asia/Seoul'));
-  //
-  //       switch (filter) {
-  //         case 'Today':
-  //           title = '오늘';
-  //           return imageDate.year == now.year &&
-  //               imageDate.month == now.month &&
-  //               imageDate.day == now.day;
-  //         case 'This Week':
-  //           title = '이번 주';
-  //           DateTime startOfWeek =
-  //               now.subtract(Duration(days: now.weekday - 1));
-  //           return imageDate.isAfter(startOfWeek) &&
-  //               imageDate.isBefore(now.add(Duration(days: 1)));
-  //         case 'This Month':
-  //           title = '이번 달';
-  //           return imageDate.year == now.year && imageDate.month == now.month;
-  //         default: // 'All'
-  //           title = '전체';
-  //           return true;
-  //       }
-  //     }).toList();
-  //   } else {
-  //     throw '이미지에 접근할 권한이 없습니다.';
-  //     print('이미지에 접근할 권한이 없습니다.');
-  //   }
-  // }
 
   Widget _filterButton(String title, String filterValue) {
     return TextButton(
