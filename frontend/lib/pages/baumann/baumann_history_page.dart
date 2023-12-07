@@ -2,6 +2,7 @@ import 'package:beautyminder/pages/baumann/baumann_test_start_page.dart';
 import 'package:beautyminder/pages/baumann/watch_result_page.dart';
 import 'package:beautyminder/services/baumann_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dto/baumann_result_model.dart';
 import '../../services/api_service.dart';
@@ -44,6 +45,24 @@ class BaumannHistoryPage extends StatelessWidget {
           ),
           Expanded(
             child: _baumannHistoryListView(),
+            // child: FutureBuilder<void>(
+            //   future: _deleteAndNavigate(context, resultData),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       // Show loading indicator while the deletion is in progress
+            //       return Center(
+            //         child: SpinKitThreeInOut(
+            //           color: Color(0xffd86a04),
+            //           size: 50.0,
+            //           duration: Duration(seconds: 2),
+            //         ),
+            //       );
+            //     } else {
+            //       // Show the baumann history list once the deletion is done
+            //       return _baumannHistoryListView();
+            //     }
+            //   },
+            // ),
           ),
         ],
       ),
@@ -124,6 +143,23 @@ class BaumannHistoryPage extends StatelessWidget {
     );
   }
 
+  // Future<void> _deleteAndNavigate(
+  //     BuildContext context, List<BaumannResult>? resultData) async {
+  //   // Assuming you are handling the deletion of the correct resultData somewhere
+  //   if (resultData != null && resultData.isNotEmpty) {
+  //     final userProfileResult = await APIService.getUserProfile();
+  //     await BaumannService.deleteBaumannHistory(resultData[0].id);
+  //
+  //     // Navigate to HomePage
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => HomePage(user: userProfileResult.value),
+  //       ),
+  //     );
+  //   }
+  // }
+
   Widget _resultButton(BuildContext context, BaumannResult result, bool isEven) {
     Color buttonColor = isEven ? Colors.white : Color(0xffffca97);
     Color textColor = isEven ? Colors.black : Colors.white;
@@ -167,29 +203,40 @@ class BaumannHistoryPage extends StatelessWidget {
           );
           if (deletionConfirmed) {
             bool deletionSuccessful = false;
-            final deletionResult = await BaumannService.deleteBaumannHistory(result.id);
-            if (deletionResult == "Success to Delete") {
-              deletionSuccessful = true;
+
+            try {
+              final deletionResult = await BaumannService.deleteBaumannHistory(
+                  result.id);
+              if (deletionResult == "Success to Delete") {
+                deletionSuccessful = true;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("삭제되었습니다."),
+                  ),
+                );
+              } else {
+                deletionSuccessful = false;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("삭제에 실패했습니다."),
+                  ),
+                );
+              }
+
+              // 삭제가 성공적으로 이루어졌을 때만 resultData에서 제거
+              if (deletionSuccessful) {
+                resultData?.remove(result);
+              }
+              return deletionSuccessful; // 항목이 성공적으로 삭제되었을 때만 true 반환
+
+            } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("삭제되었습니다."),
-                ),
-              );
-            } else {
-              deletionSuccessful = false;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("삭제에 실패했습니다."),
+                  content: Text("삭제하는 데 오류가 발생했습니다."),
                 ),
               );
             }
 
-            // 삭제가 성공적으로 이루어졌을 때만 resultData에서 제거
-            if (deletionSuccessful) {
-              resultData?.remove(result);
-            }
-
-            return deletionSuccessful; // 항목이 성공적으로 삭제되었을 때만 true 반환
           } else {
             return false; // 삭제가 취소되었을 때는 false 반환
           }
@@ -304,7 +351,7 @@ class _AnimatedTrainTextState extends State<AnimatedTrainText>
     super.initState();
 
     _animationController = AnimationController(
-      duration: Duration(seconds: 10), // Adjust the duration as needed
+      duration: Duration(seconds: 10),
       vsync: this,
     );
 
@@ -314,7 +361,7 @@ class _AnimatedTrainTextState extends State<AnimatedTrainText>
     ).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.linear, // Adjust the curve for a linear motion
+        curve: Curves.linear,
       ),
     );
 
