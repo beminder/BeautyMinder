@@ -187,12 +187,21 @@ class _UserInfoPageState extends State<UserInfoPage> {
       final image = pickedFile.path;
       final newImageUrl = await APIService.editProfileImgInfo(image);
 
-      if(newImageUrl != null) {
-        await _updateUser(imageUrl: newImageUrl);
-      } else{
+      if(newImageUrl == "An error occurred") {
         await _showSnackBar(
           title: '이미지를 변경하실 수 없습니다.',
           body: '잠시 후 다시 시도해주세요.',
+        );
+      } else if (newImageUrl == 'Failed to update review'){
+        await _showSnackBar(
+          title: '이미지를 변경하실 수 없습니다.',
+          body: '다른 이미지를 선택해 주세요.',
+        );
+      } else {
+        await _updateUser(imageUrl: newImageUrl);
+        await _showSnackBar(
+          title: '이미지 변경에 성공하였습니다.',
+          body: '혹시 변경된 이미지가 안보이신다면 새로고침 해주세요.',
         );
       }
     }
@@ -270,7 +279,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           if (result.isSuccess) {
             await _updateUser(phoneNumber: newphoneNumber);
             await _showSnackBar(
-              title: '전화번 변경에 성공하였습니다.',
+              title: '전화번호 변경에 성공하였습니다.',
               body: '변경된 전화번호는 ${newphoneNumber}입니다.',
             );
           } else if (result.error == "Failed to update user profile") {

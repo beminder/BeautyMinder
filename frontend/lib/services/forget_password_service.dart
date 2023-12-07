@@ -10,7 +10,7 @@ class ForgetPasswordService {
       'email': '$email'
     };
 
-    final url = Uri.https(Config.apiURL, Config.requestByEmail).toString();
+    final url = Uri.http(Config.apiURL, Config.requestByEmail).toString();
 
     try {
       final response = await DioClient.sendRequest('POST', url, body:body);
@@ -28,7 +28,7 @@ class ForgetPasswordService {
   //비밀번호 찾기 전화번호로
   static Future<bool> requestByPhoneNumWhenForgetPwd(String phoneNumber) async {
 
-    final url = Uri.https(Config.apiURL, Config.requestByPhoneNum + phoneNumber).toString();
+    final url = Uri.http(Config.apiURL, Config.requestByPhoneNum + phoneNumber).toString();
 
     try {
       final response = await DioClient.sendRequest('GET', url);

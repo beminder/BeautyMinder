@@ -17,7 +17,7 @@ class APIService {
 
   //로그인
   static Future<Result<bool>> login(LoginRequestModel model) async {
-    final url = Uri.https(Config.apiURL, Config.loginAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
     final formData = FormData.fromMap({
       'email': model.email ?? '',
       'password': model.password ?? '',
@@ -39,7 +39,7 @@ class APIService {
   static Future<Result<RegisterResponseModel>> register(
       RegisterRequestModel model) async {
 
-    final url = Uri.https(Config.apiURL, Config.registerAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.registerAPI).toString();
 
     try {
       final response = await DioClient.sendRequest('POST', url, body: model.toJson());
@@ -54,7 +54,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.deleteAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.deleteAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -76,7 +76,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.userProfileAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.userProfileAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -107,7 +107,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getUserReview).toString();
+    final url = Uri.http(Config.apiURL, Config.getUserReview).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -137,7 +137,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.editUserInfo).toString();
+    final url = Uri.http(Config.apiURL, Config.editUserInfo).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -162,7 +162,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.editProfileImg).toString();
+    final url = Uri.http(Config.apiURL, Config.editProfileImg).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -179,16 +179,24 @@ class APIService {
       ),
     });
 
-    final response = await DioClient.sendRequest(
-      'POST',
-      url,
-      body: formData,
-      headers: headers,
-    );
-    if (response.statusCode == 200) {
-      return response.data;
-    } else {
-      throw Exception('Failed to update review: ${response.statusMessage}');
+    try {
+      final response = await DioClient.sendRequest(
+        'POST',
+        url,
+        body: formData,
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        print("bbb");
+        return response.data;
+      } else {
+        print("aaa");
+        return 'Failed to update review';
+      }
+    } catch (e) {
+      print(e);
+      return "An error occurred";
     }
   }
 
@@ -198,7 +206,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getReviewAPI + id).toString();
+    final url = Uri.http(Config.apiURL, Config.getReviewAPI + id).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -221,7 +229,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getReviewAPI + id).toString();
+    final url = Uri.http(Config.apiURL, Config.getReviewAPI + id).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -246,7 +254,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.updatePassword).toString();
+    final url = Uri.http(Config.apiURL, Config.updatePassword).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -282,7 +290,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.requestResetPassword).toString();
+    final url = Uri.http(Config.apiURL, Config.requestResetPassword).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -312,7 +320,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.editUserInfo).toString();
+    final url = Uri.http(Config.apiURL, Config.editUserInfo).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -336,7 +344,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.logoutAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.logoutAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

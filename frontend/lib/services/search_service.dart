@@ -16,7 +16,7 @@ class SearchService {
     };
 
     final url =
-        Uri.https(Config.apiURL, Config.searchCosmeticsbyName, parameters)
+        Uri.http(Config.apiURL, Config.searchCosmeticsbyName, parameters)
             .toString();
 
     final headers = {
@@ -50,7 +50,7 @@ class SearchService {
     };
 
     final url =
-        Uri.https(Config.apiURL, Config.searchCosmeticsbyCategory, parameters)
+        Uri.http(Config.apiURL, Config.searchCosmeticsbyCategory, parameters)
             .toString();
 
     final headers = {
@@ -83,7 +83,7 @@ class SearchService {
     };
 
     final url =
-        Uri.https(Config.apiURL, Config.searchCosmeticsbyKeyword, parameters)
+        Uri.http(Config.apiURL, Config.searchCosmeticsbyKeyword, parameters)
             .toString();
 
     final headers = {
@@ -115,7 +115,7 @@ class SearchService {
       'anything': '$anything',
     };
 
-    final url = Uri.https(Config.apiURL, Config.homeSearchKeywordAPI, parameters)
+    final url = Uri.http(Config.apiURL, Config.homeSearchKeywordAPI, parameters)
         .toString();
 
     final headers = {

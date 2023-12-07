@@ -13,7 +13,7 @@ class GPTReviewService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, '${Config.getGPTReviewAPI}/$id').toString();
+    final url = Uri.http(Config.apiURL, '${Config.getGPTReviewAPI}/$id').toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

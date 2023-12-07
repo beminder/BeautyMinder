@@ -12,7 +12,7 @@ class FavoritesService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.uploadFavoritesAPI + cosmeticId).toString();
+    final url = Uri.http(Config.apiURL, Config.uploadFavoritesAPI + cosmeticId).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -41,7 +41,7 @@ class FavoritesService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.uploadFavoritesAPI + cosmeticId).toString();
+    final url = Uri.http(Config.apiURL, Config.uploadFavoritesAPI + cosmeticId).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -71,7 +71,7 @@ class FavoritesService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, '/user/favorites').toString();
+    final url = Uri.http(Config.apiURL, '/user/favorites').toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
