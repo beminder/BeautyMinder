@@ -76,11 +76,33 @@ class _TodoAddPage extends State<TodoAddPage> {
   }
 
   void _addNewTextField() {
-    setState(() {
-      // 새로운 TextEditingContrller을 추가
-      _controllers.add(TextEditingController());
-      _toggleSelections.add([false, false, true]);
-    });
+    if (_controllers.length < 20) { // Check if the current count is less than 20
+      setState(() {
+        _controllers.add(TextEditingController());
+        _toggleSelections.add([false, false, true]);
+      });
+    } else {
+      // Optionally, you can show an alert or a message to the user
+      // indicating that they cannot add more than 20 text fields.
+      // For example:
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("루틴 등록"),
+            content: Text("루틴은 최대 20까지 등록할 수 있습니다."),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void _removeTextField() {
@@ -97,7 +119,7 @@ class _TodoAddPage extends State<TodoAddPage> {
     pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        firstDate: DateTime.now().subtract(Duration(days: 30)),
         lastDate: DateTime(2101),
         builder: (context, child) {
           return Theme(
@@ -161,40 +183,6 @@ class _TodoAddPage extends State<TodoAddPage> {
     }
   }
 
-  // Future<void> _selectDate(BuildContext context) async {
-  //   // Date를 저장하는 함수
-  //   picked = await showDatePicker(
-  //       context: context,
-  //       initialDate: DateTime.now(),
-  //       firstDate: DateTime(2000),
-  //       lastDate: DateTime(2101),
-  //       builder: (context, child) {
-  //         return Theme(
-  //           data: Theme.of(context).copyWith(
-  //               disabledColor: Colors.black87,
-  //               colorScheme: const ColorScheme.light(
-  //                   primary: Color(0xffffecda),
-  //                   onPrimary: Colors.black87,
-  //                   onSurface: Colors.black
-  //                   // onSurface: Colors.black87
-  //                   ),
-  //               textButtonTheme: TextButtonThemeData(
-  //                   style: TextButton.styleFrom(
-  //                       backgroundColor: const Color(0xffffecda),
-  //                       foregroundColor: const Color(0xffd86a04)))),
-  //           child: child!,
-  //         );
-  //       });
-  //   if (picked != null && picked != DateTime.now()) {
-  //     setState(() {
-  //       _dateController.text =
-  //           picked.toString().substring(0, 10); // 선택된 날짜를 TextField에 반영
-  //       print(picked);
-  //       print(dates.contains(formatDate(picked!)));
-  //     });
-  //   }
-  // }
-
   List<Task> createTasks() {
     tasks = List.generate(_controllers.length, (index) {
       String description = _controllers[index].text;
@@ -242,7 +230,9 @@ class _TodoAddPage extends State<TodoAddPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Padding(
                 padding: const EdgeInsets.all(20),
                 child: GestureDetector(
@@ -278,6 +268,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                     children: [
                       Expanded(
                         child: TextField(
+                          // 최대 글자수 제한은 50개로.
+                          maxLength: 20,
                           controller: controller,
                           decoration: InputDecoration(
                               labelText: '루틴 ${index + 1}',
@@ -298,10 +290,12 @@ class _TodoAddPage extends State<TodoAddPage> {
                         onPressed: (int buttonIndex) {
                           setState(() {
                             if (!_toggleSelections[index][buttonIndex]) {
-                              for (int i = 0; i < _toggleSelections[index].length; i++) {
+                              for (int i = 0;
+                                  i < _toggleSelections[index].length;
+                                  i++) {
                                 _toggleSelections[index][i] = i == buttonIndex;
                                 _tokenTextStyles[i] = i == buttonIndex
-                                  ? TextStyle(color: Colors.white)
+                                    ? TextStyle(color: Colors.white)
                                     : TextStyle(color: Colors.black);
                               }
                             }
@@ -393,72 +387,74 @@ class _TodoAddPage extends State<TodoAddPage> {
                   MaterialPageRoute(builder: (context) => const MyPage()));
             }
           }),
-      floatingActionButton: isKeyboardVisible ? null : Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: TextButton(
-          child:
-              Text('등록', style: TextStyle(fontSize: 20, color: Colors.white)),
-          style: TextButton.styleFrom(
-            backgroundColor: Color(0xfffe9738),
-            minimumSize: Size(MediaQuery.of(context).size.width - 50, 30),
-          ),
-          onPressed: () async {
-            createRoutine();
-            if (tasks.length == 0) {
-              // 입력한 task가 없으면 생성 x
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const CalendarPage()));
-            } else if (tasks.length > 0 &&
-                dates.contains(formatDate(pickedDate!))) {
-              Todo? existing_todo = widget.todos!.firstWhere(
-                (todo) =>
-                    todo.date ==
-                    formatDate(
-                        pickedDate!), // Provide a default value (null) if no match is found
-              );
-              for (int i = 0; i < todo!.tasks.length; i++) {
-                FlutterLocalNotification.showNotification_time(
-                    'BeautyMinder',
-                    _controllers[i].text,
-                    FlutterLocalNotification.makeDate(
-                      pickedDate!.year,
-                      pickedDate!.month,
-                      pickedDate!.day,
-                      hour,
-                      minute,
-                    ),
-                    i);
-              }
-              await TodoService.taskAddInTodo(existing_todo, tasks);
-              print("_dateController.text : ${_dateController.text}");
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const CalendarPage()));
-            } else {
-              print("addtodo 실행");
-              print("todo : ${todo}");
-              print("_dateController.text : ${_dateController.text}");
+      floatingActionButton: isKeyboardVisible
+          ? null
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: TextButton(
+                child: Text('등록',
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                style: TextButton.styleFrom(
+                  backgroundColor: Color(0xfffe9738),
+                  minimumSize: Size(MediaQuery.of(context).size.width - 50, 30),
+                ),
+                onPressed: () async {
+                  createRoutine();
+                  if (tasks.length == 0 ) {
+                    // 입력한 task가 없으면 생성 x
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
+                  } else if (tasks.length > 0 &&
+                      dates.contains(formatDate(pickedDate!))) {
+                    Todo? existing_todo = widget.todos!.firstWhere(
+                      (todo) =>
+                          todo.date ==
+                          formatDate(
+                              pickedDate!), // Provide a default value (null) if no match is found
+                    );
+                    for (int i = 0; i < todo!.tasks.length; i++) {
+                      FlutterLocalNotification.showNotification_time(
+                          'BeautyMinder',
+                          _controllers[i].text,
+                          FlutterLocalNotification.makeDate(
+                            pickedDate!.year,
+                            pickedDate!.month,
+                            pickedDate!.day,
+                            hour,
+                            minute,
+                          ),
+                          i);
+                    }
+                    await TodoService.taskAddInTodo(existing_todo, tasks);
+                    print("_dateController.text : ${_dateController.text}");
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
+                  } else {
+                    print("addtodo 실행");
+                    print("todo : ${todo}");
+                    print("_dateController.text : ${_dateController.text}");
 
-              for (int i = 0; i < todo!.tasks.length; i++) {
-                FlutterLocalNotification.showNotification_time(
-                    'BeautyMinder',
-                    _controllers[i].text,
-                    FlutterLocalNotification.makeDate(
-                      pickedDate!.year,
-                      pickedDate!.month,
-                      pickedDate!.day,
-                      hour,
-                      minute,
-                    ),
-                    i);
-              }
+                    for (int i = 0; i < todo!.tasks.length; i++) {
+                      FlutterLocalNotification.showNotification_time(
+                          'BeautyMinder',
+                          _controllers[i].text,
+                          FlutterLocalNotification.makeDate(
+                            pickedDate!.year,
+                            pickedDate!.month,
+                            pickedDate!.day,
+                            hour,
+                            minute,
+                          ),
+                          i);
+                    }
 
-              await TodoService.addTodo(todo!);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const CalendarPage()));
-            }
-          },
-        ),
-      ),
+                    await TodoService.addTodo(todo!);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
+                  }
+                },
+              ),
+            ),
     );
   }
 }
