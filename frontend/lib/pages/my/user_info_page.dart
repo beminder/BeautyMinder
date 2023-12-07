@@ -203,10 +203,31 @@ class _UserInfoPageState extends State<UserInfoPage> {
     );
 
     if (newNickname != null) {
-
       if (_isNicknameValid(newNickname)) {
-        await APIService.updateUserInfo({'nickname': newNickname});
-        await _updateUser(nickname: newNickname);
+        if(user!.nickname == newNickname) {
+          await _showSnackBar(
+            title: '이전과 동일한 닉네임입니다.',
+            body: '변경하시려면 다른 닉네임을 입력해주세요.',
+          );
+        } else {
+          final result = await APIService.updateUserInfo({
+            'nickname': newNickname,
+          });
+
+          if (result.isSuccess) {
+            await _updateUser(nickname: newNickname);
+            await _showSnackBar(
+              title: '닉네임 변경에 성공하였습니다.',
+              body: '변경된 닉네임은 ${newNickname}입니다.',
+            );
+          } else {
+            await _showSnackBar(
+              title: '닉네임 변경에 실패하였습니다.',
+              body: '잠시 후 다시 시도해주세요.',
+            );
+          }
+        }
+
       } else {
         await _showSnackBar(
           title: '잘못된 형식입니다.',
@@ -241,6 +262,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
           if (result.isSuccess) {
             await _updateUser(phoneNumber: newphoneNumber);
+            await _showSnackBar(
+              title: '전화번 변경에 성공하였습니다.',
+              body: '변경된 전화번호는 ${newphoneNumber}입니다.',
+            );
           } else if (result.error == "Failed to update user profile") {
             print("result.error: ${result.error}");
             await _showSnackBar(
