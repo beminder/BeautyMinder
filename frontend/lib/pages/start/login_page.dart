@@ -3,6 +3,7 @@ import 'package:beautyminder/pages/start/register_page.dart';
 import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
@@ -246,13 +247,46 @@ class _LoginPageState extends State<LoginPage> {
             final model = LoginRequestModel(email: email, password: password);
             final result = await APIService.login(model);
 
+            // if (result.value == true) {
+            //   final userProfileResult = await APIService.getUserProfile();
+            //   print("Here is LoginPage : ${userProfileResult.value}");
+            //   Navigator.of(context).push(MaterialPageRoute(
+            //       builder: (context) =>
+            //           HomePage(user: userProfileResult.value)));
+            // }
             if (result.value == true) {
               final userProfileResult = await APIService.getUserProfile();
               print("Here is LoginPage : ${userProfileResult.value}");
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      HomePage(user: userProfileResult.value)));
-            } else {
+
+              // Instead of using Navigator.of(context).push directly,
+              // use Navigator.pushReplacement to replace the login page in the stack
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FutureBuilder(
+                    // Use FutureBuilder to show a loading spinner until the data is loaded
+                    future: Future.delayed(Duration(seconds: 2), () => userProfileResult.value),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Scaffold(
+                          body: Center(
+                            child: SpinKitThreeInOut(
+                              color: Color(0xffd86a04),
+                              size: 50.0,
+                              duration: Duration(seconds: 2),
+                            ),
+                          ),
+                        );
+                      } else {
+                        // Once data is loaded, navigate to the home page
+                        return HomePage(user: userProfileResult.value);
+                      }
+                    },
+                  ),
+                ),
+              );
+            }
+            else {
               // 에러 토스트 메시지
               Fluttertoast.showToast(
                 msg: "로그인에 실패하였습니다. 이메일과 비밀번호를 다시 확인해주세요.",
