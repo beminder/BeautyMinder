@@ -40,12 +40,6 @@ class _TodoAddPage extends State<TodoAddPage> {
   int minute = 59;
   int second = 0;
 
-  List<TextStyle> _tokenTextStyles = [
-    TextStyle(color: Colors.black), // Style for '저녁'
-    TextStyle(color: Colors.black), // Style for '아침'
-    TextStyle(color: Colors.black), // Style for '기타'
-  ];
-
   @override
   void initState() {
     // 모든 controller을 dispose
@@ -290,13 +284,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                         onPressed: (int buttonIndex) {
                           setState(() {
                             if (!_toggleSelections[index][buttonIndex]) {
-                              for (int i = 0;
-                                  i < _toggleSelections[index].length;
-                                  i++) {
+                              for (int i = 0; i < _toggleSelections[index].length; i++) {
                                 _toggleSelections[index][i] = i == buttonIndex;
-                                _tokenTextStyles[i] = i == buttonIndex
-                                    ? TextStyle(color: Colors.white)
-                                    : TextStyle(color: Colors.black);
                               }
                             }
                           });
@@ -312,21 +301,21 @@ class _TodoAddPage extends State<TodoAddPage> {
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '저녁',
-                              style: _tokenTextStyles[0],
+                              style: TextStyle(color: _toggleSelections[index][0] ? Colors.white : Colors.black,),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '아침',
-                              style: _tokenTextStyles[1],
+                              style: TextStyle(color: _toggleSelections[index][1] ? Colors.white : Colors.black,),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '기타',
-                              style: _tokenTextStyles[2],
+                              style: TextStyle(color: _toggleSelections[index][2] ? Colors.white : Colors.black,),
                             ),
                           ),
                         ],
