@@ -187,7 +187,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
       final image = pickedFile.path;
       final newImageUrl = await APIService.editProfileImgInfo(image);
 
-      await _updateUser(imageUrl: newImageUrl);
+      if(newImageUrl != null) {
+        await _updateUser(imageUrl: newImageUrl);
+      } else{
+        await _showSnackBar(
+          title: '이미지를 변경하실 수 없습니다.',
+          body: '잠시 후 다시 시도해주세요.',
+        );
+      }
     }
   }
 
