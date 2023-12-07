@@ -10,7 +10,7 @@ class OCRService {
 
   // 이미지 선택 및 업로드 함수
   static Future<dynamic> selectAndUploadImage(PlatformFile file) async {
-    final url = Uri.http(Config.apiURL, Config.ocrAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.ocrAPI).toString();
 
     final MediaType contentType = MediaType.parse(
         lookupMimeType(file.name) ?? 'application/octet-stream');

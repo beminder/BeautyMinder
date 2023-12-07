@@ -15,7 +15,7 @@ class BaumannService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.baumannTestAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.baumannTestAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -41,7 +41,7 @@ class BaumannService {
       'Cookie': 'XRT=$refreshToken',
     };
 
-    final url = Uri.http(Config.apiURL, Config.baumannSurveyAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.baumannSurveyAPI).toString();
 
     try {
       final response = await DioClient.sendRequest(
@@ -69,7 +69,7 @@ class BaumannService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.baumannHistoryAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.baumannHistoryAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -106,7 +106,7 @@ class BaumannService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.baumannDeleteAPI+testId).toString();
+    final url = Uri.https(Config.apiURL, Config.baumannDeleteAPI+testId).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

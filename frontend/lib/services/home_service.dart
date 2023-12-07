@@ -12,7 +12,7 @@ class HomeService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.getUserInfo + userId).toString();
+    final url = Uri.https(Config.apiURL, Config.getUserInfo + userId).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

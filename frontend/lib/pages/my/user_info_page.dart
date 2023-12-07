@@ -241,10 +241,16 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
           if (result.isSuccess) {
             await _updateUser(phoneNumber: newphoneNumber);
-          } else {
+          } else if (result.error == "Failed to update user profile") {
+            print("result.error: ${result.error}");
             await _showSnackBar(
               title: '이미 사용 중인 전화번호입니다.',
               body: '전화번호를 다시 확인해주세요.',
+            );
+          } else {
+            await _showSnackBar(
+              title: '전화번호 변경에 실패하였습니다.',
+              body: '잠시 후 다시 시도해주세요.',
             );
           }
         }

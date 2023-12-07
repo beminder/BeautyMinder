@@ -12,7 +12,7 @@ class EmailVerifyService {
       'email': '$email',
     };
 
-    final url = Uri.http(Config.apiURL, Config.emailVerifyRequestAPI, parameters).toString();
+    final url = Uri.https(Config.apiURL, Config.emailVerifyRequestAPI, parameters).toString();
 
     try {
       final response = await DioClient.sendRequest('POST', url);
@@ -42,7 +42,7 @@ class EmailVerifyService {
       'token': '$token',
     };
 
-    final url = Uri.http(Config.apiURL, Config.emailTokenRequestAPI, parameters).toString();
+    final url = Uri.https(Config.apiURL, Config.emailTokenRequestAPI, parameters).toString();
 
     try {
       final response = await DioClient.sendRequest('POST', url);

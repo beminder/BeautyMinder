@@ -20,7 +20,7 @@ class TodoService {
       'Cookie': 'XRT=$refreshToken',
     };
 
-    final url = Uri.http(Config.apiURL, Config.todoAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.todoAPI).toString();
     try {
       final response =
           await DioClient.sendRequest('GET', url, headers: headers);
@@ -58,7 +58,7 @@ class TodoService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.todoAddAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.todoAddAPI).toString();
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
@@ -82,7 +82,7 @@ class TodoService {
 
     String now = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-    final url = Uri.http(Config.apiURL, Config.Todo + now).toString();
+    final url = Uri.https(Config.apiURL, Config.Todo + now).toString();
     print(url);
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -132,7 +132,7 @@ class TodoService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(
+    final url = Uri.https(
       Config.apiURL,
       Config.todoUpdateAPI + todo!.id!,
     ).toString();
@@ -162,7 +162,7 @@ class TodoService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(
+    final url = Uri.https(
       Config.apiURL,
       Config.todoUpdateAPI + todo!.id!,
     ).toString();
@@ -200,7 +200,7 @@ class TodoService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(
+    final url = Uri.https(
       Config.apiURL,
       Config.todoUpdateAPI + todo!.id!,
     ).toString();

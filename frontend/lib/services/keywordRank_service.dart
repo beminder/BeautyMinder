@@ -14,7 +14,7 @@ class KeywordRankService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.keywordRankAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.keywordRankAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -48,7 +48,7 @@ class KeywordRankService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.productRankAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.productRankAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -84,7 +84,7 @@ class KeywordRankService {
     final refreshToken = await SharedService.getRefreshToken();
 
     final url =
-    Uri.http(Config.apiURL, Config.getSearchHistoryAPI).toString();
+    Uri.https(Config.apiURL, Config.getSearchHistoryAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

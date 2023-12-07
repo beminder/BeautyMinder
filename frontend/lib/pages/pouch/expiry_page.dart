@@ -299,8 +299,8 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
                     ) : Text(
                         'D-${difference.inDays+1}',
                         style: (difference.inDays+1<=100) ?
-                        TextStyle(fontSize: 25, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
-                            : TextStyle(fontSize: 25, color: Colors.black54, fontWeight: FontWeight.bold)
+                        TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
+                            : TextStyle(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.bold)
                     ),
                   ],
                 ),

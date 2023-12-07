@@ -13,7 +13,7 @@ class CosmeticSearchService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.RecommendAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.RecommendAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -59,7 +59,7 @@ class CosmeticSearchService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.RecommendAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.RecommendAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

@@ -15,7 +15,7 @@ class ReviewService {
   // 리뷰 추가 함수
   static Future<ReviewResponse> addReview(ReviewRequest reviewRequest, List<PlatformFile> imageFiles) async {
     final accessToken = await SharedService.getAccessToken();
-    final url = Uri.http(Config.apiURL, Config.AllReviewAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.AllReviewAPI).toString();
 
     // 이미지 파일 처리
     List<MultipartFile> multipartImageList = imageFiles.map((file) {
@@ -57,7 +57,7 @@ class ReviewService {
   // 리뷰 조회 함수
   static Future<List<ReviewResponse>> getReviewsForCosmetic(String cosmeticId) async {
     final accessToken = await SharedService.getAccessToken();
-    final url = Uri.http(Config.apiURL, Config.getReviewAPI + cosmeticId).toString();
+    final url = Uri.https(Config.apiURL, Config.getReviewAPI + cosmeticId).toString();
 
     var response = await DioClient.sendRequest(
         'GET',
@@ -75,7 +75,7 @@ class ReviewService {
   // 리뷰 삭제 함수
   static Future<void> deleteReview(String reviewId) async {
     final accessToken = await SharedService.getAccessToken();
-    final url = Uri.http(Config.apiURL, Config.AllReviewAPI + reviewId).toString();
+    final url = Uri.https(Config.apiURL, Config.AllReviewAPI + reviewId).toString();
 
     var response = await DioClient.sendRequest(
         'DELETE',
@@ -91,7 +91,7 @@ class ReviewService {
   // 리뷰 수정 함수
   static Future<ReviewResponse> updateReview(String reviewId, ReviewRequest reviewRequest, List<PlatformFile> imageFiles) async {
     final accessToken = await SharedService.getAccessToken();
-    final url = Uri.http(Config.apiURL, Config.AllReviewAPI + '/' + reviewId).toString();
+    final url = Uri.https(Config.apiURL, Config.AllReviewAPI + '/' + reviewId).toString();
 
     // 이미지 및 리뷰 데이터 처리
     List<MultipartFile> multipartImageList = imageFiles.map((file) {

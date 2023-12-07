@@ -8,7 +8,7 @@ class ExpiryService {
 
   // Create Expiry Item
   static Future<CosmeticExpiry> createCosmeticExpiry(CosmeticExpiry expiry) async {
-    final url = Uri.http(Config.apiURL, Config.createCosmeticExpiryAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.createCosmeticExpiryAPI).toString();
     final accessToken = await SharedService.getAccessToken();
 
     try {
@@ -27,7 +27,7 @@ class ExpiryService {
 
   // Get all Expiry Items
   static Future<List<CosmeticExpiry>> getAllExpiries() async {
-    final url = Uri.http(Config.apiURL, Config.getAllExpiriesAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.getAllExpiriesAPI).toString();
     final accessToken = await SharedService.getAccessToken();
 
     try {
@@ -45,7 +45,7 @@ class ExpiryService {
 
   // Get an expiry item by and ExpiryId
   static Future<CosmeticExpiry> getExpiry(String expiryId) async {
-    final url = Uri.http(Config.apiURL, Config.getExpiryByUserIdandExpiryIdAPI + expiryId).toString();
+    final url = Uri.https(Config.apiURL, Config.getExpiryByUserIdandExpiryIdAPI + expiryId).toString();
     final accessToken = await SharedService.getAccessToken();
 
     try {
@@ -62,7 +62,7 @@ class ExpiryService {
 
   // Update an expiry item
   static Future<CosmeticExpiry> updateExpiry(String expiryId, CosmeticExpiry updatedExpiry) async {
-    final url = Uri.http(Config.apiURL, Config.getExpiryByUserIdandExpiryIdAPI + expiryId).toString();
+    final url = Uri.https(Config.apiURL, Config.getExpiryByUserIdandExpiryIdAPI + expiryId).toString();
     final accessToken = await SharedService.getAccessToken();
 
     try {
@@ -79,7 +79,7 @@ class ExpiryService {
 
   // Delete an expiry item by ExpiryId
   static Future<void> deleteExpiry(String expiryId) async {
-    final url = Uri.http(Config.apiURL, Config.getExpiryByUserIdandExpiryIdAPI + expiryId).toString();
+    final url = Uri.https(Config.apiURL, Config.getExpiryByUserIdandExpiryIdAPI + expiryId).toString();
     final accessToken = await SharedService.getAccessToken();
 
     try {
