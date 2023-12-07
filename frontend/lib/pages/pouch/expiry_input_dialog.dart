@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -39,7 +40,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: (isExpiryDate ? expiryDate : openedDate) ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(Duration(days: 365)),
       lastDate: DateTime(2101),
       locale: myLocale,
       builder: (BuildContext context, Widget? child) {
