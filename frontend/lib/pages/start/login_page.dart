@@ -31,6 +31,8 @@ class _LoginPageState extends State<LoginPage> {
   Color emailIconColor = Colors.grey.withOpacity(0.7);
   Color passwordIconColor = Colors.grey.withOpacity(0.7);
 
+  bool rememberEmail = false;
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +75,9 @@ class _LoginPageState extends State<LoginPage> {
 
           SizedBox(height: 30), // 여백 추가
           _buildPasswordField(), // 비밀번호 필드
+
+          SizedBox(height: 30),
+          _checkboxRememberEmail(),
 
           SizedBox(height: 80), // 여백 추가
           _buildLoginButton(), // 로그인 버튼
@@ -215,6 +220,22 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _checkboxRememberEmail() {
+    return Row(
+      children: [
+        Checkbox(
+          value: rememberEmail,
+          onChanged: (value) {
+            setState(() {
+              rememberEmail = value!;
+            });
+          },
+        ),
+        Text("이메일 기억하기"),
+      ],
+    );
+  }
+
   // 로그인 버튼
   Widget _buildLoginButton() {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -247,13 +268,6 @@ class _LoginPageState extends State<LoginPage> {
             final model = LoginRequestModel(email: email, password: password);
             final result = await APIService.login(model);
 
-            // if (result.value == true) {
-            //   final userProfileResult = await APIService.getUserProfile();
-            //   print("Here is LoginPage : ${userProfileResult.value}");
-            //   Navigator.of(context).push(MaterialPageRoute(
-            //       builder: (context) =>
-            //           HomePage(user: userProfileResult.value)));
-            // }
             if (result.value == true) {
               final userProfileResult = await APIService.getUserProfile();
               print("Here is LoginPage : ${userProfileResult.value}");

@@ -45,24 +45,6 @@ class BaumannHistoryPage extends StatelessWidget {
           ),
           Expanded(
             child: _baumannHistoryListView(),
-            // child: FutureBuilder<void>(
-            //   future: _deleteAndNavigate(context, resultData),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       // Show loading indicator while the deletion is in progress
-            //       return Center(
-            //         child: SpinKitThreeInOut(
-            //           color: Color(0xffd86a04),
-            //           size: 50.0,
-            //           duration: Duration(seconds: 2),
-            //         ),
-            //       );
-            //     } else {
-            //       // Show the baumann history list once the deletion is done
-            //       return _baumannHistoryListView();
-            //     }
-            //   },
-            // ),
           ),
         ],
       ),
