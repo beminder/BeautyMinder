@@ -208,7 +208,7 @@ class _skinAlbumPage extends State<skinAlbumPage> {
             );
           }else if(snapshot.data?.length == 0){
             return Center(
-              child: Text("기록된 사진이 없습니다. \n사진을 기록해주요.", style: TextStyle(fontSize: 30, color: Colors.grey),textAlign: TextAlign.center),
+              child: Text("기록된 사진이 없습니다.\n사진을 촬영해주세요.", style: TextStyle(fontSize: 18, color: Colors.black54),textAlign: TextAlign.center),
             );
           }
 
