@@ -192,7 +192,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        '브랜드: ${widget.searchResults.brand}',
+        widget.searchResults.brand == null
+        ? '브랜드: 정보 없음'
+        : '브랜드: ${widget.searchResults.brand}',
         style: TextStyle(fontSize: 18),
       ),
     );
@@ -202,7 +204,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        '카테고리: ${widget.searchResults.category}',
+        widget.searchResults.category == null
+            ? '카테고리: 정보 없음'
+            : '카테고리: ${widget.searchResults.category}',
         style: TextStyle(fontSize: 18),
       ),
     );
@@ -212,7 +216,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        '키워드: ${widget.searchResults.keywords}',
+        widget.searchResults.keywords == null
+            ? '키워드: 정보 없음'
+            : '키워드: ${widget.searchResults.keywords}',
         style: TextStyle(fontSize: 18),
       ),
     );
