@@ -45,9 +45,6 @@ class BaumannHistoryPage extends StatelessWidget {
           Expanded(
             child: _baumannHistoryListView(),
           ),
-          SizedBox(
-            height: 100,
-          ),
         ],
       ),
       bottomNavigationBar: Padding(

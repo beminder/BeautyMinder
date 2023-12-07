@@ -48,7 +48,6 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     try {
-
       final loadedAccessToken = await SharedService.getAccessToken();
       final loadedRefreshToken = await SharedService.getRefreshToken();
 
