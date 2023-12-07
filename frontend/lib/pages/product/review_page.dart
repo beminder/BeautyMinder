@@ -103,7 +103,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
       }
       _showReviewDialog(userId: user.id);
     } else {
-      _showSnackBar('리뷰 추가는 로그인이 필수입니다!');
+      _showSnackBar('리뷰 추가는 로그인이 필수입니다.');
     }
   }
 
@@ -183,7 +183,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                         await pickImage();
                         setDialogState(() {}); // Update StatefulBuilder state
                       },
-                      child: Text('사진 추가'),
+                      child: Text(_imageFiles != null && _imageFiles!.isNotEmpty ? '사진 변경' : '사진 추가'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Color(0xfff3bb88),
@@ -276,23 +276,26 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
             child: Column(
                 children: [
             ListTile(
-            leading: Icon(Icons.person), // 사용자 아이콘을 표시합니다.
-            title: Text(review.user.email), // 사용자 이름을 표시합니다.
-            subtitle: Row(
-              children: [
-                ...List.generate(5, (starIndex) {
-                  return Icon(
-                    starIndex < review.rating ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
-                    size: 20,
-                  );
-                }),
-                SizedBox(width: 8),
-                Text(
-                  '${review.rating} Stars',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
+            // leading: Padding(padding:EdgeInsets.symmetric(horizontal: 10),child:Icon(Icons.person)), // 사용자 아이콘을 표시합니다.
+            title: Padding(padding:EdgeInsets.symmetric(horizontal: 10),child:Text(review.user.email)), // 사용자 이름을 표시합니다.
+            subtitle: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
+                children: [
+                  ...List.generate(5, (starIndex) {
+                    return Icon(
+                      starIndex < review.rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 20,
+                    );
+                  }),
+                  SizedBox(width: 8),
+                  Text(
+                    '${review.rating} Stars',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
           ),
               Padding(
@@ -300,9 +303,12 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      review.content,
-                      style: TextStyle(fontSize: 16),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        review.content,
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                     SizedBox(height: 10),
                     Wrap(
@@ -326,7 +332,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                     SizedBox(height: 10),
                     if (review.nlpAnalysis.isNotEmpty)
                       Padding(
-                        padding: EdgeInsets.all(8.0), // 여기서 원하는 패딩 값을 설정하세요.
+                        padding: EdgeInsets.all(20.0), // 여기서 원하는 패딩 값을 설정하세요.
                         child: Text(
                           '바우만 분석: $baumannString',
                           style: TextStyle(fontSize: 12),
