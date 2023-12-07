@@ -73,7 +73,8 @@ class _CalendarPageState extends State<CalendarPage> {
               ],
             ),
             floatingActionButton: FloatingActionButton(
-              //foregroundColor: Color(0xffffecda),
+              //foregroundColor: Color(0xffffecda),9
+
               backgroundColor: Color(0xffd86a04),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -220,6 +221,16 @@ class _todoListWidget extends State<todoListWidget> {
       firstDay: DateTime.utc(2010, 10, 16),
       lastDay: DateTime.utc(2030, 3, 14),
       focusedDay: _focusedDay,
+      calendarStyle: CalendarStyle(
+        selectedDecoration: BoxDecoration(
+          color: Color(0xffd86a04),
+          shape: BoxShape.circle,
+        ),
+        todayDecoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+      ),
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
       },
