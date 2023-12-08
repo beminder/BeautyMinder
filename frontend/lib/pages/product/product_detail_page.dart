@@ -1,15 +1,16 @@
+import 'dart:async';
+
 import 'package:beautyminder/dto/cosmetic_model.dart';
 import 'package:beautyminder/pages/product/review_page.dart';
 import 'package:beautyminder/services/gptReview_service.dart';
 import 'package:beautyminder/services/api_service.dart';
+import 'package:beautyminder/services/search_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../dto/gptReview_model.dart';
-import '../../services/api_service.dart';
 import '../../services/favorites_service.dart';
 import '../../widget/commonAppBar.dart';
 
@@ -27,16 +28,19 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
 
   late Future<Result<GPTReviewInfo>> _gptReviewInfo;
+
   List favorites = [];
+  int favCount = 0;
   bool showPositiveReview = true;
   bool isFavorite = false;
 
   bool isApiCallProcess = false;
   bool isLoading = true;
 
+  final _likesCountController = StreamController<int>();
+
   @override
   void initState() {
-    print("start page : $isFavorite");
     super.initState();
     _gptReviewInfo = GPTReviewService.getGPTReviews(widget.searchResults.id);
     _getAllNeeds(widget.searchResults.id);
@@ -55,10 +59,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     try {
       //즐겨찾기 제품 호출
       final loadedFavoriteList = await FavoritesService.getFavorites();
+      print("Hihihihi : ${widget.searchResults.id}");
+      final loadedCosmeticInfo = await SearchService.searchCosmeticById(widget.searchResults.id);
 
       setState(() {
         favorites = loadedFavoriteList.value ?? [];
         isFavorite = favorites.any((favorite) => favorite['id'] == widget.searchResults.id);
+        favCount = loadedCosmeticInfo.first.favCount ?? 0;
+        _likesCountController.add(favCount);
       });
 
     } catch (e) {
@@ -72,16 +80,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   @override
+  void dispose() {
+    // StreamController를 닫아줌
+    _likesCountController.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
       body: SingleChildScrollView(
-        child: _productDetailPageUI(),
+        child: _productDetailPageUI(context),
       ),
     );
   }
 
-  Widget _productDetailPageUI() {
+  Widget _productDetailPageUI(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -96,7 +111,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _displayBrand(),
-              _likesBtn(),
+              _likesBtn(context),
             ],
           ),
           _displayCategory(),
@@ -124,69 +139,158 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Widget _displayImages() {
-    return Container(
-      height: 200,
-      child: CarouselSlider(
-        options: CarouselOptions(
-          height: 500,
-          enableInfiniteScroll: false, //무한스크롤 비활성
-          viewportFraction: 1.0, //이미지 전체 화면 사용
-          aspectRatio: 16 / 9, //가로 세로 비율 유지
-        ),
-        items: widget.searchResults.images.map((image) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.network(
-              image,
-              width: double.infinity,
-              fit: BoxFit.contain,
+    return Column(
+      children: [
+        Container(
+          height: 200,
+          child: CarouselSlider(
+            options: CarouselOptions(
+              height: 500,
+              enableInfiniteScroll: false,
+              viewportFraction: 1.0,
+              aspectRatio: 16 / 9,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentImageIndex = index;
+                });
+              },
             ),
-          );
-        }).toList(),
+            items: widget.searchResults.images.map((image) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.network(
+                  image,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        _buildImagePaginationDots(),
+      ],
+    );
+  }
+
+  int _currentImageIndex = 0;
+
+  Widget _buildImagePaginationDots() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        widget.searchResults.images.length,
+            (index) => Container(
+          width: 8,
+          height: 8,
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _currentImageIndex == index ? Colors.orange : Colors.grey,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _likesBtn() {
-    return IconButton(
-      onPressed: () async {
-        setState(() {
-          isFavorite = !isFavorite;
-        });
-        try {
-          String cosmeticId = widget.searchResults.id;
-
-          if (isFavorite) {
-            String result = await FavoritesService.uploadFavorites(cosmeticId);
-
-            if (result == "success upload user favorites") {
-              print("Favorites uploaded successfully! : $isFavorite");
-            } else {
-              print("Failed to upload favorites");
-            }
-          }
-          else {
-            String result = await FavoritesService.deleteFavorites(cosmeticId);
-
-            if (result == "success deleted user favorites") {
-              print("Favorites deleted successfully! : $isFavorite");
-            } else {
-              print("Failed to delete favorites");
-            }
-          }
-          if (widget.updateFavorites != null) {
-            widget.updateFavorites!(isFavorite);
-          }
-        } catch (e) {
-          print("An error occurred while handling favorites: $e");
+  Widget _likesCountText() {
+    return StreamBuilder<int>(
+      stream: _likesCountController.stream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Text(
+            ' ${snapshot.data}', // Display the count
+            style: TextStyle(fontSize: 16),
+          );
+        } else {
+          return Text(
+            ' 0', // Default value or loading state
+            style: TextStyle(fontSize: 16),
+          );
         }
       },
-      icon: Icon(
-        isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: isFavorite ? Colors.red : null,
-      ),
     );
   }
+
+
+  Widget _likesBtn(BuildContext context) {
+    return Row(
+      children: [
+        _likesCountText(),
+        IconButton(
+        onPressed: () async {
+          setState(() {
+            isFavorite = !isFavorite;
+          });
+          try {
+            String cosmeticId = widget.searchResults.id;
+
+            if (isFavorite) {
+              String result = await FavoritesService.uploadFavorites(cosmeticId);
+
+              if (result == "success upload user favorites") {
+                print("Favorites uploaded successfully! : $isFavorite");
+                final updatedFavCountWhenAdd = await SearchService.searchCosmeticById(widget.searchResults.id);
+                setState(() {
+                  int newFavCount = updatedFavCountWhenAdd.first.favCount ?? favCount;
+                  favCount = newFavCount;
+                  _likesCountController.add(favCount);  // Stream에 새로운 favCount 전송
+                });
+              } else {
+                print("Failed to upload favorites");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('즐겨찾기 등록에 실패하였습니다.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                setState(() {
+                  isFavorite = !isFavorite;
+                });
+              }
+            }
+            else {
+              String result = await FavoritesService.deleteFavorites(cosmeticId);
+
+              if (result == "success deleted user favorites") {
+                print("Favorites deleted successfully! : $isFavorite");
+                final updatedFavCountWhenDel = await SearchService.searchCosmeticById(widget.searchResults.id);
+                setState(() {
+                  int newFavCount = updatedFavCountWhenDel.first.favCount ?? favCount;
+                  favCount = newFavCount;
+                  _likesCountController.add(favCount);
+                  _likesCountController.add(favCount);  // Stream에 새로운 favCount 전송
+                });
+              } else {
+                print("Failed to delete favorites");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('즐겨찾기 제거에 실패하였습니다.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+            }
+
+            if (widget.updateFavorites != null) {
+              widget.updateFavorites!(isFavorite);
+            }
+          } catch (e) {
+            print("An error occurred while handling favorites: $e");
+          }
+        },
+        icon: Icon(
+        isFavorite ? Icons.favorite : Icons.favorite_border,
+        color: isFavorite ? Colors.red : null,
+        ),
+        ),
+      ],
+    );
+  }
+
+
 
   Widget _displayBrand() {
     return Padding(

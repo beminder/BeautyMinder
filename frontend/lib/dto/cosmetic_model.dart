@@ -9,6 +9,7 @@ class Cosmetic {
   final DateTime createdAt;
   final DateTime? purchasedDate;
   final String category;
+  late final int? favCount;
   double averageRating;
   int reviewCount;
   int totalRating;
@@ -28,6 +29,7 @@ class Cosmetic {
     required this.reviewCount,
     required this.totalRating,
     required this.keywords,
+    this.favCount,
   });
 
   factory Cosmetic.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class Cosmetic {
       reviewCount: json['reviewCount'] as int? ?? 0,
       totalRating: json['totalRating'] as int? ?? 0,
       keywords: List<String>.from(json['keywords'] ?? []),
+      favCount: json['favCount'] ?? 0,
     );
   }
 
@@ -69,6 +72,7 @@ class Cosmetic {
       'reviewCount': reviewCount,
       'totalRating': totalRating,
       'keywords': keywords,
+      'favCount': favCount,
     };
   }
 
@@ -82,6 +86,6 @@ class Cosmetic {
 
   @override
   String toString() {
-    return 'CosmeticModel{id: $id, name: $name, brand: $brand, images: ${images?.join(', ')}, category: $category, keywords: ${keywords?.join(', ')}}';
+    return 'CosmeticModel{id: $id, name: $name, brand: $brand, images: ${images?.join(', ')}, category: $category, keywords: ${keywords?.join(', ')}, favCount: ${favCount}';
   }
 }
