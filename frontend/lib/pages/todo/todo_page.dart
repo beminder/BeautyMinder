@@ -218,6 +218,12 @@ class _todoListWidget extends State<todoListWidget> {
     }
 
     return TableCalendar(
+      onHeaderTapped: (date) {
+        setState(() {
+          _selectedDay = DateTime.now();  // 오늘 날짜로 선택된 날짜 변경
+          _focusedDay = DateTime.now();   // 오늘 날짜로 포커스된 날짜 변경
+        });
+      },
       firstDay: DateTime.utc(2010, 10, 16),
       lastDay: DateTime.utc(2030, 3, 14),
       focusedDay: _focusedDay,

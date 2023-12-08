@@ -123,7 +123,7 @@ class FlutterLocalNotification {
         tz.TZDateTime(seoul, year, month, day, hour, min, 00);
     print("now : ${now.toString()}");
     if (when.isBefore(now)) {
-      throw "지난 시간은 설정할 수 없습니다.";
+      return when;
     } else {
       print("오늘로 설정");
       print(when.toString());
