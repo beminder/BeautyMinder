@@ -14,7 +14,7 @@ class ChatScreen extends StatelessWidget {
           padding: EdgeInsets.all(defaultPadding),
           child: Column(
             children: [
-              Header(),
+              Header(headTitle: "Chat",),
               SizedBox(height: defaultPadding),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

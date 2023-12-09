@@ -18,6 +18,7 @@ class MainScreen extends StatelessWidget {
   };
 
   String _selectedScreen = 'dashboard'; // Default screen
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
