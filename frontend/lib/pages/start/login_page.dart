@@ -1,6 +1,5 @@
 import 'package:beautyminder/pages/home/home_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
-import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,6 +9,7 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../dto/login_request_model.dart';
 import '../../services/api_service.dart';
+import '../../widget/appBar.dart';
 import 'find_password_byEmail.dart';
 
 class LoginPage extends StatefulWidget {

@@ -14,8 +14,8 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../widget/commonAppBar.dart';
-import '../../widget/commonBottomNavigationBar.dart';
+import '../../widget/appBar.dart';
+import '../../widget/bottomNavigationBar.dart';
 import '../my/my_page.dart';
 import '../pouch/expiry_page.dart';
 import '../recommend/recommend_bloc_screen.dart';

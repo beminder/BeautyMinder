@@ -12,7 +12,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dto/gptReview_model.dart';
 import '../../services/favorites_service.dart';
-import '../../widget/commonAppBar.dart';
+import '../../widget/appBar.dart';
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({Key? key, required this.searchResults, this.updateFavorites})

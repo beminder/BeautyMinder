@@ -8,9 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../services/api_service.dart';
-import '../../widget/commonAppBar.dart';
-import '../../widget/commonBottomNavigationBar.dart';
-import '../../widget/homepageAppBar.dart';
+import '../../widget/appBar.dart';
+import '../../widget/bottomNavigationBar.dart';
 import '../baumann/baumann_test_start_page.dart';
 import '../home/home_page.dart';
 import '../my/my_page.dart';

@@ -18,10 +18,11 @@
 // import '../../services/search_service.dart';
 //
 // import '../../services/todo_service.dart';
-// import '../../widget/commonBottomNavigationBar.dart';
+// import '../../widget/bottomNavigationBar.dart';
 // import '../baumann/baumann_test_start_page.dart';
 // import '../chat/chat_page.dart';
 // import '../my/my_page.dart';
+// import '../my/user_info_page.dart';
 // import '../pouch/expiry_page.dart';
 // import '../recommend/recommend_bloc_screen.dart';
 // import '../search/search_page.dart';
@@ -44,6 +45,7 @@
 //   List<CosmeticExpiry> expiries = [];
 //   List recommends = [];
 //   Todo? todayTodos;
+//   List<BaumannResult> baumannresultList = [];
 //
 //   @override
 //   void initState() {
@@ -62,6 +64,7 @@
 //       isLoading = true;
 //       isApiCallProcess = true;
 //     });
+//
 //     try {
 //       //유통기한
 //       List<CosmeticExpiry> loadedExpiries = await ExpiryService.getAllExpiries();
@@ -79,36 +82,37 @@
 //           print("Error loading image for ${expiry.productName}: $e");
 //         }
 //       }
+//
 //       //추천제품
 //       final loadedRecommends = await CosmeticSearchService.getAllCosmetics();
 //
 //       //루틴
 //       String todayFormatted = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//       final loadedTodos = await TodoService.getTodoOf(todayFormatted);
+//       final loadedTodos = await TodoService.getTodoOf();
+//
+//       //바우만
+//       final loadedBaumannResult = await BaumannService.getBaumannHistory();
 //
 //       setState(() {
-//         expiries = loadedExpiries;
-//         recommends = loadedRecommends.value!;
-//         todayTodos = loadedTodos.value!;
-//         print("hohoho12 : api: ${isApiCallProcess}, loading : ${isLoading}");
+//         expiries = loadedExpiries ?? [];
+//         recommends = loadedRecommends.value ?? [];
+//         todayTodos = loadedTodos.value ?? null;
+//         baumannresultList = loadedBaumannResult.value ?? [];
 //       });
-//       print("hohoho13 : api: ${isApiCallProcess}, loading : ${isLoading}");
 //
 //     } catch (e) {
 //       print('An error occurred while loading expiries: $e');
 //     } finally {
-//       print("hohoho14 : api: ${isApiCallProcess}, loading : ${isLoading}");
 //       setState(() {
 //         isLoading = false;
 //         isApiCallProcess = false;
 //       });
-//       print("hohoho15 : api: ${isApiCallProcess}, loading : ${isLoading}");
 //     }
 //   }
 //
 //   @override
 //   Widget build(BuildContext context) {
-//
+//     print("hihi this is homePage : ${widget.user?.baumann}");
 //     return Scaffold(
 //       appBar: HomepageAppBar(actions: <Widget>[
 //         IconButton(
@@ -163,8 +167,16 @@
 //           },
 //         ),
 //       ]),
-//       body: SingleChildScrollView(
-//         child: _homePageUI(),
+//       body: Center(
+//         child: isApiCallProcess || isLoading
+//             ? SpinKitThreeInOut(
+//           color: Color(0xffd86a04),
+//           size: 50.0,
+//           duration: Duration(seconds: 2),
+//         )
+//             : SingleChildScrollView(
+//           child: _homePageUI(),
+//         ),
 //       ),
 //       bottomNavigationBar: _underNavigation(),
 //     );
@@ -213,7 +225,7 @@
 //     final screenWidth = MediaQuery.of(context).size.width;
 //
 //     return ElevatedButton(
-//       onPressed: () async {
+//       onPressed: () {
 //         if (isApiCallProcess) {
 //           return;
 //         }
@@ -288,7 +300,7 @@
 //       scrollDirection: Axis.horizontal,
 //       child: Row(
 //         mainAxisAlignment: MainAxisAlignment.center,
-//         children: expiries.take(3).map((expiry) {
+//         children: expiries.take(10).map((expiry) {
 //           DateTime now = DateTime.now();
 //           DateTime expiryDate = expiry.expiryDate ?? DateTime.now();
 //           Duration difference = expiryDate.difference(now);
@@ -341,17 +353,24 @@
 //   Widget _buildDefaultText() {
 //     return Center(
 //       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
 //         crossAxisAlignment: CrossAxisAlignment.center,
 //         children: [
 //           SizedBox(height: 5),
-//           Text(
-//             "등록된 화장품이 없습니다.\n화장품 등록하기",
-//             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+//           Container(
+//             height: 130,
+//             alignment: Alignment.center,
+//             child: Text(
+//               "등록된 화장품이 없습니다.\n화장품 등록하기",
+//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//               textAlign: TextAlign.center,
+//             ),
 //           ),
 //         ],
 //       ),
 //     );
 //   }
+//
 //
 //
 //   //추천 버튼
@@ -435,11 +454,13 @@
 //               ),
 //               SizedBox(height: 10),
 //               Container(
+//                 alignment: Alignment.center,
 //                 width: MediaQuery.of(context).size.width / 2 - 100,
 //                 child: Text(
 //                   item.name,
-//                   style: TextStyle(color: Colors.black, fontSize: 15),
+//                   style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
 //                   overflow: TextOverflow.ellipsis,
+//                   textAlign: TextAlign.center,
 //                 ),
 //               ),
 //             ],
@@ -456,8 +477,9 @@
 //         children: [
 //           SizedBox(height: 5),
 //           Text(
-//             "추천 화장품이 없습니다.\n화장품 추천받기",
-//             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+//             "피부 타입 테스트를\n진행해주세요.",
+//             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//             textAlign: TextAlign.center,
 //           ),
 //         ],
 //       ),
@@ -468,56 +490,26 @@
 //   //피부타입 버튼
 //   Widget _personalSkinTypeBtn() {
 //     final screenWidth = MediaQuery.of(context).size.width / 2 - 30;
-//     BaumResult<List<BaumannResult>> result = BaumResult<List<BaumannResult>>.success([]);
 //
 //     return ElevatedButton(
-//       onPressed: () async {
-//         // 이미 API 호출이 진행 중인지 확인
-//         if (isApiCallProcess) {
-//           return;
-//         }
-//         // API 호출 중임을 표시
-//         setState(() {
-//           isApiCallProcess = true;
-//         });
-//
-//         try {
-//           result = await BaumannService.getBaumannHistory();
-//
-//           // print("This is Baumann Button in Home Page : ${result.value}");
-//
-//           if (result.isSuccess && result.value!.isNotEmpty) {
-//             Navigator.of(context).push(MaterialPageRoute(
-//                 builder: (context) =>
-//                     BaumannHistoryPage(resultData: result.value)));
-//             print("This is BaumannList Result***** : ${result.value}");
-//           } else {
-//             Navigator.of(context).push(
-//                 MaterialPageRoute(builder: (context) => BaumannStartPage()));
-//             // print("This is Baumann Button in Home Page2 : ${result.isSuccess}");
-//           }
-//         } catch (e) {
-//           // Handle the error case
-//           print('An error occurred: $e');
-//         } finally {
-//           // API 호출 상태를 초기화합니다.
-//           setState(() {
-//             isApiCallProcess = false;
-//           });
+//       onPressed: () {
+//         if (baumannresultList.isNotEmpty) {
+//           Navigator.of(context).push(MaterialPageRoute(
+//               builder: (context) =>
+//                   BaumannHistoryPage(resultData: baumannresultList)));
+//         } else {
+//           Navigator.of(context).push(
+//               MaterialPageRoute(builder: (context) => BaumannStartPage()));
 //         }
 //       },
 //       style: ElevatedButton.styleFrom(
 //         backgroundColor: Color(0xfffe9738),
-//         // 버튼의 배경색을 검정색으로 설정
 //         foregroundColor: Colors.white,
-//         // 버튼의 글씨색을 하얀색으로 설정
 //         elevation: 0,
-//         // 그림자 없애기
 //         minimumSize: Size(screenWidth, 90.0),
 //         shape: RoundedRectangleBorder(
 //           borderRadius: BorderRadius.circular(10.0), // 모서리를 더 둥글게 설정
 //         ),
-//         // padding: EdgeInsets.zero,
 //       ),
 //       child: Align(
 //         alignment: Alignment.topLeft,
@@ -538,13 +530,11 @@
 //                   Icon(
 //                     Icons.arrow_forward_ios,
 //                     size: 15,
-//                     // Add any other styling properties as needed
 //                   ),
 //                 ],
 //               ),
 //               SizedBox(height: 5),
-//               // widget.user?.baumann != null && widget.user!.baumann!.isNotEmpty
-//               Text((widget.user?.baumann?.isEmpty == true) ? "테스트하기":"${widget.user?.baumann}",
+//               Text((baumannresultList.isEmpty) ? "테스트하기":"${baumannresultList.last.baumannType}",
 //                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
 //             ],
 //           ),
@@ -552,7 +542,6 @@
 //       ),
 //     );
 //   }
-//
 //
 //   //소통방 버튼
 //   Widget _chatBtn() {
@@ -636,9 +625,6 @@
 //                     ),
 //                   ],
 //                 ),
-//                 SizedBox(
-//                   height: 15,
-//                 ),
 //                 _selectTodocreen(),
 //               ],
 //             ),
@@ -663,29 +649,31 @@
 //     print("hello this is 2: ${todayTodos}");
 //     return Row(
 //       mainAxisAlignment: MainAxisAlignment.center,
+//       crossAxisAlignment: CrossAxisAlignment.center,
 //       children: [
 //         Container(
-//           height: 100,
+//           height: 120,
 //           margin: EdgeInsets.all(8.0),
 //           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.start,
+//             mainAxisAlignment: MainAxisAlignment.center, // 세로축을 기준으로 중앙 정렬
 //             children: [
-//               SizedBox(height: 5),
 //               Container(
-//                 width: MediaQuery.of(context).size.width / 2 - 60,
+//                 width: MediaQuery.of(context).size.width / 2 - 50,
 //                 child: todayTodos != null && todayTodos!.tasks.isNotEmpty
 //                     ? Column(
 //                   children: todayTodos!.tasks
+//                       .take(3)
 //                       .map((task) => Column(
 //                     children: [
 //                       Text(
 //                         task.description,
 //                         style: TextStyle(
-//                             color: Colors.black, fontSize: 15),
+//                             color: Colors.black, fontSize: 18),
 //                       ),
-//                       SizedBox(height: 5,)
+//                       SizedBox(height: 10)
 //                     ],
-//                   )).toList(),
+//                   ))
+//                       .toList(),
 //                 )
 //                     : _buildTodoDefaultText(),
 //               ),
@@ -696,21 +684,27 @@
 //     );
 //   }
 //
+//
 //   Widget _buildTodoDefaultText() {
 //     return Center(
 //       child: Column(
 //         crossAxisAlignment: CrossAxisAlignment.center,
+//         mainAxisAlignment: MainAxisAlignment.center,
 //         children: [
 //           SizedBox(height: 5),
-//           Text(
-//             "등록된 루틴이 없습니다.\n화장품 사용 루틴 등록하기",
-//             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+//           Container(
+//             height: 130,
+//             alignment: Alignment.center,
+//             child: Text(
+//               "등록된 루틴이 없습니다.\n화장품 사용 루틴 등록하기",
+//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+//               textAlign: TextAlign.center,
+//             ),
 //           ),
 //         ],
 //       ),
 //     );
 //   }
-//
 //
 //   Widget _underNavigation() {
 //     return CommonBottomNavigationBar(

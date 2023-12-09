@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dto/baumann_result_model.dart';
 import '../../services/api_service.dart';
-import '../../widget/commonAppBar.dart';
+import '../../widget/appBar.dart';
 import '../home/home_page.dart';
 
 class BaumannHistoryPage extends StatelessWidget {

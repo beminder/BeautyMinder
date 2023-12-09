@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:beautyminder/dto/register_request_model.dart';
-import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -10,6 +9,7 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 import '../../config.dart';
 import '../../services/api_service.dart';
 import '../../services/email_verify_service.dart';
+import '../../widget/appBar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);

@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '/widget/commonAppBar.dart';
+import '/widget/appBar.dart';
 import '/dto/user_model.dart';
 import '/services/shared_service.dart';
 import '/dto/review_request_model.dart';

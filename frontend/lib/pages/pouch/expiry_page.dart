@@ -10,7 +10,7 @@ import '../../services/api_service.dart';
 import '../../services/expiry_service.dart';
 import '../../pages/pouch/flutter_notification.dart';
 import '../../services/search_service.dart';
-import '../../widget/commonBottomNavigationBar.dart';
+import '../../widget/bottomNavigationBar.dart';
 import 'cosmeticExpiryDetailCard.dart';
 import '../home/home_page.dart';
 import '../my/my_page.dart';

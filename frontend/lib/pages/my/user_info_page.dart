@@ -1,20 +1,19 @@
 import 'package:beautyminder/dto/delete_request_model.dart';
 import 'package:beautyminder/dto/user_model.dart';
 import 'package:beautyminder/pages/my/password_modify_page.dart';
-import 'package:beautyminder/pages/my/widgets/change_dialog.dart';
-import 'package:beautyminder/pages/my/widgets/default_dialog.dart';
-import 'package:beautyminder/pages/my/widgets/my_divider.dart';
-import 'package:beautyminder/pages/my/widgets/my_page_header.dart';
-import 'package:beautyminder/pages/my/widgets/pop_up.dart';
 import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/baumann_service.dart';
 import 'package:beautyminder/services/shared_service.dart';
-import 'package:beautyminder/widget/commonAppBar.dart';
+import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../dto/baumann_result_model.dart';
+import '../../widget/change_dialog.dart';
+import '../../widget/my_divider.dart';
+import '../../widget/my_page_header.dart';
+import '../../widget/pop_up.dart';
 
 class UserInfoPage extends StatefulWidget {
   const UserInfoPage({super.key});

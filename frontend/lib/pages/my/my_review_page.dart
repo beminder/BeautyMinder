@@ -1,10 +1,11 @@
 import 'package:beautyminder/dto/review_response_model.dart';
-import 'package:beautyminder/pages/my/widgets/review_card.dart';
 import 'package:beautyminder/services/api_service.dart';
-import 'package:beautyminder/widget/commonAppBar.dart';
+import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:beautyminder/pages/my/widgets/my_page_header.dart';
+
+import '../../widget/my_page_header.dart';
+import '../../widget/review_card.dart';
 
 class MyReviewPage extends StatefulWidget {
   const MyReviewPage({super.key});

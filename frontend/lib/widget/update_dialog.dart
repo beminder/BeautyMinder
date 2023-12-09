@@ -2,14 +2,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:beautyminder/dto/review_request_model.dart';
-import 'package:beautyminder/pages/my/widgets/default_dialog.dart';
 import 'package:beautyminder/services/review_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../dto/review_response_model.dart';
+import '../../dto/review_response_model.dart';
+import 'default_dialog.dart';
 
 class UpdateDialog extends StatefulWidget {
   const UpdateDialog({
