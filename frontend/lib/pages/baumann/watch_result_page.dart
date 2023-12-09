@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kg_charts/kg_charts.dart';
 
 import '../../services/api_service.dart';
-import '../../widget/commonAppBar.dart';
+import '../../widget/appBar.dart';
 
 class WatchResultPage extends StatefulWidget {
   const WatchResultPage({Key? key, required this.resultData}) : super(key: key);

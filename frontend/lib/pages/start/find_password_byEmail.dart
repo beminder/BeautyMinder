@@ -1,11 +1,11 @@
 import 'package:beautyminder/pages/start/login_page.dart';
-import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../services/forget_password_service.dart';
+import '../../widget/appBar.dart';
 import 'find_password_byPhoneNum.dart';
 
 class FindPasswordByEmailPage extends StatefulWidget {

@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:beautyminder/pages/my/widgets/delete_dialog.dart';
 import 'package:beautyminder/services/api_service.dart';
 import 'package:flutter/material.dart';
+
+import 'delete_dialog.dart';
 
 Future<bool> deletePopUp({
   required String title,

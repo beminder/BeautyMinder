@@ -55,9 +55,10 @@ class ReviewService {
   }
 
   // 리뷰 조회 함수
-  static Future<List<ReviewResponse>> getReviewsForCosmetic(String cosmeticId) async {
+  static Future<ReviewPageResponse> getReviewsForCosmetic(String cosmeticId, int pageNumber) async {
     final accessToken = await SharedService.getAccessToken();
-    final url = Uri.http(Config.apiURL, Config.getReviewAPI + cosmeticId).toString();
+
+    final url = Uri.http(Config.apiURL, Config.getReviewAPI + cosmeticId, {'page': pageNumber.toString()}).toString();
 
     var response = await DioClient.sendRequest(
         'GET',
@@ -66,11 +67,12 @@ class ReviewService {
     );
 
     if (response.statusCode == 200) {
-      return (response.data as List).map((e) => ReviewResponse.fromJson(e)).toList();
+      return ReviewPageResponse.fromJson(response.data);
     } else {
       throw Exception('Failed to load reviews');
     }
   }
+
 
   // 리뷰 삭제 함수
   static Future<void> deleteReview(String reviewId) async {

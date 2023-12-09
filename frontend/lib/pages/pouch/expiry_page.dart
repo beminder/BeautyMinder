@@ -2,6 +2,7 @@ import 'package:beautyminder/pages/pouch/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../dto/cosmetic_expiry_model.dart';
 import '../../dto/cosmetic_model.dart';
@@ -9,7 +10,7 @@ import '../../services/api_service.dart';
 import '../../services/expiry_service.dart';
 import '../../pages/pouch/flutter_notification.dart';
 import '../../services/search_service.dart';
-import '../../widget/commonBottomNavigationBar.dart';
+import '../../widget/bottomNavigationBar.dart';
 import 'cosmeticExpiryDetailCard.dart';
 import '../home/home_page.dart';
 import '../my/my_page.dart';
@@ -27,6 +28,7 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
   int _currentIndex = 1;
   List<CosmeticExpiry> expiries = [];
   bool isLoading = true;
+  int _notificationDays = 30;
 
   void updateCosmeticExpiryFromDialog(CosmeticExpiry updatedExpiry, int index) {
     setState(() {
@@ -39,9 +41,61 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
     return DateFormat('yyyy-MM-dd').format(date); // 날짜를 'yyyy-MM-dd' 형식으로 변환
   }
 
+
+
+  Future<void> _loadNotificationSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationDays = prefs.getInt('notificationDays') ?? 30;
+    });
+  }
+
+
+  Future<void> _saveNotificationSetting(int days) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('notificationDays', days);
+  }
+
+// 알림 설정 다이얼로그
+  void _showNotificationSettingDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('알림 설정'),
+          content: DropdownButtonFormField<int>(
+            value: _notificationDays,
+            items: [30, 60, 90].map((int value) {
+              return DropdownMenuItem<int>(
+                value: value,
+                child: Text('$value 일 전'),
+              );
+            }).toList(),
+            onChanged: (int? newValue) {
+              if (newValue != null) {
+                _saveNotificationSetting(newValue).then((_) {
+                  setState(() {
+                    _notificationDays = newValue;
+                  });
+                });
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadNotificationSetting();
     _loadExpiryData();
   }
 
@@ -71,14 +125,14 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
         );
 
         DateTime expiryDate = expiry.expiryDate ?? DateTime.now();
-        int daysUntilExpiry = expiryDate.difference(now).inDays;
+        var notifyTime = FlutterLocalNotification.makeDateForExpiry(expiryDate, _notificationDays);
 
-        if (daysUntilExpiry == 0) {
+        if (notifyTime != null) {
           FlutterLocalNotification.showNotification_time(
               "유통기한 알림",
-              "${expiry.productName}의 유통기한이 오늘까지입니다!",
-              FlutterLocalNotification.makeDateForExpiry(expiryDate),
-              i
+              "${expiry.productName}의 유통기한이 ${_notificationDays}일 이내입니다!",
+              notifyTime,
+              i // 고유한 ID
           );
         }
       }
@@ -208,6 +262,10 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
               icon: Icon(Icons.add),
               onPressed: _addCosmetic,
             ),
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: _showNotificationSettingDialog,
+            ),
           ]),
       body: isLoading
           ? Center(
@@ -295,12 +353,12 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
                     isDatePassed ?
                     Text(
                       'D+${difference.inDays.abs()}',
-                      style: TextStyle(fontSize: 25, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
                     ) : Text(
                         'D-${difference.inDays+1}',
                         style: (difference.inDays+1<=100) ?
-                        TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
-                            : TextStyle(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.bold)
+                        TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
+                            : TextStyle(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.bold)
                     ),
                   ],
                 ),

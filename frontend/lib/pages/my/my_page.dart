@@ -2,15 +2,15 @@ import 'package:beautyminder/dto/user_model.dart';
 import 'package:beautyminder/pages/my/my_favorite_page.dart';
 import 'package:beautyminder/pages/my/my_review_page.dart';
 import 'package:beautyminder/pages/my/user_info_page.dart';
-import 'package:beautyminder/pages/my/widgets/my_divider.dart';
-import 'package:beautyminder/pages/my/widgets/my_page_header.dart';
 import 'package:beautyminder/services/shared_service.dart';
-import 'package:beautyminder/widget/commonAppBar.dart';
+import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../services/api_service.dart';
-import '../../widget/commonBottomNavigationBar.dart';
+import '../../widget/bottomNavigationBar.dart';
+import '../../widget/my_divider.dart';
+import '../../widget/my_page_header.dart';
 import '../home/home_page.dart';
 import '../pouch/expiry_page.dart';
 import '../recommend/recommend_bloc_screen.dart';
@@ -165,52 +165,56 @@ class MyPageProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Row(
-        children: [
-          SizedBox(width: 10),
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(profileImage!),
-          ),
-          SizedBox(width: 30),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      nickname,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF585555),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_right,
-                        color: Color(0xFFFE9738),
-                      ),
-                      onPressed: () async {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => UserInfoPage())));
-
-                        reload();
-                      },
-                    ),
-                  ],
-                )
-              ],
+      child: GestureDetector(
+        onTap: () async => await _navigateToUserInfoPage(context),
+        child: Row(
+          children: [
+            SizedBox(width: 10),
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: NetworkImage(profileImage!),
             ),
-          )
-        ],
+            SizedBox(width: 30),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        nickname,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Color(0xFF585555),
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_right,
+                          color: Color(0xFFFE9738),
+                        ),
+                        onPressed: () async =>
+                        await _navigateToUserInfoPage(context),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _navigateToUserInfoPage(BuildContext context) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const UserInfoPage()));
+
+    reload();
   }
 }
 
@@ -223,29 +227,32 @@ class MyPageMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.black,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.left,
               ),
-              textAlign: TextAlign.left,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.arrow_right,
-                color: Color(0xFFFE9738),
-              ),
-              onPressed: () {
-                onTap?.call();
-              },
-            )
-          ],
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_right,
+                  color: Color(0xFFFE9738),
+                ),
+                onPressed: () {
+                  onTap?.call();
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

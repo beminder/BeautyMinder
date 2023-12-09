@@ -1,5 +1,4 @@
 import 'package:beautyminder/pages/todo/todo_page.dart';
-import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +8,8 @@ import '../../dto/todo_model.dart';
 import '../../services/api_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/todo_service.dart';
-import '../../widget/commonBottomNavigationBar.dart';
+import '../../widget/appBar.dart';
+import '../../widget/bottomNavigationBar.dart';
 import '../home/home_page.dart';
 import '../my/my_page.dart';
 import '../pouch/expiry_page.dart';

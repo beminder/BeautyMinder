@@ -1,5 +1,6 @@
+// 사진을 전체 화면으로 보여주는 페이지를 정의합니다.
 import 'dart:io';
-
+import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

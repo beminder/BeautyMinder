@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '/widget/commonAppBar.dart';
+import '../../widget/appBar.dart';
 import '/dto/user_model.dart';
 import '/services/shared_service.dart';
 import '/dto/review_request_model.dart';
@@ -15,8 +15,9 @@ import '/services/review_service.dart';
 
 class CosmeticReviewPage extends StatefulWidget {
   final String cosmeticId;
+  final VoidCallback? onBack;
 
-  CosmeticReviewPage({Key? key, required this.cosmeticId}) : super(key: key);
+  CosmeticReviewPage({Key? key, required this.cosmeticId, this.onBack}) : super(key: key);
 
   @override
   _CosmeticReviewPageState createState() => _CosmeticReviewPageState();
@@ -30,26 +31,30 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   final TextEditingController _contentController = TextEditingController();
   int _localRating = 3;
   String _warningMessage = '';
+  int _currentPage = 0;
+  int _totalPages = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchReviewsForCosmetic(widget.cosmeticId);
+    _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage);
   }
 
-  void _fetchReviewsForCosmetic(String cosmeticId) async {
+  void _fetchReviewsForCosmetic(String cosmeticId, int pageNumber) async {
     setState(() => _isLoading = true);
     try {
-      var reviews = await ReviewService.getReviewsForCosmetic(cosmeticId);
+      ReviewPageResponse reviewPageResponse = await ReviewService.getReviewsForCosmetic(cosmeticId, pageNumber);
       User? currentUser = await SharedService.getUser();
 
       if (currentUser != null) {
         // 사용자가 작성한 리뷰를 맨 위로 이동
-        _moveCurrentUserReviewToTop(reviews, currentUser.id);
+        _moveCurrentUserReviewToTop(reviewPageResponse.reviews, currentUser.id);
       }
 
       setState(() {
-        _cosmeticReviews = reviews;
+        _cosmeticReviews = reviewPageResponse.reviews;
+        _totalPages = reviewPageResponse.totalPages;
+        _currentPage = reviewPageResponse.number;
         _isLoading = false;
       });
     } catch (e) {
@@ -101,7 +106,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
         _showSnackBar('이미 리뷰를 작성하셨습니다.');
         return;
       }
-      _showReviewDialog(userId: user.id);
+      _showReviewDialog(userId: user.id, onBack: widget.onBack);
     } else {
       _showSnackBar('리뷰 추가는 로그인이 필수입니다.');
     }
@@ -122,9 +127,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   }
 
 
-
-
-  void _showReviewDialog({required String userId}) {
+  void _showReviewDialog({required String userId, VoidCallback? onBack}) {
     _warningMessage = '';
     showDialog(
       context: context,
@@ -204,7 +207,14 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  // onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Call the onBack callback when the dialog is dismissed
+                    if (onBack != null) {
+                      onBack();
+                    }
+                  },
                   child: Text('취소',
                     style: TextStyle(color: Color(0xfff3bb88)),),
                 ),
@@ -238,6 +248,9 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                       });
 
                       Navigator.of(context).pop(); // 다이얼로그 닫기
+                      if (onBack != null) {
+                        onBack();
+                      }
                       _showSnackBar('리뷰가 추가되었습니다');
                     } catch (e) {
                       _showSnackBar('리뷰 추가 실패하였습니다.');
@@ -350,6 +363,53 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     );
   }
 
+  // 리뷰페이지 넘기기
+  Widget _buildPaginationControls() {
+    return _totalPages != 0
+      ? Padding(
+      padding: EdgeInsets.fromLTRB(5, 10, 5, 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: _currentPage > 0
+                ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage - 1)
+                : null,
+          ),
+          Text('Page ${_currentPage + 1} of $_totalPages'),
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios),
+            onPressed: _currentPage < _totalPages - 1
+                ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage + 1)
+                : null,
+          ),
+        ],
+      ),
+    ) : Padding(
+          padding: EdgeInsets.fromLTRB(5, 10, 5, 20),
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: _currentPage > 0
+              ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage - 1)
+                  : null,
+            ),
+            Text('Page ${_currentPage + 1} of 1'),
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              onPressed: _currentPage < _totalPages - 1
+              ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage + 1)
+                  : null,
+            ),
+          ],
+        )
+    );
+  }
+
+
 
   // 사진 선택 및 미리보기 위젯
   Widget _buildImagePreview(StateSetter setDialogState) {
@@ -391,7 +451,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
+      appBar: MyAppBar(automaticallyImplyLeading: true, context: context,),
       body: Column(
         children: [
           if (_isLoading)
@@ -424,6 +484,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
 
             else
               _buildReviewList(),
+          _buildPaginationControls(),
 
         ],
       ),

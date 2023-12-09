@@ -1,5 +1,6 @@
-import 'package:beautyminder/pages/my/widgets/default_dialog.dart';
 import 'package:flutter/material.dart';
+
+import 'default_dialog.dart';
 
 class ChangeDialog extends StatefulWidget {
   const ChangeDialog({
