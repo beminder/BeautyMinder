@@ -314,7 +314,7 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
                 child: ElevatedButton(
                   onPressed: () {
                     // "모두 동의합니다." 또는 [필수] 체크박스들이 모두 활성화된 경우에만 다음 페이지로 이동
-                    if (allAgreed || (serviceAgreed && privacyAgreed)) {
+                    if (serviceAgreed && privacyAgreed) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -375,7 +375,6 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
       trailing: IconButton(
         icon: Icon(Icons.arrow_forward_ios),
         onPressed: () {
-          // ">" 아이콘 버튼을 눌렀을 때 이용약관 보기 Dialog 표시
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
