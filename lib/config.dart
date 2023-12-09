@@ -16,6 +16,8 @@ class Config {
   static const getCosmeticInfobyIdAPI ='';
   static const logoutAPI = "/user/logout";
 
+  static const certificateAdminAPI = "/admin/hello";
+
   //password
   static const updatePassword = "/user/update-password";
 

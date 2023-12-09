@@ -47,6 +47,34 @@ class APIService {
   //   }
   // }
 
+  static Future<Result<String>> certificateAdmin() async{
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
+    
+    final url = Uri.http(Config.apiURL, Config.certificateAdminAPI).toString();
+
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
+    
+    try{
+      final response = await DioClient.sendRequest('GET', url, headers: headers);
+
+      print("response : ${response.data}");
+
+      if(response.statusCode == 200){
+        print("관리자 페이지 입장.");
+        return Result.success(response.data);
+      }else{
+        return Result.failure("Failed to certificate adming");
+      }
+    }catch(e){
+      return Result.failure("An erroe occured : $e");
+    }
+
+  }
+
   //사용자 프로필 조회
   static Future<Result<User>> getUserProfile() async {
 
