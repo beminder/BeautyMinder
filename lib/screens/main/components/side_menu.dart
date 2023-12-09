@@ -1,5 +1,10 @@
+import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+
+import '../../../controllers/MenuAppController.dart';
+import '../../chat/chat_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -20,17 +25,30 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashboard.svg",
-            press: () {},
+            press: () {
+              // Navigator.pop(context); // Close the Drawer
+              context.read<MenuAppController>().setSelectedScreen('dashboard');
+              // Navigator.pushNamed(context, '/dashboard');
+
+            },
           ),
           DrawerListTile(
             title: "Review",
             svgSrc: "assets/icons/menu_tran.svg",
-            press: () {},
+            press: () {
+              // Navigator.pop(context); // Close the Drawer
+              context.read<MenuAppController>().setSelectedScreen('review');
+              // Navigator.pushNamed(context, '/review');
+            },
           ),
           DrawerListTile(
             title: "Chat",
             svgSrc: "assets/icons/menu_task.svg",
-            press: () {},
+            press: () {
+              // Navigator.pop(context); // Close the Drawer
+              context.read<MenuAppController>().setSelectedScreen('chat');
+              // Navigator.pushNamed(context, '/chat');
+            },
           ),
           // DrawerListTile(
           //   title: "Chat",
@@ -40,7 +58,11 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
-            press: () {},
+            press: () {
+              // Navigator.pop(context); // Close the Drawer
+              context.read<MenuAppController>().setSelectedScreen('profile');
+              // Navigator.pushNamed(context, '/profile');
+            },
           ),
         ],
       ),
