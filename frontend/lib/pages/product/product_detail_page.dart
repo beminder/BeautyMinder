@@ -90,7 +90,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
-      body: SingleChildScrollView(
+      body: isApiCallProcess || isLoading
+          ? SpinKitThreeInOut(
+        color: Color(0xffd86a04),
+        size: 50.0,
+        duration: Duration(seconds: 2),
+      )
+      : SingleChildScrollView(
         child: _productDetailPageUI(context),
       ),
     );
