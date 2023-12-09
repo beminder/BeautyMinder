@@ -4,6 +4,7 @@ import 'package:beautyminder/pages/todo/skin_Album_page.dart';
 import 'package:beautyminder/pages/todo/skin_timeline.dart';
 import 'package:beautyminder/services/notification_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -53,7 +54,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-
     bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return BlocProvider(
@@ -137,7 +137,7 @@ class _todoListWidget extends State<todoListWidget> {
   Widget _todoList(List<Todo>? todos, Todo? todo) {
     if (todo == null) {
       return SizedBox(
-        height: MediaQuery.sizeOf(context).height/4,
+        height: MediaQuery.sizeOf(context).height / 4,
         child: Center(
           child: Text(
             "등록된 루틴이 없습니다.\n루틴을 등록해주세요.",
@@ -220,8 +220,8 @@ class _todoListWidget extends State<todoListWidget> {
     return TableCalendar(
       onHeaderTapped: (date) {
         setState(() {
-          _selectedDay = DateTime.now();  // 오늘 날짜로 선택된 날짜 변경
-          _focusedDay = DateTime.now();   // 오늘 날짜로 포커스된 날짜 변경
+          _selectedDay = DateTime.now(); // 오늘 날짜로 선택된 날짜 변경
+          _focusedDay = DateTime.now(); // 오늘 날짜로 포커스된 날짜 변경
         });
       },
       firstDay: DateTime.utc(2010, 10, 16),
@@ -472,6 +472,18 @@ class _todoListWidget extends State<todoListWidget> {
                 ));
           } else if (state is TodoLoadedState) {
             global_todos = state.todos;
+            if(kIsWeb){
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  _calendar(state.todos),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _todoList(state.todos, state.todo),
+                ],
+              );
+            }
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -480,15 +492,21 @@ class _todoListWidget extends State<todoListWidget> {
                 SizedBox(
                   height: 10,
                 ),
-                // Container(
-                //   height: MediaQuery.of(context).size.height / 4,
-                //   child: _todoList(state.todos, state.todo),
-                // ),
                 _todoList(state.todos, state.todo),
               ],
             );
           } else if (state is TodoDeletedState) {
             global_todos = state.todos;
+
+            if(kIsWeb){
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  _calendar(state.todos),
+                  _todoList(state.todos, state.todo),
+                ],
+              );
+            }
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -499,7 +517,13 @@ class _todoListWidget extends State<todoListWidget> {
             );
           } else {
             global_todos = state.todos;
-            return Column(
+            if(kIsWeb){
+              return Column(
+                children: [
+                  _calendar(state.todos),
+                ],
+              );
+            }return Column(
               children: [
                 _calendar(state.todos),
                 Buttons(),
@@ -517,26 +541,40 @@ class Buttons extends StatelessWidget {
     super.key,
   });
 
+  Future<String> createAlbum(String albumName) async {
+    final directory =
+        await getApplicationDocumentsDirectory(); // or getExternalStorageDirectory() for external storage
+    print("directory : ${directory}");
+    final albumPath = Directory('${directory.path}/$albumName');
+    print("albumPath: ${albumPath}");
+
+    if (!await albumPath.exists()) {
+      await albumPath.create(recursive: true);
+    }
+
+    return albumPath.path;
+  }
+
   void _takePhoto() async {
+    createAlbum("beautyminder");
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
+      String albumPath = await createAlbum('BeautyMinder');
       // 임시 파일 가져오기
       final tempImageFile = File(pickedFile.path);
 
       // 문서 디렉토리 경로 얻기
       final directory = await getApplicationDocumentsDirectory();
 
-      // 새로운 파일명 생성 (예: Skinrecord_<timestamp>.jpg)
       String newFileName = 'Skinrecord_${DateTime.now()}.jpg';
-      final newFilePath = path.join(directory.path, newFileName);
+      final newFilePath = path.join(albumPath, newFileName);
 
       // 파일을 새 경로와 이름으로 이동
       final newImageFile = await tempImageFile.copy(newFilePath);
 
       print("새로운 사진이 저장된 경로: ${newImageFile.path}");
-
       // 선택적: GallerySaver를 사용하여 갤러리에도 저장
       GallerySaver.saveImage(newImageFile.path);
     }

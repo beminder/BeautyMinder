@@ -1,5 +1,6 @@
 import 'package:beautyminder/pages/todo/todo_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -144,49 +145,6 @@ class _TodoAddPage extends State<TodoAddPage> {
             child: child!,
           );
         });
-    // if (pickedDate != null) {
-    //   TimeOfDay? pickedTime = await showTimePicker(
-    //     context: context,
-    //     initialTime: TimeOfDay.now(),
-    //     builder: (context, child) {
-    //       return Theme(
-    //         data: Theme.of(context).copyWith(
-    //           // Apply similar theme settings as DatePicker
-    //           colorScheme: const ColorScheme.light(
-    //             primary: Color(0xffd86a04),
-    //             onPrimary: Colors.black87,
-    //             onSurface: Colors.black,
-    //           ),
-    //           textButtonTheme: TextButtonThemeData(
-    //             style: TextButton.styleFrom(
-    //               backgroundColor: const Color(0xffffecda),
-    //               foregroundColor: const Color(0xffd86a04),
-    //             ),
-    //           ),
-    //           // Additional theme settings for TimePicker can go here
-    //         ),
-    //         child: child!,
-    //       );
-    //     },
-    //   );
-    //
-    //   if (pickedTime != null) {
-    //     setState(() {
-    //       // 날짜와 시간을 결합하여 _dateController에 설정합니다.
-    //       DateTime finalDateTime = DateTime(
-    //         pickedDate!.year,
-    //         pickedDate!.month,
-    //         pickedDate!.day,
-    //         pickedTime.hour,
-    //         pickedTime.minute,
-    //       );
-    //       hour = pickedTime.hour;
-    //       minute = pickedTime.minute;
-    //       _dateController.text =
-    //           DateFormat('날짜 yyyy-MM-dd  시간 HH:mm').format(finalDateTime);
-    //     });
-    //   }
-    // }
   }
 
   _selectTime() async {
@@ -342,19 +300,23 @@ class _TodoAddPage extends State<TodoAddPage> {
                       SizedBox(
                         width: 10,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: Color(0xfffe9738), width: 4),
-                          color: Color(0xfffe9738),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          iconSize: 25,
-                          icon: Icon(Icons.alarm_add_outlined),
-                          onPressed: () {
-                            _selectTime();
-                          },
+                      Visibility(
+                        visible: !kIsWeb, // kIsWeb이 false일 때만 보이도록 설정합니다.
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Color(0xfffe9738), width: 4),
+                            color: Color(0xfffe9738),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            iconSize: 25,
+                            icon: Icon(Icons.alarm_add_outlined),
+                            onPressed: () {
+                              if (!kIsWeb) {
+                                _selectTime();
+                              }
+                            },
+                          ),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -443,21 +405,33 @@ class _TodoAddPage extends State<TodoAddPage> {
                             formatDate(
                                 pickedDate!), // Provide a default value (null) if no match is found
                       );
-                      for (int i = 0; i < todo!.tasks.length; i++) {
-                        tz.TZDateTime date = FlutterLocalNotification.makeDate(
-                          // hout, minute를 task모델의 멤버 변수로 변경해야됨
-                          pickedDate!.year,
-                          pickedDate!.month,
-                          pickedDate!.day,
-                          routine_time![i].hour,
-                          routine_time![i].minute,
-                        );
-                        if (!date.isBefore(
-                            tz.TZDateTime.now(tz.getLocation('Asia/Seoul')))) {
-                          FlutterLocalNotification.showNotification_time(
-                              'BeautyMinder', _controllers[i].text, date, i);
+                      if (!kIsWeb) {
+                        if (todo!.tasks.length > routine_time!.length) {
+                          for (int i = routine_time!.length;
+                              i <= todo!.tasks.length;
+                              i++) {
+                            routine_time?.add(DateTime.now());
+                          }
+                        }
+
+                        for (int i = 0; i < todo!.tasks.length; i++) {
+                          tz.TZDateTime date =
+                              FlutterLocalNotification.makeDate(
+                            // hout, minute를 task모델의 멤버 변수로 변경해야됨
+                            pickedDate!.year,
+                            pickedDate!.month,
+                            pickedDate!.day,
+                            routine_time![i].hour,
+                            routine_time![i].minute,
+                          );
+                          if (!date.isBefore(tz.TZDateTime.now(
+                              tz.getLocation('Asia/Seoul')))) {
+                            FlutterLocalNotification.showNotification_time(
+                                'BeautyMinder', _controllers[i].text, date, i);
+                          }
                         }
                       }
+
                       await TodoService.taskAddInTodo(existingTodo, tasks);
                       print("_dateController.text : ${_dateController.text}");
                       Navigator.of(context).push(MaterialPageRoute(
@@ -466,23 +440,32 @@ class _TodoAddPage extends State<TodoAddPage> {
                       print("addtodo 실행");
                       print("todo : ${todo}");
                       print("_dateController.text : ${_dateController.text}");
+                      if (!kIsWeb) {
+                        if (todo!.tasks.length > routine_time!.length) {
+                          for (int i = routine_time!.length;
+                              i <= todo!.tasks.length;
+                              i++) {
+                            routine_time?.add(DateTime.now());
+                          }
+                        }
 
-                      for (int i = 0; i < todo!.tasks.length; i++) {
-                        tz.TZDateTime date = FlutterLocalNotification.makeDate(
-                          // hout, minute를 task모델의 멤버 변수로 변경해야됨
-                          pickedDate!.year,
-                          pickedDate!.month,
-                          pickedDate!.day,
-                          routine_time![i].hour,
-                          routine_time![i].minute,
-                        );
-                        if (!date.isBefore(
-                            tz.TZDateTime.now(tz.getLocation('Asia/Seoul')))) {
-                          FlutterLocalNotification.showNotification_time(
-                              'BeautyMinder', _controllers[i].text, date, i);
+                        for (int i = 0; i < todo!.tasks.length; i++) {
+                          tz.TZDateTime date =
+                              FlutterLocalNotification.makeDate(
+                            // hout, minute를 task모델의 멤버 변수로 변경해야됨
+                            pickedDate!.year,
+                            pickedDate!.month,
+                            pickedDate!.day,
+                            routine_time![i].hour,
+                            routine_time![i].minute,
+                          );
+                          if (!date.isBefore(tz.TZDateTime.now(
+                              tz.getLocation('Asia/Seoul')))) {
+                            FlutterLocalNotification.showNotification_time(
+                                'BeautyMinder', _controllers[i].text, date, i);
+                          }
                         }
                       }
-
                       await TodoService.addTodo(todo!);
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const CalendarPage()));
@@ -514,79 +497,6 @@ class _TodoAddPage extends State<TodoAddPage> {
                   MaterialPageRoute(builder: (context) => const MyPage()));
             }
           }),
-      // floatingActionButton: isKeyboardVisible
-      //     ? null
-      //     : Padding(
-      //         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      //         child: TextButton(
-      //           child: Text('등록',
-      //               style: TextStyle(fontSize: 20, color: Colors.white)),
-      //           style: TextButton.styleFrom(
-      //             backgroundColor: Color(0xfffe9738),
-      //             minimumSize: Size(MediaQuery.of(context).size.width - 50, 30),
-      //           ),
-      //           onPressed: () async {
-      //             if (anyTextFieldEmpty()) {
-      //               _showEmptyTextFieldSnackBar();
-      //             } else {
-      //               createRoutine();
-      //               if (tasks.length == 0) {
-      //                 // 입력한 task가 없으면 생성 x
-      //                 Navigator.of(context).push(MaterialPageRoute(
-      //                     builder: (context) => const CalendarPage()));
-      //               } else if (tasks.length > 0 &&
-      //                   dates.contains(formatDate(pickedDate!))) {
-      //                 Todo? existingTodo = widget.todos!.firstWhere(
-      //                   (todo) =>
-      //                       todo.date ==
-      //                       formatDate(
-      //                           pickedDate!), // Provide a default value (null) if no match is found
-      //                 );
-      //                 for (int i = 0; i < todo!.tasks.length; i++) {
-      //                   FlutterLocalNotification.showNotification_time(
-      //                       'BeautyMinder',
-      //                       _controllers[i].text,
-      //                       FlutterLocalNotification.makeDate(
-      //                         // hout, minute를 task모델의 멤버 변수로 변경해야됨
-      //                         pickedDate!.year,
-      //                         pickedDate!.month,
-      //                         pickedDate!.day,
-      //                         routine_time![i].hour,
-      //                         routine_time![i].minute,
-      //                       ),
-      //                       i);
-      //                 }
-      //                 await TodoService.taskAddInTodo(existingTodo, tasks);
-      //                 print("_dateController.text : ${_dateController.text}");
-      //                 Navigator.of(context).push(MaterialPageRoute(
-      //                     builder: (context) => const CalendarPage()));
-      //               } else {
-      //                 print("addtodo 실행");
-      //                 print("todo : ${todo}");
-      //                 print("_dateController.text : ${_dateController.text}");
-      //
-      //                 for (int i = 0; i < todo!.tasks.length; i++) {
-      //                   FlutterLocalNotification.showNotification_time(
-      //                       'BeautyMinder',
-      //                       _controllers[i].text,
-      //                       FlutterLocalNotification.makeDate(
-      //                         pickedDate!.year,
-      //                         pickedDate!.month,
-      //                         pickedDate!.day,
-      //                         hour,
-      //                         minute,
-      //                       ),
-      //                       i);
-      //                 }
-      //
-      //                 await TodoService.addTodo(todo!);
-      //                 Navigator.of(context).push(MaterialPageRoute(
-      //                     builder: (context) => const CalendarPage()));
-      //               }
-      //             }
-      //           },
-      //         ),
-      //       ),
     );
   }
 }
