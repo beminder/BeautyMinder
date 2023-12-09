@@ -33,6 +33,7 @@ class APIService {
   // }
 
   // 로그인
+  // 로그인하고 관리자인증까지 같이함
   static Future<Result<bool>> login(LoginRequestModel model) async {
     final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
     final formData = FormData.fromMap({
