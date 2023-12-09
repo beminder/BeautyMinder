@@ -3,6 +3,7 @@ import 'package:beautyminder/pages/my/my_page.dart';
 import 'package:beautyminder/pages/pouch/expiry_page.dart';
 import 'package:beautyminder/pages/recommend/recommend_bloc_screen.dart';
 import 'package:beautyminder/pages/start/welcome_page.dart';
+import 'package:beautyminder/pages/todo/skin_Album_page.dart';
 import 'package:beautyminder/pages/todo/todo_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

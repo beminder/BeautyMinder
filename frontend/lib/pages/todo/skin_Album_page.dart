@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:beautyminder/pages/todo/todo_page.dart';
@@ -6,22 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:local_image_provider/device_image.dart';
-import 'package:local_image_provider/local_image.dart';
-import 'package:local_image_provider/local_image_provider.dart' as lip;
 
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../widget/commonAppBar.dart';
-import '../../widget/commonBottomNavigationBar.dart';
-import '../my/my_page.dart';
-import '../pouch/expiry_page.dart';
-import '../recommend/recommend_bloc_screen.dart';
 import 'FullScreenImagePage.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class skinAlbumPage extends StatefulWidget {
   const skinAlbumPage({Key? key}) : super(key: key);
@@ -49,8 +39,9 @@ class _skinAlbumPage extends State<skinAlbumPage> {
     print("Permission.storage : ${statuses[Permission.storage]}");
   }
 
-  List<LocalImage> images = [];
-  String filter = "all"; // 이미지 목록을 저장할 상태 변수
+  // List<LocalImage> images = [];
+  List<File> images = [];
+  String filter = "전체"; // 이미지 목록을 저장할 상태 변수
 
   @override
   void initState() {
@@ -71,54 +62,54 @@ class _skinAlbumPage extends State<skinAlbumPage> {
     }
   }
 
+  Future<List<File>> getLocalImages() async {
+    final albumPath = await createAlbum('BeautyMinder');
+    final directory = Directory(albumPath);
+    List<File> imageFiles = [];
 
-  Future<List<LocalImage>> getLocalImages() async {
-    tz.initializeTimeZones(); // 시간대 데이터 초기화
-    var seoul = tz.getLocation('Asia/Seoul'); // 서울 시간대 객체 생성
-
-    lip.LocalImageProvider imageProvider = lip.LocalImageProvider();
-    bool hasPermission = await imageProvider.initialize();
-    if (!hasPermission) {
-      throw '이미지에 접근할 권한이 없습니다.';
+    if (await directory.exists()) {
+      var fileList = directory.listSync(); // List all files in the directory
+      for (var file in fileList) {
+        if (file is File && isImageFile(file.path)) {
+          var lastModified = await file.lastModified();
+          if (_isFileInFilter(lastModified)) {
+            imageFiles.add(file);
+          }
+        }
+      }
     }
 
-    List<LocalImage> images = filter == 'all'
-        ? await imageProvider.findLatest(365)
-        : await imageProvider.findLatest(50);
-
-    List<LocalImage> filteredImages = images
-        .where((image) => image.fileName!.contains('Skinrecord'))
-        .toList();
-
-    DateTime now = tz.TZDateTime.now(seoul); // 현재 시간을 KST로 설정
-    return filteredImages.where((image) {
-      DateTime utcImageDate = DateTime.parse(image.creationDate!);
-      tz.TZDateTime kstImageDate = tz.TZDateTime.from(utcImageDate, seoul); // 이미지 생성 시간을 KST로 변환
-
-      switch (filter) {
-        case 'Today':
-          title = '오늘';
-          return kstImageDate.year == now.year &&
-              kstImageDate.month == now.month &&
-              kstImageDate.day == now.day;
-        case 'This Week':
-          title = '이번 주';
-          DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-          return kstImageDate.isAfter(startOfWeek) &&
-              kstImageDate.isBefore(now.add(Duration(days: 1)));
-        case 'This Month':
-          title = '이번 달';
-          return kstImageDate.year == now.year && kstImageDate.month == now.month;
-        default: // 'All'
-          title = '전체';
-          return true;
-      }
-    }).toList();
+    return imageFiles.reversed.toList();
   }
 
+  bool _isFileInFilter(DateTime lastModified) {
+    var now = DateTime.now();
+    switch (filter) {
+      case '전체':
+        return true;
+      case '이번 달':
+        return lastModified.year == now.year && lastModified.month == now.month;
+      case '이번 주':
+        // 현재 주의 시작과 끝을 계산합니다.
+        var weekStart = now.subtract(Duration(days: now.weekday - 1));
+        var weekEnd = weekStart.add(Duration(days: 6));
+        return lastModified.isAfter(weekStart) &&
+            lastModified.isBefore(weekEnd);
+      case '오늘':
+        return lastModified.year == now.year &&
+            lastModified.month == now.month &&
+            lastModified.day == now.day;
+      default:
+        return true;
+    }
+  }
 
+  bool isImageFile(String filePath) {
+    return ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
+        .any((extension) => filePath.endsWith(extension));
+  }
 
-  Widget _filterButton(String title, String filterValue) {
+  Widget _filterButton(String filterValue) {
     return TextButton(
       onPressed: () {
         setState(() {
@@ -130,7 +121,7 @@ class _skinAlbumPage extends State<skinAlbumPage> {
           backgroundColor:
               filter == filterValue ? Color(0xffd86a04) : Color(0xffffecda)),
       child: Text(
-        title,
+        filterValue,
         style: TextStyle(
             color: filter == filterValue ? Colors.white : Color(0xffd86a04)),
       ),
@@ -141,8 +132,11 @@ class _skinAlbumPage extends State<skinAlbumPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
-      body: FutureBuilder<List<LocalImage>>(
+      appBar: CommonAppBar(
+        automaticallyImplyLeading: true,
+        context: context,
+      ),
+      body: FutureBuilder<List<File>>(
         future: getLocalImages(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -154,15 +148,12 @@ class _skinAlbumPage extends State<skinAlbumPage> {
           }
 
           if (snapshot.hasData && snapshot.data?.length != 0) {
-            print("snapshot.hasData : ${snapshot.hasData}");
-            print("snapshot.data : ${snapshot.data}");
-            print(snapshot.data![0].creationDate);
             return Column(
               children: [
                 SizedBox(
                   height: 150,
                   child: Center(
-                    child: Text(title,
+                    child: Text(filter,
                         style: TextStyle(
                             fontSize: 50.0, color: Color(0xffb4b4b4))),
                   ),
@@ -170,49 +161,55 @@ class _skinAlbumPage extends State<skinAlbumPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _filterButton('전체', 'all'),
-                    _filterButton('이번 달', 'This Month'),
-                    _filterButton('이번 주', 'This Week'),
-                    _filterButton('오늘', 'Today'),
+                    _filterButton('전체'),
+                    _filterButton('이번 달'),
+                    _filterButton('이번 주'),
+                    _filterButton('오늘'),
                   ],
                 ),
                 Expanded(
-                  child: GridView.count(
+                  child: GridView.builder(
                     padding: EdgeInsets.zero,
-                    crossAxisCount: 4,
-                    mainAxisSpacing: 5.0,
-                    crossAxisSpacing: 5,
-                    childAspectRatio: 1, // 셀의 종횡비를 1:1로 설정
-                    children: snapshot.data!
-                        .map((e) => GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FullScreenImagePage(
-                                      image: e,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: AspectRatio(
-                                aspectRatio: 1, // 종횡비 (예: 1은 정사각형)
-                                child: Image(
-                                    image: DeviceImage(e), fit: BoxFit.cover),
-                              ),
-                            ))
-                        .toList(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      mainAxisSpacing: 5.0,
+                      crossAxisSpacing: 5,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      File imageFile = snapshot.data![index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullScreenImagePage(
+                                      imageFile: imageFile,
+                                      onDelete: () async {
+                                        await imageFile.delete();
+                                        _updateImages();
+                                        Navigator.pop(context);
+                                      })));
+                        },
+                        child: Image.file(
+                          imageFile,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             );
-          }else if(snapshot.data?.length == 0){
+          } else if (snapshot.data?.length == 0) {
             return Center(
-              child: Text("기록된 사진이 없습니다.\n사진을 촬영해주세요.", style: TextStyle(fontSize: 18, color: Colors.black54),textAlign: TextAlign.center),
+              child: Text("기록된 사진이 없습니다.\n사진을 촬영해주세요.",
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  textAlign: TextAlign.center),
             );
           }
 
-          // Handle the case where there's no data
           return Center(child: Text('No images found'));
         },
       ),
@@ -230,20 +227,36 @@ class _skinAlbumPage extends State<skinAlbumPage> {
     );
   }
 
+  Future<String> createAlbum(String albumName) async {
+    final directory =
+        await getApplicationDocumentsDirectory(); // or getExternalStorageDirectory() for external storage
+    print("directory : ${directory}");
+    final albumPath = Directory('${directory.path}/$albumName');
+    print("albumPath: ${albumPath}");
+
+    if (!await albumPath.exists()) {
+      await albumPath.create(recursive: true);
+    }
+
+    return albumPath.path;
+  }
+
   void _takePhoto() async {
+    createAlbum("beautyminder");
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
+      String albumPath = await createAlbum('BeautyMinder');
       // 임시 파일 가져오기
       final tempImageFile = File(pickedFile.path);
 
       // 문서 디렉토리 경로 얻기
       final directory = await getApplicationDocumentsDirectory();
 
-      // 새로운 파일명 생성 (예: Skinrecord_<timestamp>.jpg)
       String newFileName = 'Skinrecord_${DateTime.now()}.jpg';
-      final newFilePath = path.join(directory.path, newFileName);
+      final newFilePath = path.join(albumPath, newFileName);
+      print("저장 경로 : ${newFilePath}");
 
       // 파일을 새 경로와 이름으로 이동
       final newImageFile = await tempImageFile.copy(newFilePath);

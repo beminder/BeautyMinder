@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:beautyminder/widget/commonAppBar.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:local_image_provider/device_image.dart';
 import 'package:local_image_provider/local_image.dart';
 import 'package:local_image_provider/local_image_provider.dart' as lip;
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class timeLine extends StatefulWidget {
@@ -21,7 +25,7 @@ class _timeLine extends State<timeLine> {
 
   DateTime _focusDate = DateTime.now();
   late DateTime _selectDate;
-
+  List<File> images = []; // File 객체의 리스트로 선언
 
   @override
   void initState() {
@@ -33,33 +37,57 @@ class _timeLine extends State<timeLine> {
     _selectDate = DateTime.now();
   }
 
-  List<LocalImage> images = [];
+  Future<String> createAlbum(String albumName) async {
+    final directory =
+    await getApplicationDocumentsDirectory(); // or getExternalStorageDirectory() for external storage
+    print("directory : ${directory}");
+    final albumPath = Directory('${directory.path}/$albumName');
+    print("albumPath: ${albumPath}");
 
-  Future<List<LocalImage>> getLocalImages(String pickedDate) async {
-    lip.LocalImageProvider imageProvider = lip.LocalImageProvider();
-    bool hasPermission = await imageProvider.initialize();
-    if (hasPermission) {
-      // 최근 이미지 100개 가져오기
-      List<LocalImage> images = await imageProvider.findLatest(100);
+    if (!await albumPath.exists()) {
+      await albumPath.create(recursive: true);
+    }
 
-      // pickedDate를 DateTime 객체로 파싱
-      DateTime parsedPickedDate = DateTime.parse(pickedDate);
+    return albumPath.path;
+  }
 
-      // 해당 날짜에 생성되고, 'Skinrecord' 문자열을 포함하는 이미지만 필터링
-      List<LocalImage> filteredImages = images.where((image) {
-        DateTime? imageDate = DateTime.parse(image.creationDate!);
-        if (imageDate == null) return false;
 
-        // 날짜와 'Skinrecord' 문자열을 모두 확인
-        return imageDate.year == parsedPickedDate.year &&
-            imageDate.month == parsedPickedDate.month &&
-            imageDate.day == parsedPickedDate.day &&
-            image.fileName!.contains('Skinrecord');
-      }).toList();
+  bool isImageFile(String filePath) {
+    return ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
+        .any((extension) => filePath.endsWith(extension));
+  }
 
-      return filteredImages;
-    } else {
-      throw '이미지에 접근할 권한이 없습니다.';
+  Future<List<File>> getLocalImages(String selectedDate) async {
+    final albumPath = await createAlbum('BeautyMinder');
+    final directory = Directory(albumPath);
+    List<File> imageFiles = [];
+
+    if (await directory.exists()) {
+      var fileList = directory.listSync(); // List all files in the directory
+      for (var file in fileList) {
+        if (file is File && isImageFile(file.path)) {
+          var lastModified = await file.lastModified();
+          // 날짜 포맷을 'yyyy-MM-dd' 형식으로 변환
+          String fileDate = DateFormat('yyyy-MM-dd').format(lastModified);
+          if (fileDate == selectedDate) {
+            imageFiles.add(file);
+          }
+        }
+      }
+    }
+
+    return imageFiles.reversed.toList();
+  }
+
+  void _updateImages(DateTime date) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    try {
+      var newImages = await getLocalImages(formattedDate);
+      setState(() {
+        images = newImages;
+      });
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -78,18 +106,6 @@ class _timeLine extends State<timeLine> {
     print("Permission.storage : ${statuses[Permission.storage]}");
   }
 
-  void _updateImages(DateTime date) async {
-    String formattedDate =
-        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-    try {
-      var newImages = await getLocalImages(formattedDate);
-      setState(() {
-        images = newImages;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +165,7 @@ class _timeLine extends State<timeLine> {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     child: Image(
-                      image: DeviceImage(images[index]),
+                      image: FileImage(images[index]),
                       fit: BoxFit.cover,
                     ),
                   );

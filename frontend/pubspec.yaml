@@ -78,6 +78,7 @@ dependencies:
 
   flutter_riverpod: ^2.4.9
   flutter_local_notifications: ^16.2.0
+  photo_manager: ^2.8.1
 
 
 dev_dependencies:
