@@ -25,12 +25,12 @@ class adminService {
       print("response : ${response.data}");
 
       if(response.statusCode == 200){
-        Result.success(response.data);
+       return Result.success(response.data);
       }else{
-        Result.failure("Failed to kick user");
+       return Result.failure("Failed to kick user");
       }
     }catch(e){
-      Result.failure("An error occured : $e");
+     return Result.failure("An error occured : $e");
     }
 
 }
