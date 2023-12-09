@@ -44,6 +44,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     super.initState();
     _gptReviewInfo = GPTReviewService.getGPTReviews(widget.searchResults.id);
     _getAllNeeds(widget.searchResults.id);
+    // _navigateToCosmeticReviewPage();
   }
 
   //필요한 서비스 호출
@@ -84,6 +85,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     // StreamController를 닫아줌
     _likesCountController.close();
     super.dispose();
+  }
+
+  void _navigateToCosmeticReviewPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CosmeticReviewPage(
+          cosmeticId: widget.searchResults.id,
+          onBack: () {
+            // Callback function to update information when returning from review page
+            _getAllNeeds(widget.searchResults.id);
+          },
+        ),
+      ),
+    );
   }
 
   @override
