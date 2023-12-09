@@ -165,52 +165,56 @@ class MyPageProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Row(
-        children: [
-          SizedBox(width: 10),
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(profileImage!),
-          ),
-          SizedBox(width: 30),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      nickname,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF585555),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_right,
-                        color: Color(0xFFFE9738),
-                      ),
-                      onPressed: () async {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => UserInfoPage())));
-
-                        reload();
-                      },
-                    ),
-                  ],
-                )
-              ],
+      child: GestureDetector(
+        onTap: () async => await _navigateToUserInfoPage(context),
+        child: Row(
+          children: [
+            SizedBox(width: 10),
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: NetworkImage(profileImage!),
             ),
-          )
-        ],
+            SizedBox(width: 30),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        nickname,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Color(0xFF585555),
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_right,
+                          color: Color(0xFFFE9738),
+                        ),
+                        onPressed: () async =>
+                        await _navigateToUserInfoPage(context),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _navigateToUserInfoPage(BuildContext context) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const UserInfoPage()));
+
+    reload();
   }
 }
 
@@ -223,29 +227,32 @@ class MyPageMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.black,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.left,
               ),
-              textAlign: TextAlign.left,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.arrow_right,
-                color: Color(0xFFFE9738),
-              ),
-              onPressed: () {
-                onTap?.call();
-              },
-            )
-          ],
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_right,
+                  color: Color(0xFFFE9738),
+                ),
+                onPressed: () {
+                  onTap?.call();
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

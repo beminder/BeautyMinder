@@ -187,12 +187,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
       final image = pickedFile.path;
       final newImageUrl = await APIService.editProfileImgInfo(image);
 
-      if(newImageUrl == "An error occurred") {
+      if (newImageUrl == "An error occurred") {
         await _showSnackBar(
           title: '이미지를 변경하실 수 없습니다.',
           body: '잠시 후 다시 시도해주세요.',
         );
-      } else if (newImageUrl == 'Failed to update review'){
+      } else if (newImageUrl == 'Failed to update review') {
         await _showSnackBar(
           title: '이미지를 변경하실 수 없습니다.',
           body: '다른 이미지를 선택해 주세요.',
@@ -216,13 +216,18 @@ class _UserInfoPageState extends State<UserInfoPage> {
           subtitle: '닉네임을 입력해주세요.',
         );
       },
-    );
+    ) as String?;
 
     if (newNickname != null) {
       if (_isNicknameValid(newNickname)) {
-        if(user!.nickname == newNickname) {
+        if (user!.nickname == newNickname) {
           await _showSnackBar(
             title: '이전과 동일한 닉네임입니다.',
+            body: '변경하시려면 다른 닉네임을 입력해주세요.',
+          );
+        } else if (newNickname.length < 2) {
+          await _showSnackBar(
+            title: '닉네임을 두글자 이상 작성해주세요.',
             body: '변경하시려면 다른 닉네임을 입력해주세요.',
           );
         } else {
@@ -243,7 +248,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
             );
           }
         }
-
       } else {
         await _showSnackBar(
           title: '잘못된 형식입니다.',
@@ -322,7 +326,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-
   Future<void> _updateUser({
     String? imageUrl,
     String? nickname,
@@ -351,7 +354,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
   bool _isNicknameValid(String nickname) {
     // return nickname.isNotEmpty && nickname.length <= 20;
     final RegExp validCharacters = RegExp(r'^[a-zA-Z가-힣0-9]+$');
-    return nickname.isNotEmpty && nickname.length <= 20 && validCharacters.hasMatch(nickname);
+    return nickname.isNotEmpty &&
+        nickname.length <= 20 &&
+        validCharacters.hasMatch(nickname);
   }
 
   bool _isPhoneNumberValid(String phoneNumber) {
@@ -517,3 +522,5 @@ class PhoneInfo extends StatelessWidget {
     );
   }
 }
+
+

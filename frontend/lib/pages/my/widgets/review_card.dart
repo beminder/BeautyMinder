@@ -1,3 +1,4 @@
+import 'package:beautyminder/pages/my/widgets/center_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -112,14 +113,23 @@ class ReviewCard extends StatelessWidget {
             spacing: 8.0,
             runSpacing: 4.0,
             children: review.images.map((image) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(8.0), // 모서리를 둥글게 처리
-                child: CachedNetworkImage(
-                  imageUrl: image,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover, // 이미지가 공간을 가득 채우도록 조정
-                  errorWidget: (context, url, error) => const SizedBox.shrink(),
+              return GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CenterImage(image: image),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0), // 모서리를 둥글게 처리
+                  child: CachedNetworkImage(
+                    imageUrl: image,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover, // 이미지가 공간을 가득 채우도록 조정
+                    errorWidget: (context, url, error) =>
+                    const SizedBox.shrink(),
+                  ),
                 ),
               );
             }).toList(),
