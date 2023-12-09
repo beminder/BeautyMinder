@@ -12,6 +12,27 @@ import 'shared_service.dart';
 
 class APIService {
   //로그인
+  // static Future<Result<bool>> login(LoginRequestModel model) async {
+  //   final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
+  //   final formData = FormData.fromMap({
+  //     'email': model.email ?? '',
+  //     'password': model.password ?? '',
+  //   });
+  //
+  //   try {
+  //     final response = await DioClient.sendRequest('POST', url, body: formData);
+  //     if (response.statusCode == 200) {
+  //       print("response: ${response}");
+  //       await SharedService.setLoginDetails(loginResponseJson(response.data));
+  //       return Result.success(true);
+  //     }
+  //     return Result.failure("Login failed");
+  //   } catch (e) {
+  //     return Result.failure("An error occurred: $e");
+  //   }
+  // }
+
+  // 로그인
   static Future<Result<bool>> login(LoginRequestModel model) async {
     final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
     final formData = FormData.fromMap({
@@ -24,7 +45,13 @@ class APIService {
       if (response.statusCode == 200) {
         print("response: ${response}");
         await SharedService.setLoginDetails(loginResponseJson(response.data));
-        return Result.success(true);
+        // 여기에서 certificateAdmin을 호출
+        var certResult = await certificateAdmin();
+        if (certResult.isSuccess) {
+          return Result.success(true);
+        } else {
+          return Result.failure("Certificate Admin failed: ${certResult.error}");
+        }
       }
       return Result.failure("Login failed");
     } catch (e) {
