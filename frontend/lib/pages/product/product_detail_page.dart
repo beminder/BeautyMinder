@@ -255,10 +255,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 print("Favorites deleted successfully! : $isFavorite");
                 final updatedFavCountWhenDel = await SearchService.searchCosmeticById(widget.searchResults.id);
                 setState(() {
+                  isFavorite = !isFavorite;
                   int newFavCount = updatedFavCountWhenDel.first.favCount ?? favCount;
                   favCount = newFavCount;
                   _likesCountController.add(favCount);
-                  _likesCountController.add(favCount);  // Stream에 새로운 favCount 전송
                 });
               } else {
                 print("Failed to delete favorites");
