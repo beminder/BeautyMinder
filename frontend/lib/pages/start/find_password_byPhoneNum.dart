@@ -1,3 +1,4 @@
+import 'package:beautyminder/pages/start/agreement_page.dart';
 import 'package:beautyminder/pages/start/login_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
 import 'package:flutter/gestures.dart';
@@ -220,7 +221,7 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            RegisterPage()));
+                            AgreementPage()));
                   },
               ),
             ],

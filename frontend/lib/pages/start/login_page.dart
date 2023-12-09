@@ -1,4 +1,5 @@
 import 'package:beautyminder/pages/home/home_page.dart';
+import 'package:beautyminder/pages/start/agreement_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -422,7 +423,7 @@ class _LoginPageState extends State<LoginPage> {
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            RegisterPage()));
+                            AgreementPage()));
                   },
               ),
             ],
