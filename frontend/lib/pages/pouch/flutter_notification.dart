@@ -25,8 +25,7 @@ class FlutterLocalNotification {
       }
     }
 
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
@@ -70,7 +69,6 @@ class FlutterLocalNotification {
   }
 
   static Future<void> showNotification() async {
-    print("1111");
     const AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails('channel id', 'channel name',
         channelDescription: 'channel description',
@@ -87,20 +85,23 @@ class FlutterLocalNotification {
 
   }
 
-  //유통기한 날짜 함수
-  static makeDateForExpiry(DateTime expiryDate) {
+  // 유통기한 날짜
+  static makeDateForExpiry(DateTime expiryDate, int daysBefore) {
     var now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime when;
+    var notifyDate = tz.TZDateTime(tz.local, expiryDate.year, expiryDate.month, expiryDate.day).subtract(Duration(days: daysBefore));
 
-    if (expiryDate.isAtSameMomentAs(DateTime(now.year, now.month, now.day)) ||
-        now.isAfter(tz.TZDateTime(tz.local, expiryDate.year, expiryDate.month, expiryDate.day))) {
-      when = now.add(Duration(seconds: 30));
+    if (now.isAfter(notifyDate)) {
+      // 이미 지난 날짜에 대한 알림은 즉시 설정
+      return now.add(Duration(seconds: 30));
+    } else if (now.isBefore(notifyDate.subtract(Duration(days: daysBefore)))) {
+      // 사용자가 설정한 일수보다 유통기한이 더 많이 남은 경우 알림 설정하지 않음
+      return null;
     } else {
-      when = tz.TZDateTime(tz.local, expiryDate.year, expiryDate.month, expiryDate.day);
+      // 유통기한이 사용자가 설정한 일수 이내인 경우 알림 설정
+      return notifyDate;
     }
-
-    return when;
   }
+
 
 
   static Future<void> showNotification_time(
