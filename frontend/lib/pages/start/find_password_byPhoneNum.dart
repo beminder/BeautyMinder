@@ -1,12 +1,13 @@
+import 'package:beautyminder/pages/start/agreement_page.dart';
 import 'package:beautyminder/pages/start/login_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
-import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../services/forget_password_service.dart';
+import '../../widget/appBar.dart';
 
 class FindPasswordByPhoneNumberPage extends StatefulWidget {
   const FindPasswordByPhoneNumberPage({Key? key}) : super(key: key);
@@ -220,7 +221,7 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            RegisterPage()));
+                            AgreementPage()));
                   },
               ),
             ],

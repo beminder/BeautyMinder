@@ -140,4 +140,46 @@ class SearchService {
       return [];
     }
   }
+
+  //아이디로 검색하기
+  static Future<List<Cosmetic>> searchCosmeticById(String id) async {
+    print("00 : $id");
+
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
+    print("11");
+
+    final url = Uri.http(Config.apiURL, Config.getCosmeticInfobyIdAPI+id)
+        .toString();
+    print("22 : $url");
+
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
+    print("33");
+
+    try {
+      print("33-1");
+      final response = await DioClient.sendRequest(
+          'GET',
+          url,
+          headers: headers
+      );
+      print("44");
+
+      if (response.statusCode == 200) {
+        print("555");
+        dynamic jsonData = response.data;
+        print("66");
+        return [Cosmetic.fromJson(jsonData)];
+      } else {
+        print("77");
+        throw Exception("Failed to search cosmetics by keyword");
+      }
+    } catch (e) {
+      print("88");
+      throw Exception("An error occurred : $e");
+    }
+  }
 }

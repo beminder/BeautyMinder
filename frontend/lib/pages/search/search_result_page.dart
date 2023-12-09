@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../dto/cosmetic_model.dart';
 import '../../services/search_service.dart';
 import '../../services/keywordRank_service.dart';
-import '../../widget/searchAppBar.dart';
+import '../../widget/appBar.dart';
 
 class SearchResultPage extends StatefulWidget {
   final List<Cosmetic> searchResults;

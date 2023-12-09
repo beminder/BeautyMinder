@@ -160,7 +160,7 @@ SPEC CHECKSUMS:
   flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
+  fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
@@ -181,4 +181,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f00478e6f022e2dcc806a700df13f8595699c7f9
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.12.1

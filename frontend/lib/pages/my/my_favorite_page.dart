@@ -2,10 +2,10 @@ import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/favorites_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:beautyminder/pages/my/widgets/my_page_header.dart';
 
 import '../../dto/cosmetic_model.dart';
-import '../../widget/commonAppBar.dart';
+import '../../widget/appBar.dart';
+import '../../widget/my_page_header.dart';
 import '../product/product_detail_page.dart';
 
 class MyFavoritePage extends StatefulWidget {

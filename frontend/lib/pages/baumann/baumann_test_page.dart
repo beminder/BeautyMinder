@@ -1,12 +1,12 @@
 import 'package:beautyminder/dto/baumann_model.dart';
 import 'package:beautyminder/pages/baumann/baumann_result_page.dart';
-import 'package:beautyminder/widget/baumannTestAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../config.dart';
 import '../../services/baumann_service.dart';
 import '../../services/shared_service.dart';
+import '../../widget/appBar.dart';
 
 class BaumannTestPage extends StatefulWidget {
   const BaumannTestPage({Key? key, required this.data}) : super(key: key);

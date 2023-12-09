@@ -3,7 +3,6 @@ import 'package:beautyminder/pages/baumann/baumann_history_page.dart';
 import 'package:beautyminder/pages/todo/todo_page.dart';
 import 'package:beautyminder/services/Cosmetic_Recommend_Service.dart';
 import 'package:beautyminder/services/keywordRank_service.dart';
-import 'package:beautyminder/widget/homepageAppBar.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -18,7 +17,8 @@ import '../../services/expiry_service.dart';
 import '../../services/search_service.dart';
 
 import '../../services/todo_service.dart';
-import '../../widget/commonBottomNavigationBar.dart';
+import '../../widget/appBar.dart';
+import '../../widget/bottomNavigationBar.dart';
 import '../baumann/baumann_test_start_page.dart';
 import '../chat/chat_page.dart';
 import '../my/my_page.dart';

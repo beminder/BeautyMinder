@@ -1,13 +1,13 @@
 import 'package:beautyminder/dto/keywordRank_model.dart';
 import 'package:beautyminder/pages/product/product_detail_page.dart';
 import 'package:beautyminder/pages/search/search_result_page.dart';
-import 'package:beautyminder/widget/searchAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../dto/cosmetic_model.dart';
 import '../../services/search_service.dart';
 import '../../services/keywordRank_service.dart';
+import '../../widget/appBar.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key, required this.data, required this.data2})
@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchAppBar(title: _title(),context: context,),
+      appBar: SearchAppBar(title: _title(), context: context,),
       body: _searchPageUI(),
     );
   }

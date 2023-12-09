@@ -1,14 +1,14 @@
-import 'package:beautyminder/pages/my/widgets/default_dialog.dart';
-import 'package:beautyminder/pages/my/widgets/my_divider.dart';
-import 'package:beautyminder/pages/my/widgets/my_page_header.dart';
-import 'package:beautyminder/pages/my/widgets/pop_up.dart';
 import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/shared_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dto/user_model.dart';
-import '../../widget/commonAppBar.dart';
+import '../../widget/appBar.dart';
+import '../../widget/default_dialog.dart';
+import '../../widget/my_divider.dart';
+import '../../widget/my_page_header.dart';
+import '../../widget/pop_up.dart';
 
 class PasswordModifyPage extends StatefulWidget {
   const PasswordModifyPage({super.key});

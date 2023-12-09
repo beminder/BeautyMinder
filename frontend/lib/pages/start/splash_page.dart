@@ -1,3 +1,4 @@
+import 'package:beautyminder/pages/start/agreement_page.dart';
 import 'package:flutter/material.dart';
 
 import 'login_page.dart';
@@ -45,7 +46,7 @@ class _SplashPageState extends State<SplashPage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => RegisterPage()));
+            context, MaterialPageRoute(builder: (context) => AgreementPage()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

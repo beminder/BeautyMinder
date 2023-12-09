@@ -1,14 +1,16 @@
 import 'package:beautyminder/pages/home/home_page.dart';
+import 'package:beautyminder/pages/start/agreement_page.dart';
 import 'package:beautyminder/pages/start/register_page.dart';
-import 'package:beautyminder/widget/usualAppBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../dto/login_request_model.dart';
 import '../../services/api_service.dart';
+import '../../widget/appBar.dart';
 import 'find_password_byEmail.dart';
 
 class LoginPage extends StatefulWidget {
@@ -33,11 +35,47 @@ class _LoginPageState extends State<LoginPage> {
 
   bool rememberEmail = false;
 
+  TextEditingController emailController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    // email = "token@test";
-    // password = '1234';
+    loadPreferences();
+  }
+
+  void loadPreferences() async {
+    print("This is loadPreferences");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Load the checkbox state
+    setState(() {
+      rememberEmail = prefs.getBool('rememberEmail') ?? false;
+    });
+
+    // Load the email field text if the checkbox is checked
+    if (rememberEmail) {
+      print("This is loadPreferences = rememberEmail : $rememberEmail");
+      setState(() {
+        email = prefs.getString('email') ?? '';
+        emailController.text = email ?? '';
+      });
+    }
+    print("This is loadPreferences - email : $email");
+  }
+
+  void savePreferences() async {
+    print("This is savePreferences");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Save the checkbox state
+    prefs.setBool('rememberEmail', rememberEmail);
+
+    // Save the email field text if the checkbox is checked
+    if (rememberEmail) {
+      print("This is savePreferences = rememberEmail : $rememberEmail");
+      prefs.setString('email', email ?? '');
+      print("This is savePreferences = email : $email");
+    }
   }
 
   @override
@@ -95,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Update _buildEmailField method
   Widget _buildEmailField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,32 +156,33 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             height: 60,
             child: TextFormField(
-              // initialValue: 'token@test',
-              focusNode: emailFocusNode,
-              validator: (val) => val!.isEmpty ? '이메일이 입력되지 않았습니다.' : null,
-              onChanged: (val) => email = val,
-              obscureText: false,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                hintText: "이메일을 입력하세요",
-                hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                prefixIcon: Icon(
-                  Icons.person,
-                  color: emailIconColor,
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xffd86a04), // Change the color as needed
+                  controller: emailController,
+                  // initialValue: email,
+                  focusNode: emailFocusNode,
+                  validator: (val) => val!.isEmpty ? '이메일이 입력되지 않았습니다.' : null,
+                  onChanged: (val) => email = val,
+                  obscureText: false,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    hintText: "이메일을 입력하세요",
+                    hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: emailIconColor,
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xffd86a04), // Change the color as needed
+                      ),
+                    ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(10),
+                    //   borderSide: BorderSide(
+                    //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
+                    //   ),
+                    // ),
                   ),
                 ),
-                // focusedBorder: OutlineInputBorder(
-                //   borderRadius: BorderRadius.circular(10),
-                //   borderSide: BorderSide(
-                //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
-                //   ),
-                // ),
-              ),
-            ),
           )
         ),
       ],
@@ -230,6 +268,7 @@ class _LoginPageState extends State<LoginPage> {
               rememberEmail = value!;
             });
           },
+          activeColor: Color(0xffd86a04),
         ),
         Text("이메일 기억하기"),
       ],
@@ -269,6 +308,7 @@ class _LoginPageState extends State<LoginPage> {
             final result = await APIService.login(model);
 
             if (result.value == true) {
+              savePreferences();
               final userProfileResult = await APIService.getUserProfile();
               print("Here is LoginPage : ${userProfileResult.value}");
 
@@ -383,7 +423,7 @@ class _LoginPageState extends State<LoginPage> {
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            RegisterPage()));
+                            AgreementPage()));
                   },
               ),
             ],
