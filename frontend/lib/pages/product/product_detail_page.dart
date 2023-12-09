@@ -31,6 +31,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   List favorites = [];
   int favCount = 0;
+  double averageRating = 0.0;
   bool showPositiveReview = true;
   bool isFavorite = false;
 
@@ -44,8 +45,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     super.initState();
     _gptReviewInfo = GPTReviewService.getGPTReviews(widget.searchResults.id);
     _getAllNeeds(widget.searchResults.id);
-    // _navigateToCosmeticReviewPage();
+    print("˜˜˜1: $averageRating");
   }
+
+  // @override
+  // void didUpdateWidget(ProductDetailPage oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   _getAllNeeds(widget.searchResults.id);
+  //   print("˜˜˜1: $averageRating");
+  // }
 
   //필요한 서비스 호출
   Future<void> _getAllNeeds(String prouctId) async {
@@ -67,6 +75,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         favorites = loadedFavoriteList.value ?? [];
         isFavorite = favorites.any((favorite) => favorite['id'] == widget.searchResults.id);
         favCount = loadedCosmeticInfo.first.favCount ?? 0;
+        averageRating = loadedCosmeticInfo.first.averageRating ?? 0.0;
         _likesCountController.add(favCount);
       });
 
@@ -85,21 +94,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     // StreamController를 닫아줌
     _likesCountController.close();
     super.dispose();
-  }
-
-  void _navigateToCosmeticReviewPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CosmeticReviewPage(
-          cosmeticId: widget.searchResults.id,
-          onBack: () {
-            // Callback function to update information when returning from review page
-            _getAllNeeds(widget.searchResults.id);
-          },
-        ),
-      ),
-    );
   }
 
   @override
@@ -351,7 +345,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Widget _displayRatingStars() {
-    double averageRating = widget.searchResults.averageRating;
     int fullStar = averageRating.toInt();
     double halfStar = averageRating - fullStar;
 
@@ -392,7 +385,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             onRatingUpdate: (rating) {},
           ),
           Text(
-            '(${widget.searchResults.averageRating})',
+            '(${averageRating})',
             style: TextStyle(fontSize: 18),
           ),
         ],
@@ -601,13 +594,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       child: ElevatedButton(
         onPressed: () {
           // 클릭 시 AllReviewPage로 이동
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CosmeticReviewPage(
-                      cosmeticId: widget.searchResults.id,
-                    )),
-          );
+          _navigateToCosmeticReviewPage(widget.searchResults.id);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) => CosmeticReviewPage(
+          //             cosmeticId: widget.searchResults.id,
+          //           )),
+          // );
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white, // Set background color to transparent
@@ -623,6 +617,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
       ),
     );
+  }
+
+  void _navigateToCosmeticReviewPage(String id) async {
+    try {
+      await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => CosmeticReviewPage(
+          cosmeticId: id,
+          onReviewAdded: (double newAverageRating) {
+            setState(() {
+              averageRating = newAverageRating;
+            });
+          },
+        ),
+      ));
+    } catch (e) {
+      print('Error Occurred: $e');
+    }
   }
 
   Widget _gptBox() {

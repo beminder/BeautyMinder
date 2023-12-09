@@ -49,7 +49,7 @@ class Cosmetic {
           ? DateTime.tryParse(json['purchasedDate'])
           : null,
       category: json['category'] ?? 'Unknown',
-      averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
+      averageRating: json['averageRating'] ?? 0.0,
       reviewCount: json['reviewCount'] as int? ?? 0,
       totalRating: json['totalRating'] as int? ?? 0,
       keywords: List<String>.from(json['keywords'] ?? []),
@@ -86,6 +86,6 @@ class Cosmetic {
 
   @override
   String toString() {
-    return 'CosmeticModel{id: $id, name: $name, brand: $brand, images: ${images?.join(', ')}, category: $category, keywords: ${keywords?.join(', ')}, favCount: ${favCount}';
+    return 'CosmeticModel{id: $id, name: $name, brand: $brand, images: ${images?.join(', ')}, category: $category, keywords: ${keywords?.join(', ')}, favCount: ${favCount}, averageRating: ${averageRating}';
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../../services/search_service.dart';
 import '../../widget/appBar.dart';
 import '/dto/user_model.dart';
 import '/services/shared_service.dart';
@@ -15,9 +16,9 @@ import '/services/review_service.dart';
 
 class CosmeticReviewPage extends StatefulWidget {
   final String cosmeticId;
-  final VoidCallback? onBack;
+  final void Function(double)? onReviewAdded;
 
-  CosmeticReviewPage({Key? key, required this.cosmeticId, this.onBack}) : super(key: key);
+  CosmeticReviewPage({Key? key, required this.cosmeticId, this.onReviewAdded}) : super(key: key);
 
   @override
   _CosmeticReviewPageState createState() => _CosmeticReviewPageState();
@@ -33,6 +34,9 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   String _warningMessage = '';
   int _currentPage = 0;
   int _totalPages = 0;
+  List productDetails = [];
+  double updateAverageRating = 0.0;
+
 
   @override
   void initState() {
@@ -45,6 +49,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     try {
       ReviewPageResponse reviewPageResponse = await ReviewService.getReviewsForCosmetic(cosmeticId, pageNumber);
       User? currentUser = await SharedService.getUser();
+      final loadedCosmeticInfo = await SearchService.searchCosmeticById(cosmeticId);
 
       if (currentUser != null) {
         // 사용자가 작성한 리뷰를 맨 위로 이동
@@ -56,6 +61,8 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
         _totalPages = reviewPageResponse.totalPages;
         _currentPage = reviewPageResponse.number;
         _isLoading = false;
+        productDetails = loadedCosmeticInfo ?? [];
+        updateAverageRating = loadedCosmeticInfo.first.averageRating ?? 0.0;
       });
     } catch (e) {
       setState(() => _isLoading = false);
@@ -106,7 +113,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
         _showSnackBar('이미 리뷰를 작성하셨습니다.');
         return;
       }
-      _showReviewDialog(userId: user.id, onBack: widget.onBack);
+      _showReviewDialog(userId: user.id);
     } else {
       _showSnackBar('리뷰 추가는 로그인이 필수입니다.');
     }
@@ -127,7 +134,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   }
 
 
-  void _showReviewDialog({required String userId, VoidCallback? onBack}) {
+  void _showReviewDialog({required String userId}) {
     _warningMessage = '';
     showDialog(
       context: context,
@@ -210,10 +217,6 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                   // onPressed: () => Navigator.of(context).pop(),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    // Call the onBack callback when the dialog is dismissed
-                    if (onBack != null) {
-                      onBack();
-                    }
                   },
                   child: Text('취소',
                     style: TextStyle(color: Color(0xfff3bb88)),),
@@ -230,7 +233,6 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                       setDialogState(() => _warningMessage = '리뷰 이미지를 추가해주세요.');
                       return;
                     }
-
                     // 리뷰 추가 로직
                     ReviewRequest newReviewRequest = ReviewRequest(
                       content: content,
@@ -241,16 +243,17 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                     try {
                       ReviewResponse responseReview = await ReviewService.addReview(
                           newReviewRequest, _imageFiles!);
+                      final loadedCosmeticInfo = await SearchService.searchCosmeticById(widget.cosmeticId);
+
+                      double newAverageRating = loadedCosmeticInfo.first.averageRating ?? 0.0;
 
                       setState(() {
-
                         _cosmeticReviews.insert(0, responseReview);
+                        updateAverageRating = newAverageRating;
                       });
 
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
-                      if (onBack != null) {
-                        onBack();
-                      }
+                      Navigator.of(context).pop(updateAverageRating); // 다이얼로그 닫기
+                      widget.onReviewAdded!(newAverageRating);
                       _showSnackBar('리뷰가 추가되었습니다');
                     } catch (e) {
                       _showSnackBar('리뷰 추가 실패하였습니다.');
@@ -451,7 +454,14 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(automaticallyImplyLeading: true, context: context,),
+      appBar: MyAppBar(
+        automaticallyImplyLeading: true,
+        context: context,
+        onBack: () {
+          print('Custom back button pressed');
+          Navigator.pop(context, productDetails);
+        },
+      ),
       body: Column(
         children: [
           if (_isLoading)
