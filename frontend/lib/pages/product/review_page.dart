@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '/widget/appBar.dart';
+import '../../widget/appBar.dart';
 import '/dto/user_model.dart';
 import '/services/shared_service.dart';
 import '/dto/review_request_model.dart';
@@ -30,26 +30,30 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   final TextEditingController _contentController = TextEditingController();
   int _localRating = 3;
   String _warningMessage = '';
+  int _currentPage = 0;
+  int _totalPages = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchReviewsForCosmetic(widget.cosmeticId);
+    _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage);
   }
 
-  void _fetchReviewsForCosmetic(String cosmeticId) async {
+  void _fetchReviewsForCosmetic(String cosmeticId, int pageNumber) async {
     setState(() => _isLoading = true);
     try {
-      var reviews = await ReviewService.getReviewsForCosmetic(cosmeticId);
+      ReviewPageResponse reviewPageResponse = await ReviewService.getReviewsForCosmetic(cosmeticId, pageNumber);
       User? currentUser = await SharedService.getUser();
 
       if (currentUser != null) {
         // 사용자가 작성한 리뷰를 맨 위로 이동
-        _moveCurrentUserReviewToTop(reviews, currentUser.id);
+        _moveCurrentUserReviewToTop(reviewPageResponse.reviews, currentUser.id);
       }
 
       setState(() {
-        _cosmeticReviews = reviews;
+        _cosmeticReviews = reviewPageResponse.reviews;
+        _totalPages = reviewPageResponse.totalPages;
+        _currentPage = reviewPageResponse.number;
         _isLoading = false;
       });
     } catch (e) {
@@ -120,8 +124,6 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
 
     return formattedItems.join(', ');
   }
-
-
 
 
   void _showReviewDialog({required String userId}) {
@@ -350,6 +352,32 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     );
   }
 
+  // 리뷰페이지 넘기기
+  Widget _buildPaginationControls() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(5, 10, 5, 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: _currentPage > 0
+                ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage - 1)
+                : null,
+          ),
+          Text('Page ${_currentPage + 1} of $_totalPages'),
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios),
+            onPressed: _currentPage < _totalPages - 1
+                ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage + 1)
+                : null,
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
   // 사진 선택 및 미리보기 위젯
   Widget _buildImagePreview(StateSetter setDialogState) {
@@ -424,6 +452,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
 
             else
               _buildReviewList(),
+          _buildPaginationControls(),
 
         ],
       ),

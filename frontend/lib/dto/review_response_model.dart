@@ -41,3 +41,33 @@ class ReviewResponse {
     );
   }
 }
+
+class ReviewPageResponse {
+  final List<ReviewResponse> reviews;
+  final int totalPages;
+  final int totalElements;
+  final int number;
+  final int size;
+
+  ReviewPageResponse({
+    required this.reviews,
+    required this.totalPages,
+    required this.totalElements,
+    required this.number,
+    required this.size,
+  });
+
+  factory ReviewPageResponse.fromJson(Map<String, dynamic> json) {
+    List<ReviewResponse> reviews = (json['content'] as List)
+        .map((data) => ReviewResponse.fromJson(data))
+        .toList();
+
+    return ReviewPageResponse(
+      reviews: reviews,
+      totalPages: json['totalPages'],
+      totalElements: json['totalElements'],
+      number: json['number'],
+      size: json['size'],
+    );
+  }
+}
