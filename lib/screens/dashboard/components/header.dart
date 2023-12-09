@@ -36,6 +36,72 @@ class Header extends StatelessWidget {
   }
 }
 
+// class ProfileCard extends StatelessWidget {
+//   const ProfileCard({
+//     Key? key,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return PopupMenuButton<String>(
+//       itemBuilder: (context) => [
+//         PopupMenuItem<String>(
+//           value: 'editProfile',
+//           child: ListTile(
+//             leading: Icon(Icons.edit),
+//             title: Text('회원정보 수정'),
+//           ),
+//         ),
+//         PopupMenuItem<String>(
+//           value: 'logout',
+//           child: ListTile(
+//             leading: Icon(Icons.logout),
+//             title: Text('로그아웃'),
+//           ),
+//         ),
+//       ],
+//       child: Container(
+//         margin: EdgeInsets.only(left: defaultPadding),
+//         padding: EdgeInsets.symmetric(
+//           horizontal: defaultPadding,
+//           vertical: defaultPadding / 2,
+//         ),
+//         decoration: BoxDecoration(
+//           color: secondaryColor,
+//           borderRadius: const BorderRadius.all(Radius.circular(10)),
+//           border: Border.all(color: Colors.white10),
+//         ),
+//         child: Row(
+//           children: [
+//             Icon(
+//               Icons.person,
+//               size: 35,
+//               color: Colors.white,
+//             ),
+//             if (!Responsive.isMobile(context))
+//               Padding(
+//                 padding:
+//                 const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+//                 child: Text("이름"),
+//               ),
+//             Icon(Icons.keyboard_arrow_down),
+//           ],
+//         ),
+//       ),
+//       onSelected: (value) {
+//         if (value == 'editProfile') {
+//           // Navigator.push(
+//           //   context,
+//           //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+//           // );
+//         } else if (value == 'logout') {
+//           // Implement logout logic here
+//         }
+//       },
+//     );
+//   }
+// }
+///
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
     Key? key,
@@ -43,33 +109,63 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: defaultPadding),
-      padding: EdgeInsets.symmetric(
-        horizontal: defaultPadding,
-        vertical: defaultPadding / 2,
-      ),
-      decoration: BoxDecoration(
-        color: secondaryColor,
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.person,
-            size: 35,
-            color: Colors.white, // 아이콘 색상 지정
+    return PopupMenuButton<String>(
+      offset: Offset(0, 60), // 이 부분을 조절하여 원하는 위치로 이동할 수 있습니다.
+      itemBuilder: (context) => [
+        PopupMenuItem<String>(
+          value: 'editProfile',
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('회원정보 수정'),
           ),
-          if (!Responsive.isMobile(context))
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-              child: Text("이름"),
+        ),
+        PopupMenuItem<String>(
+          value: 'logout',
+          child: ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('로그아웃'),
+          ),
+        ),
+      ],
+      child: Container(
+        margin: EdgeInsets.only(left: defaultPadding),
+        padding: EdgeInsets.symmetric(
+          horizontal: defaultPadding,
+          vertical: defaultPadding / 2,
+        ),
+        decoration: BoxDecoration(
+          color: secondaryColor,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.person,
+              size: 35,
+              color: Colors.white,
             ),
-          Icon(Icons.keyboard_arrow_down),
-        ],
+            if (!Responsive.isMobile(context))
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+                child: Text("이름"),
+              ),
+            Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
       ),
+      onSelected: (value) {
+        if (value == 'editProfile') {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+          // );
+          context.read<MenuAppController>().setSelectedScreen('profile');
+        } else if (value == 'logout') {
+          // Implement logout logic here
+        }
+      },
     );
   }
 }
