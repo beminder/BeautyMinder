@@ -11,12 +11,14 @@ class homePage extends StatefulWidget{
 }
 
 class _homePage extends State<homePage>{
+  int page = 0;
 
   @override
   Widget build(BuildContext context){
   return Scaffold(
     body: TextButton(onPressed: () {
-      adminService.kickUser('token@test');
+      //adminService.kickUser('token@test');
+      adminService.getAllReviews(page++);
     }, child: Text('kick'),),
   );
   }
