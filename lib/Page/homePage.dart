@@ -1,3 +1,4 @@
+import 'package:admin/Service/admin_Service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,9 @@ class _homePage extends State<homePage>{
   @override
   Widget build(BuildContext context){
   return Scaffold(
-    body: Text('hello'),
+    body: TextButton(onPressed: () {
+      adminService.kickUser('token@test');
+    }, child: Text('kick'),),
   );
   }
 }
