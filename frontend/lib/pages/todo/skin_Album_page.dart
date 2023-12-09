@@ -10,7 +10,6 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../widget/commonAppBar.dart';
 import '../../widget/appBar.dart';
 import '../../widget/bottomNavigationBar.dart';
 import '../my/my_page.dart';

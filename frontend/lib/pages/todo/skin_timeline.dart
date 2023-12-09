@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:beautyminder/widget/commonAppBar.dart';
 
 import 'package:beautyminder/widget/appBar.dart';
 
