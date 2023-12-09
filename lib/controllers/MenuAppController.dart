@@ -5,6 +5,15 @@ class MenuAppController extends ChangeNotifier {
 
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
+  String _selectedScreen = 'dashboard';
+
+  String get selectedScreen => _selectedScreen;
+
+  void setSelectedScreen(String screen) {
+    _selectedScreen = screen;
+    notifyListeners();
+  }
+
   void controlMenu() {
     if (!_scaffoldKey.currentState!.isDrawerOpen) {
       _scaffoldKey.currentState!.openDrawer();
