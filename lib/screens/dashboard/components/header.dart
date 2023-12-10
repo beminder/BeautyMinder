@@ -50,8 +50,6 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = userProfileResult.value;
-    print("**** : $user");
     return PopupMenuButton<String>(
       offset: Offset(0, 60), // 이 부분을 조절하여 원하는 위치로 이동할 수 있습니다.
       itemBuilder: (context) => [
