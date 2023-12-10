@@ -9,12 +9,12 @@ import '../../models/review_response_model.dart';
 import '../dashboard/components/header.dart';
 import '../main/components/side_menu.dart';
 
-class ReviewScreen extends StatefulWidget {
+class filteredReviewScreen extends StatefulWidget {
   @override
   _ReviewScreen createState() => _ReviewScreen();
 }
 
-class _ReviewScreen extends State<ReviewScreen> {
+class _ReviewScreen extends State<filteredReviewScreen> {
   late Future<api.Result<User>> futureUserProfile;
   List<ReviewResponse> reviews = [];
   ScrollController _scrollController = ScrollController();
@@ -32,7 +32,7 @@ class _ReviewScreen extends State<ReviewScreen> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isFetching) {
-      _fetchReviews();
+      //_fetchReviews();
     }
   }
 
@@ -44,7 +44,7 @@ class _ReviewScreen extends State<ReviewScreen> {
       isFetching = true;
     });
 
-    final result = await admin.adminService.getAllReviews(currentPage);
+    final result = await admin.adminService.getFilteredReviews();
     if (result.isSuccess && result.value != null) {
       setState(() {
 
@@ -99,16 +99,16 @@ class _ReviewScreen extends State<ReviewScreen> {
   }
 
   // 리뷰를 차단하는 함수
-  Future<void> _blockReview(String reviewId) async {
-    final result = await admin.adminService.updateReviewStatus(reviewId, 'denied');
+  Future<void> _approveReview(String reviewId) async {
+    final result = await admin.adminService.updateReviewStatus(reviewId, 'approved');
     if (result.isSuccess) {
       setState(() {
         reviews.removeWhere((review) => review.id == reviewId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("리뷰를 차단했습니다.")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("리뷰 필터링을 해제했습니다.")));
     } else {
       // 에러 처리
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("리뷰 차단에 실패했습니다.")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("리뷰 필터링 해제에 실패했습니다.")));
     }
   }
 
@@ -128,8 +128,8 @@ class _ReviewScreen extends State<ReviewScreen> {
               title: Text(review.content),
               subtitle: Text('Rating: ${review.rating}'),
               trailing: IconButton(
-                icon: Icon(Icons.disabled_visible),
-                onPressed: () => _blockReview(review.id),
+                icon: Icon(Icons.preview),
+                onPressed: () => _approveReview(review.id),
               ),
             ),
           );
