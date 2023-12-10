@@ -111,6 +111,7 @@ class adminService {
 
   static Future<Result<String>> updateReviewStatus(
       String reviewid, String stat) async {
+
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
@@ -119,6 +120,7 @@ class adminService {
         .toString();
 
     print("url : ${url}");
+
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
@@ -126,18 +128,24 @@ class adminService {
 
     Map<String, dynamic> body = {"status": "${stat}"};
 
+    print("url1 : ${url}");
+
     try {
       final response = await DioClient.sendRequest('PATCH', url,
           headers: headers, body: body);
+      print("url2 : ${url}");
 
       if (response.statusCode == 200) {
         print("response : ${response.data}");
+        print("url3 : ${url}");
 
         return Result.success(response.data);
       } else {
+        print("url4 : ${url}");
         return Result.failure('Failed to update review status');
       }
     } catch (e) {
+      print("url5 : ${url}, $e");
       return Result.failure("An error occured : $e");
     }
   }

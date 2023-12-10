@@ -100,15 +100,22 @@ class _ReviewScreen extends State<ReviewScreen> {
 
   // 리뷰를 차단하는 함수
   Future<void> _blockReview(String reviewId) async {
-    final result = await admin.adminService.updateReviewStatus(reviewId, 'denied');
-    if (result.isSuccess) {
-      setState(() {
-        reviews.removeWhere((review) => review.id == reviewId);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("리뷰를 차단했습니다.")));
-    } else {
-      // 에러 처리
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("리뷰 차단에 실패했습니다.")));
+    try {
+      final result = await admin.adminService.updateReviewStatus(reviewId, 'denied');
+      if (result.isSuccess) {
+        setState(() {
+          reviews.removeWhere((review) => review.id == reviewId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("리뷰를 차단했습니다.")));
+      } else {
+        // 에러 처리
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("리뷰 차단에 실패했습니다.")));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("리뷰 차단에 실패했습니다. : $e")));
     }
   }
 
