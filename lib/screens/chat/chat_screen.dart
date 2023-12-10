@@ -7,6 +7,7 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import '../../Service/api_service.dart';
 import '../../Service/dio_client.dart';
+import '../../Service/shared_service.dart';
 import '../../config.dart';
 import '../../constants.dart';
 import '../main/components/header.dart';
@@ -23,45 +24,79 @@ class _ChatScreenState extends State<ChatScreen> {
   final String _url = 'http://ec2-43-202-92-163.ap-northeast-2.compute.amazonaws.com:8080/ws/chat';
   late StompClient stompClient;
 
-  // final accessToken = await SharedService.getAccessToken();
-  // final refreshToken = await SharedService.getRefreshToken();
+  bool isApiCallProcess = false;
+  bool isLoading = true;
+
+  late String? accessToken;
+  late String? refreshToken;
 
   List<String> userList = [];
+
+  Future<void> _getTokens() async {
+
+    if (isApiCallProcess) {
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      isApiCallProcess = true;
+    });
+
+    try {
+      final loadedAccessToken = await SharedService.getAccessToken();
+      final loadedRefreshToken = await SharedService.getRefreshToken();
+
+      setState(() {
+        accessToken = loadedAccessToken;
+        refreshToken = loadedRefreshToken;
+      });
+
+    } catch (e) {
+      print('An error occurred : $e');
+    }
+    finally {
+      setState(() {
+        isLoading = false;
+        isApiCallProcess = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    stompClient = StompClient(
-      config: StompConfig.sockJS(
-        url: _url,
-        onConnect: onConnect,
-        beforeConnect: () async {
-          print('waiting to connect...');
-          await Future.delayed(const Duration(milliseconds: 200));
-          print('connecting...');
-        },
-        onDebugMessage: (dynamic error) => {
-          print('$error')
-        },
-        onWebSocketError: (dynamic error) =>
-        {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('웹소켓 연결에 실패했습니다. 다시 시도해주세요.'),
-            ),
-          )
-        },
-        stompConnectHeaders: {
-          'access-token':
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
-        },
-        webSocketConnectHeaders: {
-          'access-token':
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
-        },
-      ),
-    );
-    stompClient.activate();
+    _getTokens().then((_) {
+      stompClient = StompClient(
+        config: StompConfig.sockJS(
+          url: _url,
+          onConnect: onConnect,
+          beforeConnect: () async {
+            print('waiting to connect...');
+            await Future.delayed(const Duration(milliseconds: 200));
+            print('connecting...');
+          },
+          onDebugMessage: (dynamic error) => {
+            print('$error')
+          },
+          onWebSocketError: (dynamic error) =>
+          {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('웹소켓 연결에 실패했습니다. 다시 시도해주세요.'),
+              ),
+            )
+          },
+          stompConnectHeaders: {
+            'access-token': '$accessToken'
+          },
+          webSocketConnectHeaders: {
+            'access-token': '$accessToken'
+          },
+        ),
+      );
+      stompClient.activate();
+    });
   }
 
   void onConnect(StompFrame frame) {
