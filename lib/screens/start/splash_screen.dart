@@ -18,16 +18,18 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginScreen()));
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 13),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            color: secondaryColor),
-        child: Text(
-          '로그인하기',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+      child: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width/3,
+          padding: EdgeInsets.symmetric(vertical: 13),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              color: secondaryColor),
+          child: Text(
+            '로그인하기',
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
         ),
       ),
     );
@@ -63,13 +65,6 @@ class _SplashScreenState extends State<SplashScreen> {
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
-              // boxShadow: <BoxShadow>[
-              //   BoxShadow(
-              //       color: Colors.grey.shade200,
-              //       offset: Offset(2, 4),
-              //       blurRadius: 5,
-              //       spreadRadius: 2)
-              // ],
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -80,12 +75,9 @@ class _SplashScreenState extends State<SplashScreen> {
             children: <Widget>[
               _title(),
               SizedBox(
-                height: 80,
+                height: MediaQuery.of(context).size.height*0.1,
               ),
               _submitButton(),
-              SizedBox(
-                height: 20,
-              ),
             ],
           ),
         ),

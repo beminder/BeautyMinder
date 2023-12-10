@@ -91,24 +91,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // 로그인 UI
   Widget _loginUI(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 200), // 여백 추가
-          _buildEmailField(), // 이메일 필드
+    return Center(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width/2,
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 200), // 여백 추가
+            _buildEmailField(), // 이메일 필드
 
-          SizedBox(height: 30), // 여백 추가
-          _buildPasswordField(), // 비밀번호 필드
+            SizedBox(height: 30), // 여백 추가
+            _buildPasswordField(), // 비밀번호 필드
 
-          SizedBox(height: 30),
-          _checkboxRememberEmail(),
+            SizedBox(height: 30),
+            _checkboxRememberEmail(),
 
-          SizedBox(height: 80), // 여백 추가
-          _buildLoginButton(context), // 로그인 버튼
+            SizedBox(height: 80), // 여백 추가
+            _buildLoginButton(context), // 로그인 버튼
 
-        ],
+          ],
+        ),
       ),
     );
   }

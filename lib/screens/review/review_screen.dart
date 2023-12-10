@@ -126,8 +126,8 @@ class _ReviewScreen extends State<ReviewScreen> {
             color: secondaryColor,
             child: ListTile(
               leading: review.images.isNotEmpty
-                  ? Image.network(review.images.first)
-                  : Icon(Icons.camera_alt_outlined),
+                  ? Image.network(review.images.first ?? '')
+                  : Image.asset('assets/images/noImg.jpg' ?? ''),
               title: Text(review.content),
               subtitle: Text('Rating: ${review.rating}'),
               trailing: IconButton(

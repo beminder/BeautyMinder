@@ -58,4 +58,3 @@ class StorageDetails extends StatelessWidget {
     );
   }
 }
-g

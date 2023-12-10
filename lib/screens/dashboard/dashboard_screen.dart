@@ -7,20 +7,9 @@ import '../../constants.dart';
 import '../main/components/header.dart';
 
 import 'components/chart.dart';
-import 'components/recent_files.dart';
-import 'components/storage_details.dart';
 import 'package:admin/Service/admin_Service.dart' as admin;
 
 class DashboardScreen extends StatelessWidget {
-  // Future<double?> getUsageCPU() async {
-  //   try {
-  //     final result = await admin.adminService.getUsageCPU();
-  //     print("usage: ${result.value}");
-  //     return result.value;
-  //   } catch (error) {
-  //     print("Error: $error");
-  //   }
-  // }
 
   Future<admin.Result<double>> getUsageCPU() async {
     try {
@@ -83,17 +72,16 @@ class DashboardScreen extends StatelessWidget {
                 },
               ),
               // Header(headTitle: "Dashboard",),
-              SizedBox(height: defaultPadding),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      children: [
-                        // MyFiles(),
-                        //  SizedBox(height: defaultPadding),
-                        FutureBuilder<admin.Result<double>>(
+              SizedBox(height: MediaQuery.of(context).size.height*0.1,),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.05),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!Responsive.isMobile(context))
+                      Expanded(
+                        flex: 10,
+                        child: FutureBuilder<admin.Result<double>>(
                           future: getUpTime(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
@@ -105,98 +93,136 @@ class DashboardScreen extends StatelessWidget {
                               return Text('No server uptime data available');
                             } else {
                               final uptimeHours = snapshot.data!.value!;
-                              return Column(
-                                children: [
-                                  Text("서버 가동 시간",
-                                      style: TextStyle(fontSize: 40)),
-                                  SizedBox(height:100),
-
-                                  Text(
-                                    "${uptimeHours.toStringAsFixed(2)} hours",
-                                    style: TextStyle(fontSize: 50, color: Colors.grey),
-                                  )
-                                ],
+                              return Container(
+                                width: MediaQuery.of(context).size.width/4,
+                                height: MediaQuery.of(context).size.height*0.7,
+                                decoration: BoxDecoration(
+                                  color: secondaryColor,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(color: Colors.white54),
+                                ),
+                                padding: EdgeInsets.all(defaultPadding),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "서버 가동 시간",
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      "${uptimeHours.toStringAsFixed(2)} hours",
+                                      style: TextStyle(fontSize: 30, color: Colors.white54),
+                                    )
+                                  ],
+                                ),
                               );
                             }
                           },
                         ),
-                        //RecentFiles(),
-                      ],
-                    ),
-                  ),
-                  if (!Responsive.isMobile(context))
-                    Expanded(
-                      flex: 4,
-                      child: FutureBuilder<admin.Result<double>>(
-                        future: getUsage1M(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.value == null) {
-                            // 데이터가 없거나 value가 null일 경우
-                            return Text('No CPU usage data available');
-                          } else {
-                            // value가 null이 아닌 경우
-                            return Column(
-                              children: [
-                                Text(
-                                  "서버 1분 가용량",
-                                  style: TextStyle(fontSize: 40),
-                                ),
-                                SizedBox(height: 50),
-                                Chart(
-                                  Usage: snapshot.data!.value!,
-                                  color: Colors.red,
-                                ),
-                              ],
-                            );
-                          }
-                        },
                       ),
-                    ),
-                  if (!Responsive.isMobile(context))
-                    SizedBox(width: defaultPadding),
-                  // On Mobile means if the screen is less than 850 we don't want to show it
-                  if (!Responsive.isMobile(context))
                     Expanded(
-                      flex: 4,
-                      child: FutureBuilder<admin.Result<double>>(
-                        future: getUsageCPU(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.value == null) {
-                            // 데이터가 없거나 value가 null일 경우
-                            return Text('No CPU usage data available');
-                          } else {
-                            // value가 null이 아닌 경우
-                            return Column(
-                              children: [
-                                Text(
-                                  "CPU 사용량",
-                                  style: TextStyle(fontSize: 40),
-                                ),
-                                SizedBox(height: 50),
-                                Chart(
-                                  Usage: snapshot.data!.value!,
-                                  color: Color(0xFF2697FF),
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
+                      flex: 1,
+                      child: SizedBox(height: MediaQuery.of(context).size.width*0.05,),
                     ),
-                ],
-              )
+                    if (!Responsive.isMobile(context))
+                      Expanded(
+                        flex: 10,
+                        child: FutureBuilder<admin.Result<double>>(
+                          future: getUsage1M(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.value == null) {
+                              // 데이터가 없거나 value가 null일 경우
+                              return Text('No CPU usage data available');
+                            } else {
+                              return Container(
+                                width: MediaQuery.of(context).size.width/4,
+                                height: MediaQuery.of(context).size.height*0.7,
+                                decoration: BoxDecoration(
+                                  color: secondaryColor,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(color: Colors.white54),
+                                ),
+                                padding: EdgeInsets.all(defaultPadding),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "서버 1분 가용량",
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Chart(
+                                      Usage: snapshot.data!.value!,
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(height: MediaQuery.of(context).size.width*0.05,),
+                    ),
+                    if (!Responsive.isMobile(context))
+                      Expanded(
+                        flex: 10,
+                        child: FutureBuilder<admin.Result<double>>(
+                          future: getUsageCPU(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.value == null) {
+                              // 데이터가 없거나 value가 null일 경우
+                              return Text('No CPU usage data available');
+                            } else {
+                              return Container(
+                                width: MediaQuery.of(context).size.width/4,
+                                height: MediaQuery.of(context).size.height*0.7,
+                                decoration: BoxDecoration(
+                                  color: secondaryColor,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(color: Colors.white54),
+                                ),
+                                padding: EdgeInsets.all(defaultPadding),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "CPU 사용량",
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Chart(
+                                      Usage: snapshot.data!.value!,
+                                      color: Color(0xFF2697FF),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
