@@ -29,79 +29,12 @@ class Header extends StatelessWidget {
           ),
         if (!Responsive.isMobile(context))
           Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
-        // Expanded(child: SearchField()),
         ProfileCard()
       ],
     );
   }
 }
 
-// class ProfileCard extends StatelessWidget {
-//   const ProfileCard({
-//     Key? key,
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return PopupMenuButton<String>(
-//       itemBuilder: (context) => [
-//         PopupMenuItem<String>(
-//           value: 'editProfile',
-//           child: ListTile(
-//             leading: Icon(Icons.edit),
-//             title: Text('회원정보 수정'),
-//           ),
-//         ),
-//         PopupMenuItem<String>(
-//           value: 'logout',
-//           child: ListTile(
-//             leading: Icon(Icons.logout),
-//             title: Text('로그아웃'),
-//           ),
-//         ),
-//       ],
-//       child: Container(
-//         margin: EdgeInsets.only(left: defaultPadding),
-//         padding: EdgeInsets.symmetric(
-//           horizontal: defaultPadding,
-//           vertical: defaultPadding / 2,
-//         ),
-//         decoration: BoxDecoration(
-//           color: secondaryColor,
-//           borderRadius: const BorderRadius.all(Radius.circular(10)),
-//           border: Border.all(color: Colors.white10),
-//         ),
-//         child: Row(
-//           children: [
-//             Icon(
-//               Icons.person,
-//               size: 35,
-//               color: Colors.white,
-//             ),
-//             if (!Responsive.isMobile(context))
-//               Padding(
-//                 padding:
-//                 const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-//                 child: Text("이름"),
-//               ),
-//             Icon(Icons.keyboard_arrow_down),
-//           ],
-//         ),
-//       ),
-//       onSelected: (value) {
-//         if (value == 'editProfile') {
-//           // Navigator.push(
-//           //   context,
-//           //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-//           // );
-//         } else if (value == 'logout') {
-//           // Implement logout logic here
-//         }
-//       },
-//     );
-//   }
-// }
-///
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
     Key? key,
@@ -157,10 +90,6 @@ class ProfileCard extends StatelessWidget {
       ),
       onSelected: (value) {
         if (value == 'editProfile') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-          // );
           context.read<MenuAppController>().setSelectedScreen('profile');
         } else if (value == 'logout') {
           // Implement logout logic here

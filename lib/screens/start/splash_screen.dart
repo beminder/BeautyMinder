@@ -1,3 +1,4 @@
+import 'package:admin/constants.dart';
 import 'package:admin/screens/start/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,10 @@ class _SplashScreenState extends State<SplashScreen> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(5)),
-            color: Colors.white),
+            color: secondaryColor),
         child: Text(
           '로그인하기',
-          style: TextStyle(fontSize: 20, color: Colors.black54),
+          style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
     );
@@ -62,17 +63,17 @@ class _SplashScreenState extends State<SplashScreen> {
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey.shade200,
-                    offset: Offset(2, 4),
-                    blurRadius: 5,
-                    spreadRadius: 2)
-              ],
+              // boxShadow: <BoxShadow>[
+              //   BoxShadow(
+              //       color: Colors.grey.shade200,
+              //       offset: Offset(2, 4),
+              //       blurRadius: 5,
+              //       spreadRadius: 2)
+              // ],
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.black54, Colors.black54])),
+                  colors: [bgColor, bgColor])),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,

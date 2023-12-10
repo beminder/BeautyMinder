@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../Service/api_service.dart';
+import '../../constants.dart';
 import '../../dto/login_request_model.dart';
 import '../main/main_screen.dart';
 
@@ -68,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login'),),
-      backgroundColor: Colors.black54,
+      appBar: AppBar(title: Text('Login'),backgroundColor: secondaryColor,),
+      backgroundColor: bgColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -250,8 +251,8 @@ class _LoginScreenState extends State<LoginScreen> {
         width: screenWidth, // 원하는 너비 설정
         height: 50, // 원하는 높이 설정
         decoration: BoxDecoration(
-          color: Colors.white54, // 버튼 배경색 설정
-          borderRadius: BorderRadius.circular(10.0), // 원하는 모양 설정
+          color: secondaryColor, // 버튼 배경색 설정
+          borderRadius: BorderRadius.circular(5.0), // 원하는 모양 설정
         ),
         child: Center(
           child: Text(
