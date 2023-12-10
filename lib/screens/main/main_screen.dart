@@ -21,9 +21,6 @@ class MainScreen extends StatelessWidget {
     'profile': ProfileScreen(),
   };
 
-  // final userProfileResult = await APIService.getUserProfile();
-  // print("Here is LoginPage : ${userProfileResult.value}");
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,7 +1,5 @@
 
 import 'package:dio/dio.dart';
-import 'package:http_parser/src/media_type.dart';
-import 'package:mime/src/mime_type.dart';
 
 import '../config.dart';
 import '../dto/login_request_model.dart';
@@ -11,28 +9,7 @@ import 'dio_client.dart';
 import 'shared_service.dart';
 
 class APIService {
-  //로그인
-  // static Future<Result<bool>> login(LoginRequestModel model) async {
-  //   final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
-  //   final formData = FormData.fromMap({
-  //     'email': model.email ?? '',
-  //     'password': model.password ?? '',
-  //   });
-  //
-  //   try {
-  //     final response = await DioClient.sendRequest('POST', url, body: formData);
-  //     if (response.statusCode == 200) {
-  //       print("response: ${response}");
-  //       await SharedService.setLoginDetails(loginResponseJson(response.data));
-  //       return Result.success(true);
-  //     }
-  //     return Result.failure("Login failed");
-  //   } catch (e) {
-  //     return Result.failure("An error occurred: $e");
-  //   }
-  // }
 
-  // 로그인
   // 로그인하고 관리자인증까지 같이함
   static Future<Result<bool>> login(LoginRequestModel model) async {
     final url = Uri.http(Config.apiURL, Config.loginAPI).toString();

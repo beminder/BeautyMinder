@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../Service/api_service.dart';
 import '../../constants.dart';
 import '../../dto/user_model.dart';
-import '../dashboard/components/header.dart';
+import '../main/components/header.dart';
 import '../start/splash_screen.dart';
 
 class ProfileScreen extends StatelessWidget {

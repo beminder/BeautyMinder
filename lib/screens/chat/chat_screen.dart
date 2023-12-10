@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:admin/Service/admin_Service.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import '../../Service/api_service.dart';
 import '../../Service/dio_client.dart';
+import '../../Service/shared_service.dart';
 import '../../config.dart';
 import '../../constants.dart';
-import '../dashboard/components/header.dart';
+import '../main/components/header.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -24,12 +24,14 @@ class _ChatScreenState extends State<ChatScreen> {
   final String _url = 'http://ec2-43-202-92-163.ap-northeast-2.compute.amazonaws.com:8080/ws/chat';
   late StompClient stompClient;
 
+  late final String? accessToken;
+  late final String? refreshToken;
+
   List<String> userList = [];
 
   @override
   void initState() {
     super.initState();
-    print("ˆˆ1");
     stompClient = StompClient(
       config: StompConfig.sockJS(
         url: _url,
@@ -44,28 +46,24 @@ class _ChatScreenState extends State<ChatScreen> {
         },
         onWebSocketError: (dynamic error) =>
         {
-          Fluttertoast.showToast(
-            msg: "웹소켓 연결에 실패했습니다. 다시 시도해주세요. $error",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.CENTER,
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('웹소켓 연결에 실패했습니다. 다시 시도해주세요.'),
+            ),
           )
         },
         stompConnectHeaders: {
-          'access-token':
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
+          'access-token': '$accessToken'
         },
         webSocketConnectHeaders: {
-          'access-token':
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
-        },
+          'access-token': '$accessToken'
+          },
       ),
     );
     stompClient.activate();
-    print("ˆˆ2");
   }
 
   void onConnect(StompFrame frame) {
-    print("ˆˆ3");
     // Subscribe to get the current and updated list of users
     stompClient.subscribe(
       destination: '/topic/room/currentUsers',
@@ -80,12 +78,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> kickUser(String username) async {
-    // final accessToken = await SharedService.getAccessToken();
-    // final refreshToken = await SharedService.getRefreshToken();
-    print("ˆˆ4");
+
+    accessToken = await SharedService.getAccessToken();
+    refreshToken = await SharedService.getRefreshToken();
 
     final headers = {
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
+      'Authorization': 'Bearer $accessToken'
     };
 
     final url = Uri.http(Config.apiURL, Config.kickUserAPI).toString();
@@ -94,15 +92,26 @@ class _ChatScreenState extends State<ChatScreen> {
           'POST', url, body: {"username": username}, headers: headers);
 
       if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "User $username kicked successfully");
-        print("ˆˆ5");
+        // Fluttertoast.showToast(msg: "User $username kicked successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('사용자(${username})를 강제 퇴장시키는 데 성공하였습니다.'),
+          ),
+        );
       } else {
-        print("ˆˆ6");
-        Fluttertoast.showToast(msg: "Failed to kick user $username");
+        // Fluttertoast.showToast(msg: "Failed to kick user $username");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('사용자(${username})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
+          ),
+        );
       }
     } catch (e) {
-      print("ˆˆ7");
-      Fluttertoast.showToast(msg: "Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('서버가 원활하지 않습니다. 잠시 후 다시 시도해주세요.'),
+        ),
+      );
     }
   }
 
@@ -132,7 +141,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   }
                 },
               ),
-              // Header(headTitle: "Chat"),
               SizedBox(height: defaultPadding),
               Center(
                 child: Form(
@@ -237,6 +245,5 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     stompClient.deactivate();
     super.dispose();
-    print("ˆˆ9");
   }
 }
