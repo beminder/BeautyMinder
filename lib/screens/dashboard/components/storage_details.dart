@@ -28,7 +28,7 @@ class StorageDetails extends StatelessWidget {
             ),
           ),
           SizedBox(height: defaultPadding),
-          Chart(),
+         // Chart(),
           StorageInfoCard(
             svgSrc: "assets/icons/Documents.svg",
             title: "Documents Files",
@@ -58,3 +58,4 @@ class StorageDetails extends StatelessWidget {
     );
   }
 }
+g
