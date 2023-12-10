@@ -1,27 +1,25 @@
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:admin/constants.dart';
+import 'package:admin/Service/admin_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-
 import '../../Service/api_service.dart';
 import '../../Service/dio_client.dart';
 import '../../config.dart';
+import '../../constants.dart';
 import '../dashboard/components/header.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
-
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // final String _url = '/ws/chat';
+  TextEditingController _nicknameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Key for the form
 
   final String _url = 'http://ec2-43-202-92-163.ap-northeast-2.compute.amazonaws.com:8080/ws/chat';
   late StompClient stompClient;
@@ -108,67 +106,15 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-// Timer.periodic(const Duration(seconds: 10), (_) {
-  //   stompClient.send(
-  //     destination: '/app/test/endpoints',
-  //     body: json.encode({'a': 123}),
-  //   );
-  // });
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     home: Scaffold(
-  //       backgroundColor: bgColor,
-  //       body: SafeArea(
-  //         child: SingleChildScrollView(
-  //           primary: false,
-  //           padding: EdgeInsets.all(defaultPadding),
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               FutureBuilder(
-  //                 future: APIService.getUserProfile(),
-  //                 builder: (context, snapshot) {
-  //                   if (snapshot.connectionState == ConnectionState.waiting) {
-  //                     return CircularProgressIndicator();
-  //                   } else if (snapshot.hasError) {
-  //                     return Text('Error: ${snapshot.error}');
-  //                   } else {
-  //                     final userProfileResult = snapshot.data;
-  //                     return Header(
-  //                       headTitle: 'Chat',
-  //                       userProfileResult: userProfileResult, // Pass userProfileResult
-  //                     );
-  //                   }
-  //                 },
-  //               ),
-  //               // ListView.builder(
-  //               //   itemCount: userList.length,
-  //               //   itemBuilder: (context, index) {
-  //               //     return ListTile(
-  //               //       title: Text(userList[index]),
-  //               //       onTap: () => kickUser(userList[index]),
-  //               //     );
-  //               //   },
-  //               // ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // return Text('Chat Page');
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           primary: false,
           padding: EdgeInsets.all(defaultPadding),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FutureBuilder(
                 future: APIService.getUserProfile(),
@@ -186,24 +132,100 @@ class _ChatScreenState extends State<ChatScreen> {
                   }
                 },
               ),
-              // Header(headTitle: "Review",),
+              // Header(headTitle: "Chat"),
               SizedBox(height: defaultPadding),
-              Container(
-                height: 500,
-                child:
-                  Expanded(
-                    flex: 5,
-                    child: ListView.builder(
-                      itemCount: userList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(userList[index]),
-                          onTap: () => kickUser(userList[index]),
-                        );
-                      },
-                    ),
+              Center(
+                child: Form(
+                  key: _formKey, // Assign the key to the form
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: TextFormField(
+                              controller: _nicknameController,
+                              decoration: InputDecoration(
+                                hintText: "강제 퇴장시킬 사용자의 이메일을 입력하세요.",
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                              ),
+                              validator: (val) => val!.isEmpty
+                                  ? '필드가 비어있습니다. 강제 퇴장 시킬 사용자의 이메일을 입력하세요.'
+                                  : null,
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () async {
+                              // Validate the form before performing any action
+                              if (_formKey.currentState!.validate()) {
+                                print("퇴장: ${_nicknameController.text}");
+                                String kickoutUserNickname = _nicknameController.text;
+                                try {
+                                  final response = await adminService.kickUser(kickoutUserNickname);
+                                  if (response.isSuccess) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 성공하였습니다.'),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('서버가 원활하지 않습니다. 잠시 후 다시 시도해주세요.'),
+                                    ),
+                                  );
+                                }
+
+                              }
+                            },
+                            child: Text("퇴장"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: secondaryColor
+                            )
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: defaultPadding),
+                      Divider(),
+                      // Text("실시간 채팅방 유저 리스트", style: TextStyle(color: Colors.white54),),
+                      Container(
+                        // height: MediaQuery.of(context).size.height*0.5,
+                        height:500,
+                        child:
+                        Expanded(
+                          flex: 5,
+                          child: ListView.builder(
+                            itemCount: userList.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(userList[index]),
+                                onTap: () => kickUser(userList[index]),
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-              )
+                ),
+              ),
             ],
           ),
         ),
