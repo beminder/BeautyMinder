@@ -327,8 +327,8 @@ class _LoginPageState extends State<LoginPage> {
                       } else {
                         // Once data is loaded, navigate to the home page
 
-                        //return homePage();
-                        return DashboardScreen();
+                        return homePage();
+                        //return DashboardScreen();
                           //DashboardScreen();
                       }
                     },

@@ -41,6 +41,15 @@ class ReviewResponse {
       isFiltered: json['filtered'] as bool? ?? false,
     );
   }
+
+  @override
+  String toString() {
+    return 'ReviewResponse(id: $id, content: $content, rating: $rating, '
+        'images: $images, user: $user, cosmetic: $cosmetic, '
+        'createdAt: $createdAt, nlpAnalysis: $nlpAnalysis, '
+        'isFiltered: $isFiltered)';
+  }
+
 }
 
 class ReviewPageResponse {
