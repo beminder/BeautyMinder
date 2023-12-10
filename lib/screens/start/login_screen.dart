@@ -6,18 +6,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
+import '../../Service/api_service.dart';
 import '../../dto/login_request_model.dart';
-import '../Service/api_service.dart';
-import '../screens/dashboard/dashboard_screen.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   bool isApiCallProcess = false;
   bool hidePassword = true;
   final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
@@ -81,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text('Login'),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black54,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -119,14 +118,6 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(height: 80), // 여백 추가
           _buildLoginButton(), // 로그인 버튼
 
-          SizedBox(height: 80), // 여백 추가
-          _buildOrText(), // OR 텍스트
-
-          // SizedBox(height: 30), // 여백 추가
-          // _buildForgetPassword(), // 비밀번호 찾기
-
-          // SizedBox(height: 20), // 여백 추가
-          // _buildSignupText(), // 회원가입 텍스트
         ],
       ),
     );
@@ -140,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
           "이메일 입력",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 16,
           ),
         ),
@@ -149,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
             onFocusChange: (hasFocus) {
               setState(() {
                 emailIconColor =
-                    hasFocus ? Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
+                    hasFocus ? Colors.white : Colors.grey.withOpacity(0.7);
               });
             },
             child: Container(
@@ -171,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: Color(0xffd86a04), // Change the color as needed
+                      color: Colors.white, // Change the color as needed
                     ),
                   ),
                 ),
@@ -190,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
           "비밀번호 입력",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 16,
           ),
         ),
@@ -199,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
           onFocusChange: (hasFocus) {
             setState(() {
               passwordIconColor =
-                  hasFocus ? Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
+                  hasFocus ? Colors.white : Colors.grey.withOpacity(0.7);
             });
           },
           child: Container(
@@ -228,20 +219,14 @@ class _LoginPageState extends State<LoginPage> {
                     hidePassword ? Icons.visibility_off : Icons.visibility,
                     color: hidePassword
                         ? Colors.grey.withOpacity(0.7)
-                        : Color(0xffd86a04),
+                        : Colors.white,
                   ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xffd86a04), // Change the color as needed
+                    color: Colors.white, // Change the color as needed
                   ),
                 ),
-                // focusedBorder: OutlineInputBorder(
-                //   borderRadius: BorderRadius.circular(10),
-                //   borderSide: BorderSide(
-                //     color: Color(0xffd86a04), // 클릭 시 테두리 색상 변경
-                //   ),
-                // ),
               ),
             ),
           ),
@@ -260,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
               rememberEmail = value!;
             });
           },
-          activeColor: Color(0xffd86a04),
+          activeColor: Colors.white54,
         ),
         Text("이메일 기억하기"),
       ],
@@ -276,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
         width: screenWidth, // 원하는 너비 설정
         height: 50, // 원하는 높이 설정
         decoration: BoxDecoration(
-          color: Color(0xfffe9738), // 버튼 배경색 설정
+          color: Colors.white54, // 버튼 배경색 설정
           borderRadius: BorderRadius.circular(10.0), // 원하는 모양 설정
         ),
         child: Center(
@@ -375,50 +360,6 @@ class _LoginPageState extends State<LoginPage> {
                     // Navigator.of(context).push(MaterialPageRoute(
                     //     builder: (context) =>
                     //         FindPasswordByEmailPage()));
-                  },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // OR 텍스트
-  Widget _buildOrText() {
-    return const Center(
-      child: Text(
-        "OR",
-        style: TextStyle(
-          fontSize: 15,
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
-
-  // 회원가입 텍스트
-  Widget _buildSignupText() {
-    return Align(
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 25, right: 25),
-        child: RichText(
-          text: TextSpan(
-            style: const TextStyle(color: Colors.black, fontSize: 15.0),
-            children: <TextSpan>[
-              const TextSpan(text: '등록된 계정이 없으신가요? '),
-              TextSpan(
-                text: '회원가입 하기',
-                style: const TextStyle(
-                  color: Color(0xffd86a04),
-                  fontWeight: FontWeight.bold,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (context) =>
-                    //         AgreementPage()));
                   },
               ),
             ],

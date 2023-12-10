@@ -6,6 +6,7 @@ import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/main/main_screen.dart';
 import 'package:admin/screens/profile/profile_screen.dart';
 import 'package:admin/screens/review/review_screen.dart';
+import 'package:admin/screens/start/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
             create: (context) => MenuAppController(),
           ),
         ],
-        child: MainScreen(),
+        child: LoginScreen(),
         //LoginPage(),
         //MainScreen(),
       ),
