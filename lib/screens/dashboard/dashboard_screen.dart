@@ -72,7 +72,7 @@ class DashboardScreen extends StatelessWidget {
                 },
               ),
               // Header(headTitle: "Dashboard",),
-              SizedBox(height: MediaQuery.of(context).size.height*0.1,),
+              SizedBox(height: MediaQuery.of(context).size.height*0.05,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.05),
                 child: Row(
