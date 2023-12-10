@@ -5,8 +5,8 @@ class MenuAppController extends ChangeNotifier {
 
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
-  // String _selectedScreen = 'dashboard';
-  String _selectedScreen = 'profile';
+  String _selectedScreen = 'dashboard';
+  // String _selectedScreen = 'profile';
 
   String get selectedScreen => _selectedScreen;
 

@@ -2,12 +2,9 @@ import 'package:admin/Service/api_service.dart';
 import 'package:admin/controllers/MenuAppController.dart';
 import 'package:admin/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../Service/admin_Service.dart';
 import '../../../constants.dart';
-import '../../../dto/user_model.dart';
 import '../../start/splash_screen.dart';
 
 class Header extends StatelessWidget {
@@ -20,7 +17,6 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("&&&&1 : $userProfileResult");
     return Row(
       children: [
         if (!Responsive.isDesktop(context))
@@ -51,13 +47,14 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      offset: Offset(0, 60), // 이 부분을 조절하여 원하는 위치로 이동할 수 있습니다.
+      color: secondaryColor,
+      offset: Offset(0, 60),
       itemBuilder: (context) => [
         PopupMenuItem<String>(
           value: 'editProfile',
           child: ListTile(
             leading: Icon(Icons.edit),
-            title: Text('회원정보 수정'),
+            title: Text('프로필 정보'),
           ),
         ),
         PopupMenuItem<String>(
