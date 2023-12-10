@@ -43,23 +43,6 @@ class MainScreen extends StatelessWidget {
               flex: 5,
               //MenuAppController에서 시작페이지 변경 가능
               child: _screens[context.watch<MenuAppController>().selectedScreen] ?? Container(),
-              // child: FutureBuilder(
-              //   future: APIService.getUserProfile(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.connectionState == ConnectionState.waiting) {
-              //       // Still waiting for the data to be fetched
-              //       return CircularProgressIndicator();
-              //     } else if (snapshot.hasError) {
-              //       // Handle error case
-              //       return Text('Error: ${snapshot.error}');
-              //     } else {
-              //       // Data has been successfully fetched
-              //       final userProfileResult = snapshot.data;
-              //       // Now you can use userProfileResult in your UI
-              //       return _screens[context.watch<MenuAppController>().selectedScreen] ?? Container();
-              //     }
-              //   },
-              // ),
             ),
           ],
         ),
