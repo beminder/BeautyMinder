@@ -1,15 +1,39 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 
 class Chart extends StatelessWidget {
+  final double Usage;
+  final Color color;
+
   const Chart({
     Key? key,
+    required this.Usage, required this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final usedSpace = Usage;
+    final freeSpace = 100 - usedSpace;
+
+    List<PieChartSectionData> sections = [
+      PieChartSectionData(
+        color: color,
+        value: usedSpace,
+        showTitle: false,
+        radius: 25,
+      ),
+      PieChartSectionData(
+        color: color.withOpacity(0.1),
+        //primaryColor.withOpacity(0.1),
+        value: freeSpace,
+        showTitle: false,
+        radius: 13,
+      ),
+    ];
+
     return SizedBox(
       height: 200,
       child: Stack(
@@ -19,7 +43,7 @@ class Chart extends StatelessWidget {
               sectionsSpace: 0,
               centerSpaceRadius: 70,
               startDegreeOffset: -90,
-              sections: paiChartSelectionData,
+              sections: sections,
             ),
           ),
           Positioned.fill(
@@ -28,14 +52,14 @@ class Chart extends StatelessWidget {
               children: [
                 SizedBox(height: defaultPadding),
                 Text(
-                  "29.1",
+                  "${usedSpace.toStringAsFixed(1)}%",
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        height: 0.5,
-                      ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    height: 0.5,
+                  ),
                 ),
-                Text("of 128GB")
+                Text("of 100%")
               ],
             ),
           ),
@@ -44,36 +68,3 @@ class Chart extends StatelessWidget {
     );
   }
 }
-
-List<PieChartSectionData> paiChartSelectionData = [
-  PieChartSectionData(
-    color: primaryColor,
-    value: 25,
-    showTitle: false,
-    radius: 25,
-  ),
-  PieChartSectionData(
-    color: Color(0xFF26E5FF),
-    value: 20,
-    showTitle: false,
-    radius: 22,
-  ),
-  PieChartSectionData(
-    color: Color(0xFFFFCF26),
-    value: 10,
-    showTitle: false,
-    radius: 19,
-  ),
-  PieChartSectionData(
-    color: Color(0xFFEE2727),
-    value: 15,
-    showTitle: false,
-    radius: 16,
-  ),
-  PieChartSectionData(
-    color: primaryColor.withOpacity(0.1),
-    value: 25,
-    showTitle: false,
-    radius: 13,
-  ),
-];
