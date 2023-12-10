@@ -1,4 +1,3 @@
-import 'package:admin/Page/homePage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -8,6 +7,7 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../Service/api_service.dart';
 import '../../dto/login_request_model.dart';
+import '../main/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -310,9 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         );
                       } else {
-                        // Once data is loaded, navigate to the home page
-
-                        return homePage();
+                        return MainScreen();
                         //return DashboardScreen();
                           //DashboardScreen();
                       }
