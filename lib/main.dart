@@ -1,4 +1,4 @@
-import 'package:admin/Page/login_page.dart';
+
 import 'package:admin/constants.dart';
 import 'package:admin/controllers/MenuAppController.dart';
 import 'package:admin/screens/chat/chat_screen.dart';
@@ -6,15 +6,18 @@ import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/main/main_screen.dart';
 import 'package:admin/screens/profile/profile_screen.dart';
 import 'package:admin/screens/review/review_screen.dart';
-import 'package:admin/screens/start/login_screen.dart';
+import 'package:admin/screens/start/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'Page/homePage.dart';
-
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MenuAppController(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Admin Panel',
+      title: 'BeautyMinder Admin',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: bgColor,
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
@@ -36,11 +39,12 @@ class MyApp extends StatelessWidget {
             create: (context) => MenuAppController(),
           ),
         ],
-        child: LoginScreen(),
-        //LoginPage(),
+        child: SplashScreen(),
+        //LoginScreen(),
         //MainScreen(),
       ),
       routes: {
+        '/main' : (context) => MainScreen(),
         '/dashboard': (context) => DashboardScreen(),
         '/review': (context) => ReviewScreen(),
         '/chat': (context) => ChatScreen(),

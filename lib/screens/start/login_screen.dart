@@ -1,7 +1,4 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
@@ -40,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loadPreferences() async {
-    print("This is loadPreferences");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Load the checkbox state
@@ -50,17 +46,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Load the email field text if the checkbox is checked
     if (rememberEmail) {
-      print("This is loadPreferences = rememberEmail : $rememberEmail");
       setState(() {
         email = prefs.getString('email') ?? '';
         emailController.text = email ?? '';
       });
     }
-    print("This is loadPreferences - email : $email");
   }
 
   void savePreferences() async {
-    print("This is savePreferences");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Save the checkbox state
@@ -68,18 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Save the email field text if the checkbox is checked
     if (rememberEmail) {
-      print("This is savePreferences = rememberEmail : $rememberEmail");
       prefs.setString('email', email ?? '');
-      print("This is savePreferences = email : $email");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      appBar: AppBar(title: Text('Login'),),
       backgroundColor: Colors.black54,
       body: SingleChildScrollView(
         child: Column(
@@ -116,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _checkboxRememberEmail(),
 
           SizedBox(height: 80), // 여백 추가
-          _buildLoginButton(), // 로그인 버튼
+          _buildLoginButton(context), // 로그인 버튼
 
         ],
       ),
@@ -152,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 validator: (val) => val!.isEmpty ? '이메일이 입력되지 않았습니다.' : null,
                 onChanged: (val) => email = val,
                 obscureText: false,
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: "이메일을 입력하세요",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
@@ -201,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
               validator: (val) => val!.isEmpty ? '비밀번호가 입력되지 않았습니다.' : null,
               onChanged: (val) => password = val,
               obscureText: hidePassword,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: "비밀번호를 입력하세요",
                 hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
@@ -252,8 +241,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // 로그인 버튼
-  Widget _buildLoginButton() {
+//  로그인 버튼
+  Widget _buildLoginButton(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
@@ -288,42 +277,17 @@ class _LoginScreenState extends State<LoginScreen> {
               savePreferences();
               final userProfileResult = await APIService.getUserProfile();
               print("Here is LoginPage : ${userProfileResult.value}");
-
-              // Instead of using Navigator.of(context).push directly,
-              // use Navigator.pushReplacement to replace the login page in the stack
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FutureBuilder(
-                    // Use FutureBuilder to show a loading spinner until the data is loaded
-                    future: Future.delayed(
-                        Duration(seconds: 2), () => userProfileResult.value),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Scaffold(
-                          body: Center(
-                            child: SpinKitThreeInOut(
-                              color: Color(0xffd86a04),
-                              size: 50.0,
-                              duration: Duration(seconds: 2),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return MainScreen();
-                        //return DashboardScreen();
-                          //DashboardScreen();
-                      }
-                    },
-                  ),
+                  builder: (context) => MainScreen(),
                 ),
               );
             } else {
-              // 에러 토스트 메시지
-              Fluttertoast.showToast(
-                msg: "로그인에 실패하였습니다. 이메일과 비밀번호를 다시 확인해주세요.",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('로그인에 실패하였습니다. 이메일과 비밀번호를 다시 확인해주세요.'),
+                ),
               );
             }
           } finally {
@@ -336,36 +300,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // 비밀번호 찾기
-  Widget _buildForgetPassword() {
-    return Align(
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 25, right: 25),
-        child: RichText(
-          text: TextSpan(
-            style: const TextStyle(color: Colors.black, fontSize: 15.0),
-            children: <TextSpan>[
-              const TextSpan(text: '비밀번호를 잊어버리셨나요? '),
-              TextSpan(
-                text: '비밀번호 찾기',
-                style: const TextStyle(
-                  color: Color(0xffd86a04),
-                  fontWeight: FontWeight.bold,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (context) =>
-                    //         FindPasswordByEmailPage()));
-                  },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   // 입력 유효성 검사
   bool validateAndSave() {
