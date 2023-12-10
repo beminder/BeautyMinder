@@ -8,141 +8,243 @@ import '../config.dart';
 // final refreshToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwNDczMDY0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.ZZQdp4vSIoq_OPdT1Jqndf9mksj-kdJjJo_TOCllDFU ';
 
 class adminService {
-
-  static Future<Result<String>> kickUser(String id) async{
+  static Future<Result<String>> kickUser(String id) async {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL,Config.kickUserAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.kickUserAPI).toString();
 
-    final Map<String, dynamic> body = {
-      "username" : "$id"
-    };
+    final Map<String, dynamic> body = {"username": "$id"};
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
     };
-    
-    try{
-      final response = await DioClient.sendRequest('POST', url, body: body, headers: headers);
+
+    try {
+      final response = await DioClient.sendRequest('POST', url,
+          body: body, headers: headers);
 
       print("response : ${response.data}");
 
-      if(response.statusCode == 200){
-       return Result.success(response.data);
-      }else{
-       return Result.failure("Failed to kick user");
+      if (response.statusCode == 200) {
+        return Result.success(response.data);
+      } else {
+        return Result.failure("Failed to kick user");
       }
-    }catch(e){
-     return Result.failure("An error occured : $e");
+    } catch (e) {
+      return Result.failure("An error occured : $e");
     }
-}
+  }
 
-static Future<Result<List<ReviewResponse>>> getAllReviews(int page) async{
+  static Future<Result<List<ReviewResponse>>> getAllReviews(int page) async {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    Map<String, dynamic> queryparameter =  {
-      'page' : page.toString()
-    };
+    Map<String, dynamic> queryparameter = {'page': page.toString()};
 
-    final url = Uri.http(Config.apiURL, Config.getAllReviewAPI, queryparameter ).toString();
+    final url = Uri.http(Config.apiURL, Config.getAllReviewAPI, queryparameter)
+        .toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
     };
-  
-    try{
-      final response = await DioClient.sendRequest('GET', url, headers: headers);
+
+    try {
+      final response =
+          await DioClient.sendRequest('GET', url, headers: headers);
 
       print("page : ${page}");
       print(response.data.runtimeType);
       print(response.data);
       // response.date는 map형식
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         print(response.data.runtimeType);
 
         Map<String, dynamic> decodedResponse = response.data;
-        ReviewPageResponse reviewPageResponse = ReviewPageResponse.fromJson(decodedResponse);
+        ReviewPageResponse reviewPageResponse =
+            ReviewPageResponse.fromJson(decodedResponse);
         List<ReviewResponse> reviews = reviewPageResponse.reviews;
 
         return Result.success(reviews);
-      }else{
+      } else {
         return Result.failure("Failed to get Reviews");
       }
-    }catch(e){
-     return Result.failure("An error occured : $e");
+    } catch (e) {
+      return Result.failure("An error occured : $e");
     }
+  }
 
-}
+  static Future<Result<List<ReviewResponse>>> getFilteredReviews() async {
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
 
-static  Future<Result<List<ReviewResponse>>> getFilteredReviews() async{
-  final accessToken = await SharedService.getAccessToken();
-  final refreshToken = await SharedService.getRefreshToken();
-
-  final url = Uri.http(Config.apiURL, Config.getFilteredReviews).toString();
+    final url = Uri.http(Config.apiURL, Config.getFilteredReviews).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
     };
 
-  try{
-    final response = await DioClient.sendRequest('GET', url, headers: headers);
-    ;
-    print(response.data.runtimeType);
-    print(response.data);
-    // response.date는 map형식
-    if(response.statusCode == 200){
+    try {
+      final response =
+          await DioClient.sendRequest('GET', url, headers: headers);
+      ;
       print(response.data.runtimeType);
+      print(response.data);
+      // response.date는 map형식
+      if (response.statusCode == 200) {
+        print(response.data.runtimeType);
 
-      Map<String, dynamic> decodedResponse = response.data;
-      ReviewPageResponse reviewPageResponse = ReviewPageResponse.fromJson(decodedResponse);
-      List<ReviewResponse> reviews = reviewPageResponse.reviews;
+        Map<String, dynamic> decodedResponse = response.data;
+        ReviewPageResponse reviewPageResponse =
+            ReviewPageResponse.fromJson(decodedResponse);
+        List<ReviewResponse> reviews = reviewPageResponse.reviews;
 
-      return Result.success(reviews);
-    }else{
-      return Result.failure("Failed to get Reviews");
+        return Result.success(reviews);
+      } else {
+        return Result.failure("Failed to get Reviews");
+      }
+    } catch (e) {
+      return Result.failure("An error occured : $e");
     }
-  }catch(e){
-    return Result.failure("An error occured : $e");
   }
-}
 
-static Future<Result<String>> updateReviewStatus(String reviewid, String stat) async {
-  final accessToken = await SharedService.getAccessToken();
-  final refreshToken = await SharedService.getRefreshToken();
+  static Future<Result<String>> updateReviewStatus(
+      String reviewid, String stat) async {
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
 
-  final url = Uri.http(Config.apiURL, Config.updateReviewStatus + reviewid + "/status").toString();
+    final url = Uri.http(
+            Config.apiURL, Config.updateReviewStatus + reviewid + "/status")
+        .toString();
 
-  print("url : ${url}");
-  final headers = {
-    'Authorization': 'Bearer $accessToken',
-    'Cookie': 'XRT=$refreshToken',
-  };
+    print("url : ${url}");
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
 
-  Map<String,dynamic> body = {
-    "status": "${stat}"
-  };
+    Map<String, dynamic> body = {"status": "${stat}"};
 
-  try{
-    final response = await DioClient.sendRequest('PATCH', url, headers: headers, body: body);
+    try {
+      final response = await DioClient.sendRequest('PATCH', url,
+          headers: headers, body: body);
 
-    if(response.statusCode == 200){
-      print("response : ${response.data}");
+      if (response.statusCode == 200) {
+        print("response : ${response.data}");
 
-     return Result.success(response.data);
-    }else{
-     return Result.failure('Failed to update review status');
+        return Result.success(response.data);
+      } else {
+        return Result.failure('Failed to update review status');
+      }
+    } catch (e) {
+      return Result.failure("An error occured : $e");
     }
-
-  }catch(e){
-    return Result.failure("An error occured : $e");
   }
-}
 
+  static Future<Result<double>> getUsageCPU() async {
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
+
+    final url = Uri.http(Config.apiURL, Config.getUsageCpuAPI).toString();
+
+    print("url : ${url}");
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
+
+    try {
+      final response =
+          await DioClient.sendRequest('GET', url, headers: headers);
+
+      if (response.statusCode == 200) {
+        print("response : ${response.data}");
+
+        // JSON 데이터에서 value 추출
+        final cpuUsage = response.data['measurements'][0]['value'];
+        print("CPU Usage: $cpuUsage");
+
+        // 퍼센트로 나누기위해 *100
+        return Result.success(cpuUsage * 100);
+      } else {
+        return Result.failure("error occured in get cpu usage");
+      }
+    } catch (e) {
+      print("Error: $e");
+      return Result.failure("Error occurred while fetching CPU usage.");
+    }
+  }
+
+  static Future<Result<double>> getUpTime() async {
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
+
+    final url = Uri.http(Config.apiURL, Config.getUpTimeAPI).toString();
+
+    print("url : ${url}");
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
+
+    try {
+      final response =
+          await DioClient.sendRequest('GET', url, headers: headers);
+
+      if (response.statusCode == 200) {
+        print("response : ${response.data}");
+
+        // JSON 데이터에서 value 추출
+        final upTime = response.data['measurements'][0]['value'];
+        print("UP time: $upTime");
+
+        // 시간 단위로 변경
+        return Result.success(upTime / 3600);
+      } else {
+        return Result.failure("error occured in get cpu usage");
+      }
+    } catch (e) {
+      print("Error: $e");
+      return Result.failure("Error occurred while fetching CPU usage.");
+    }
+  }
+
+  static Future<Result<double>> getAverage1M() async {
+    final accessToken = await SharedService.getAccessToken();
+    final refreshToken = await SharedService.getRefreshToken();
+
+    final url = Uri.http(Config.apiURL, Config.getAverage1M).toString();
+
+    print("url : ${url}");
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Cookie': 'XRT=$refreshToken',
+    };
+
+    try {
+      final response =
+          await DioClient.sendRequest('GET', url, headers: headers);
+
+      if (response.statusCode == 200) {
+        print("response : ${response.data}");
+
+        // JSON 데이터에서 value 추출
+        final availability = response.data['measurements'][0]['value'];
+        print("availability: $availability");
+
+        // 퍼센트 단위로 변경
+        return Result.success(availability * 100);
+      } else {
+        return Result.failure("error occured in get cpu usage");
+      }
+    } catch (e) {
+      print("Error: $e");
+      return Result.failure("Error occurred while fetching CPU usage.");
+    }
+  }
 }
 
 // 결과 클래스
