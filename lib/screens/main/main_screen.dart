@@ -2,6 +2,7 @@ import 'package:admin/controllers/MenuAppController.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/chat/chat_screen.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
+import 'package:admin/screens/review/filtered_Review_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,7 @@ class MainScreen extends StatelessWidget {
   final Map<String, Widget> _screens = {
     'dashboard': DashboardScreen(),
     'review': ReviewScreen(),
+    'filtered review': filteredReviewScreen(),
     'chat' : ChatScreen(),
     'profile': ProfileScreen(),
   };

@@ -5,6 +5,7 @@ import 'package:admin/screens/chat/chat_screen.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/main/main_screen.dart';
 import 'package:admin/screens/profile/profile_screen.dart';
+import 'package:admin/screens/review/filtered_Review_screen.dart';
 import 'package:admin/screens/review/review_screen.dart';
 import 'package:admin/screens/start/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         '/main' : (context) => MainScreen(),
         '/dashboard': (context) => DashboardScreen(),
         '/review': (context) => ReviewScreen(),
+        '/Filtered Review': (context) => filteredReviewScreen(),
         '/chat': (context) => ChatScreen(),
         '/profile': (context) => ProfileScreen(),
       },

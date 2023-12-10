@@ -40,6 +40,14 @@ class SideMenu extends StatelessWidget {
             selected: selectedScreen == 'review',
           ),
           DrawerListTile(
+            title: "Filtered Review",
+            svgSrc: "assets/icons/menu_doc.svg",
+            press: () {
+              context.read<MenuAppController>().setSelectedScreen('filtered review');
+            },
+            selected: selectedScreen == 'filtered review',
+          ),
+          DrawerListTile(
             title: "Chat",
             svgSrc: "assets/icons/menu_task.svg",
             press: () {
