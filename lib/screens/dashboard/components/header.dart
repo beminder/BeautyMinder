@@ -1,3 +1,4 @@
+import 'package:admin/Service/api_service.dart';
 import 'package:admin/controllers/MenuAppController.dart';
 import 'package:admin/responsive.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../Service/admin_Service.dart';
 import '../../../constants.dart';
 import '../../../dto/user_model.dart';
+import '../../start/splash_screen.dart';
 
 class Header extends StatelessWidget {
   const Header({
@@ -66,6 +68,41 @@ class ProfileCard extends StatelessWidget {
             leading: Icon(Icons.logout),
             title: Text('로그아웃'),
           ),
+          onTap: () async {
+            try {
+              final logoutResponse = await APIService.logout();
+              if(logoutResponse.isSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('로그아웃에 성공하였습니다.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SplashScreen()),
+                );
+              }
+              else {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('로그아웃에 실패하였습니다.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
+            }
+            catch (e) {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('오류가 발생했습니다. 잠시 후 다시 시도해주세요.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            }
+          },
         ),
       ],
       child: Container(
