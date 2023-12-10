@@ -1,3 +1,4 @@
+import 'package:admin/Service/admin_Service.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 import '../dashboard/components/header.dart';
@@ -39,7 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             child: TextFormField(
                               controller: _nicknameController,
                               decoration: InputDecoration(
-                                hintText: "강제 퇴장시킬 사용자의 닉네임을 입력하세요.",
+                                hintText: "강제 퇴장시킬 사용자의 이메일을 입력하세요.",
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
@@ -48,17 +49,40 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                               ),
                               validator: (val) => val!.isEmpty
-                                  ? '필드가 비어있습니다. 강제 퇴장 시킬 사용자의 닉네임을 입력하세요.'
+                                  ? '필드가 비어있습니다. 강제 퇴장 시킬 사용자의 이메일을 입력하세요.'
                                   : null,
                             ),
                           ),
                           SizedBox(width: 20),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               // Validate the form before performing any action
                               if (_formKey.currentState!.validate()) {
-
                                 print("퇴장: ${_nicknameController.text}");
+                                String kickoutUserNickname = _nicknameController.text;
+                                try {
+                                  final response = await adminService.kickUser(kickoutUserNickname);
+                                  if (response.isSuccess) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 성공하였습니다.'),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('서버가 원활하지 않습니다. 잠시 후 다시 시도해주세요.'),
+                                    ),
+                                  );
+                                }
+
                               }
                             },
                             child: Text("퇴장"),

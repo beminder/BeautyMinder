@@ -4,11 +4,15 @@ import 'package:admin/models/review_response_model.dart';
 
 import '../config.dart';
 
+final accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwMjIyNTA0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.Bsav37IwxfjLnFwEmQ41qZvBZS95EWbrgpprKouAb70";
+final refreshToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwNDczMDY0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.ZZQdp4vSIoq_OPdT1Jqndf9mksj-kdJjJo_TOCllDFU ';
+
 class adminService {
 
   static Future<Result<String>> kickUser(String id) async{
-    final accessToken = await SharedService.getAccessToken();
-    final refreshToken = await SharedService.getRefreshToken();
+    // final accessToken = await SharedService.getAccessToken();
+    // final refreshToken = await SharedService.getRefreshToken();
+
     final url = Uri.http(Config.apiURL,Config.kickUserAPI).toString();
 
     final Map<String, dynamic> body = {
@@ -38,10 +42,6 @@ class adminService {
 static Future<Result<List<ReviewResponse>>> getAllReviews(int page) async{
     // final accessToken = await SharedService.getAccessToken();
     // final refreshToken = await SharedService.getRefreshToken();
-
-    final accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwMjIyNTA0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.Bsav37IwxfjLnFwEmQ41qZvBZS95EWbrgpprKouAb70";
-    final refreshToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwNDczMDY0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.ZZQdp4vSIoq_OPdT1Jqndf9mksj-kdJjJo_TOCllDFU ';
-
 
     Map<String, dynamic> queryparameter =  {
       'page' : page.toString()
@@ -82,9 +82,6 @@ static  Future<Result<List<ReviewResponse>>> getFilteredReviews() async{
   // final accessToken = await SharedService.getAccessToken();
   // final refreshToken = await SharedService.getRefreshToken();
 
-  final accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwMjIyNTA0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.Bsav37IwxfjLnFwEmQ41qZvBZS95EWbrgpprKouAb70";
-  final refreshToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwNDczMDY0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.ZZQdp4vSIoq_OPdT1Jqndf9mksj-kdJjJo_TOCllDFU ';
-
   final url = Uri.http(Config.apiURL, Config.getFilteredReviews).toString();
 
     final headers = {
@@ -117,9 +114,6 @@ static  Future<Result<List<ReviewResponse>>> getFilteredReviews() async{
 static Future<Result<String>> updateReviewStatus(String reviewid, String stat) async {
   // final accessToken = await SharedService.getAccessToken();
   // final refreshToken = await SharedService.getRefreshToken();
-
-  final accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwMjIyNTA0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.Bsav37IwxfjLnFwEmQ41qZvBZS95EWbrgpprKouAb70";
-  final refreshToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxMzg2NDAsImV4cCI6MTcwNDczMDY0MCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.ZZQdp4vSIoq_OPdT1Jqndf9mksj-kdJjJo_TOCllDFU ';
 
   final url = Uri.http(Config.apiURL, Config.updateReviewStatus + reviewid + "/status").toString();
 

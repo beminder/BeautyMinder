@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
             create: (context) => MenuAppController(),
           ),
         ],
-        child: LoginPage(),
-        //MainScreen(),
+        child: MainScreen(),
+        //LoginPage(),
         //MainScreen(),
       ),
       routes: {
