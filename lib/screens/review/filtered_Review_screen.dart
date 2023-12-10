@@ -121,6 +121,7 @@ class _ReviewScreen extends State<filteredReviewScreen> {
         if (index < reviews.length) {
           final review = reviews[index];
           return Card(
+            color: secondaryColor,
             child: ListTile(
               leading: review.images.isNotEmpty
                   ? Image.network(review.images.first)
