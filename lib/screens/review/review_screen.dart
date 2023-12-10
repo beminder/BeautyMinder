@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../Service/api_service.dart';
 import '../../constants.dart';
+import '../../dto/user_model.dart';
 import '../dashboard/components/header.dart';
 
 class ReviewScreen extends StatelessWidget {
@@ -14,7 +16,25 @@ class ReviewScreen extends StatelessWidget {
           padding: EdgeInsets.all(defaultPadding),
           child: Column(
             children: [
-              Header(headTitle: "Review",),
+              FutureBuilder(
+                future: APIService.getUserProfile(),
+                builder: (context, snapshot) {
+                  print("&&&& : ${snapshot}");
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final userProfileResult = snapshot.data;
+                    print("&&&&0 : $userProfileResult");
+                    return Header(
+                      headTitle: "Review",
+                      userProfileResult: userProfileResult, // Pass userProfileResult
+                    );
+                  }
+                },
+              ),
+              // Header(headTitle: "Review",),
               SizedBox(height: defaultPadding),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

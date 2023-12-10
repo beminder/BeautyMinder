@@ -2,6 +2,7 @@ import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/my_fields.dart';
 import 'package:flutter/material.dart';
 
+import '../../Service/api_service.dart';
 import '../../constants.dart';
 import 'components/header.dart';
 
@@ -18,7 +19,25 @@ class DashboardScreen extends StatelessWidget {
           padding: EdgeInsets.all(defaultPadding),
           child: Column(
             children: [
-              Header(headTitle: "Dashboard",),
+              FutureBuilder(
+                future: APIService.getUserProfile(),
+                builder: (context, snapshot) {
+                  print("&&&& : ${snapshot}");
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final userProfileResult = snapshot.data;
+                    print("&&&&0 : ${userProfileResult}");
+                    return Header(
+                      headTitle: "${userProfileResult}",
+                      userProfileResult: userProfileResult, // Pass userProfileResult
+                    );
+                  }
+                },
+              ),
+              // Header(headTitle: "Dashboard",),
               SizedBox(height: defaultPadding),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

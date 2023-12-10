@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Service/admin_Service.dart';
 import '../../../constants.dart';
+import '../../../dto/user_model.dart';
 
 class Header extends StatelessWidget {
   const Header({
-    Key? key, required this.headTitle,
+    Key? key, required this.headTitle, required this.userProfileResult,
   }) : super(key: key);
 
   final String headTitle;
+  final dynamic userProfileResult;
 
   @override
   Widget build(BuildContext context) {
+    print("&&&&1 : $userProfileResult");
     return Row(
       children: [
         if (!Responsive.isDesktop(context))
@@ -29,7 +33,7 @@ class Header extends StatelessWidget {
           ),
         if (!Responsive.isMobile(context))
           Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
-        ProfileCard()
+        ProfileCard(userProfileResult: userProfileResult),
       ],
     );
   }
@@ -37,11 +41,15 @@ class Header extends StatelessWidget {
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
-    Key? key,
+    Key? key, required this.userProfileResult,
   }) : super(key: key);
+
+  final dynamic userProfileResult;
 
   @override
   Widget build(BuildContext context) {
+    final user = userProfileResult.value;
+    print("**** : $user");
     return PopupMenuButton<String>(
       offset: Offset(0, 60), // 이 부분을 조절하여 원하는 위치로 이동할 수 있습니다.
       itemBuilder: (context) => [
@@ -82,7 +90,7 @@ class ProfileCard extends StatelessWidget {
               Padding(
                 padding:
                 const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-                child: Text("이름"),
+                child: Text("${userProfileResult.value?.nickname}"),
               ),
             Icon(Icons.keyboard_arrow_down),
           ],

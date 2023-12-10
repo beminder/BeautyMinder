@@ -5,17 +5,22 @@ import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../Service/api_service.dart';
 import '../profile/profile_screen.dart';
 import '../review/review_screen.dart';
 import 'components/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
+
   final Map<String, Widget> _screens = {
     'dashboard': DashboardScreen(),
     'review': ReviewScreen(),
     'chat' : ChatScreen(),
     'profile': ProfileScreen(),
   };
+
+  // final userProfileResult = await APIService.getUserProfile();
+  // print("Here is LoginPage : ${userProfileResult.value}");
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +41,23 @@ class MainScreen extends StatelessWidget {
               flex: 5,
               //MenuAppController에서 시작페이지 변경 가능
               child: _screens[context.watch<MenuAppController>().selectedScreen] ?? Container(),
+              // child: FutureBuilder(
+              //   future: APIService.getUserProfile(),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.waiting) {
+              //       // Still waiting for the data to be fetched
+              //       return CircularProgressIndicator();
+              //     } else if (snapshot.hasError) {
+              //       // Handle error case
+              //       return Text('Error: ${snapshot.error}');
+              //     } else {
+              //       // Data has been successfully fetched
+              //       final userProfileResult = snapshot.data;
+              //       // Now you can use userProfileResult in your UI
+              //       return _screens[context.watch<MenuAppController>().selectedScreen] ?? Container();
+              //     }
+              //   },
+              // ),
             ),
           ],
         ),
