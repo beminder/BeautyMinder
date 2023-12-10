@@ -7,7 +7,6 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import '../../Service/api_service.dart';
 import '../../Service/dio_client.dart';
-import '../../Service/shared_service.dart';
 import '../../config.dart';
 import '../../constants.dart';
 import '../main/components/header.dart';
@@ -24,8 +23,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final String _url = 'http://ec2-43-202-92-163.ap-northeast-2.compute.amazonaws.com:8080/ws/chat';
   late StompClient stompClient;
 
-  late final String? accessToken;
-  late final String? refreshToken;
+  // final accessToken = await SharedService.getAccessToken();
+  // final refreshToken = await SharedService.getRefreshToken();
 
   List<String> userList = [];
 
@@ -53,11 +52,13 @@ class _ChatScreenState extends State<ChatScreen> {
           )
         },
         stompConnectHeaders: {
-          'access-token': '$accessToken'
+          'access-token':
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
         },
         webSocketConnectHeaders: {
-          'access-token': '$accessToken'
-          },
+          'access-token':
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWF1dHltaW5kZXIiLCJpYXQiOjE3MDIxODI5ODgsImV4cCI6MTcwMjI2OTM4OCwic3ViIjoiYmVtaW5kZXJAYWRtaW4iLCJpZCI6IjY1NzNmZWJjNWJkOWJjMWZkNDRkZGE5YiJ9.h-tZY13HhSTOFMSXqtuI86MmBBrBlZBZm8SA-YskmXk'
+        },
       ),
     );
     stompClient.activate();
@@ -77,32 +78,19 @@ class _ChatScreenState extends State<ChatScreen> {
       },);
   }
 
-  Future<void> kickUser(String username) async {
-
-    accessToken = await SharedService.getAccessToken();
-    refreshToken = await SharedService.getRefreshToken();
-
-    final headers = {
-      'Authorization': 'Bearer $accessToken'
-    };
-
-    final url = Uri.http(Config.apiURL, Config.kickUserAPI).toString();
+  Future<void> kickUser(String kickoutUserNickname) async {
     try {
-      final response = await DioClient.sendRequest(
-          'POST', url, body: {"username": username}, headers: headers);
-
-      if (response.statusCode == 200) {
-        // Fluttertoast.showToast(msg: "User $username kicked successfully");
+      final response = await adminService.kickUser(kickoutUserNickname);
+      if (response.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('사용자(${username})를 강제 퇴장시키는 데 성공하였습니다.'),
+            content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 성공하였습니다.'),
           ),
         );
       } else {
-        // Fluttertoast.showToast(msg: "Failed to kick user $username");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('사용자(${username})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
+            content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
           ),
         );
       }
@@ -141,6 +129,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   }
                 },
               ),
+              // Header(headTitle: "Chat"),
               SizedBox(height: defaultPadding),
               Center(
                 child: Form(
@@ -178,29 +167,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               if (_formKey.currentState!.validate()) {
                                 print("퇴장: ${_nicknameController.text}");
                                 String kickoutUserNickname = _nicknameController.text;
-                                try {
-                                  final response = await adminService.kickUser(kickoutUserNickname);
-                                  if (response.isSuccess) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 성공하였습니다.'),
-                                      ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
-                                      ),
-                                    );
-                                  }
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('서버가 원활하지 않습니다. 잠시 후 다시 시도해주세요.'),
-                                    ),
-                                  );
-                                }
-
+                                kickUser(kickoutUserNickname);
                               }
                             },
                             child: Text("퇴장"),
