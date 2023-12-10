@@ -22,16 +22,14 @@ class DashboardScreen extends StatelessWidget {
               FutureBuilder(
                 future: APIService.getUserProfile(),
                 builder: (context, snapshot) {
-                  print("&&&& : ${snapshot}");
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     final userProfileResult = snapshot.data;
-                    print("&&&&0 : ${userProfileResult}");
                     return Header(
-                      headTitle: "${userProfileResult}",
+                      headTitle: "Dashboard",
                       userProfileResult: userProfileResult, // Pass userProfileResult
                     );
                   }

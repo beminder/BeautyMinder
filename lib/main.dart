@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       //   //LoginScreen(),
       //   //MainScreen(),
       // ),
-      home: SplashScreen(),
+      home: MainScreen(),
       routes: {
         '/main' : (context) => MainScreen(),
         '/dashboard': (context) => DashboardScreen(),

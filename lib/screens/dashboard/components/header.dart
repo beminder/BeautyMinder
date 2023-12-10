@@ -53,15 +53,15 @@ class ProfileCard extends StatelessWidget {
         PopupMenuItem<String>(
           value: 'editProfile',
           child: ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('프로필 정보'),
+            leading: Icon(Icons.edit, color: Colors.white54,),
+            title: Text('프로필 정보', style: TextStyle(color: Colors.white54),),
           ),
         ),
         PopupMenuItem<String>(
           value: 'logout',
           child: ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('로그아웃'),
+            leading: Icon(Icons.logout, color: Colors.white54,),
+            title: Text('로그아웃', style: TextStyle(color: Colors.white54),),
           ),
           onTap: () async {
             try {
