@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../dto/cosmetic_model.dart';
+import '../../services/keyword_rank_service.dart';
 import '../../services/search_service.dart';
-import '../../services/keywordRank_service.dart';
 import '../../widget/appBar.dart';
 
 class SearchPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class SearchPage extends StatefulWidget {
   final ProductRank? data2;
 
   @override
-  _SearchPageState createState() => _SearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -59,7 +59,6 @@ class _SearchPageState extends State<SearchPage> {
       setState(() {
         searchHistory = loadedHistory ?? [];
       });
-
     } catch (e) {
       print('An error occurred while loading expiries: $e');
     } finally {
@@ -73,7 +72,10 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchAppBar(title: _title(), context: context,),
+      appBar: SearchAppBar(
+        title: _title(),
+        context: context,
+      ),
       body: _searchPageUI(),
     );
   }
@@ -236,8 +238,8 @@ class _SearchPageState extends State<SearchPage> {
   List<Widget> _buildHistoryButtons() {
     if (searchHistory.isEmpty) {
       return [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text(
             '검색 히스토리가 없습니다.',
             style: TextStyle(
@@ -249,7 +251,9 @@ class _SearchPageState extends State<SearchPage> {
       ];
     }
     return [
-      for (int i = 0; i < (searchHistory.length < 5 ? searchHistory.length : 5); i++)
+      for (int i = 0;
+          i < (searchHistory.length < 5 ? searchHistory.length : 5);
+          i++)
         _buildHistoryButton(searchHistory[i]),
     ];
   }
@@ -291,20 +295,20 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       _divider(),
-      SizedBox(height: 40),
+      const SizedBox(height: 40),
       const Center(
         child: Text(
           '실시간 랭킹 순위를 불러올 수 없습니다.',
           style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       ),
-      SizedBox(height: 40),
+      const SizedBox(height: 40),
     ]);
   }
 
   Widget _noProductRanking() {
     return Column(children: [
-      SizedBox(height: 40),
+      const SizedBox(height: 40),
       const Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Row(
@@ -322,7 +326,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       _divider(),
-      SizedBox(height: 40),
+      const SizedBox(height: 40),
       const Center(
         child: Text(
           '실시간 랭킹 순위를 불러올 수 없습니다.',
@@ -336,12 +340,12 @@ class _SearchPageState extends State<SearchPage> {
     final formattedDate = _formatDateTime(widget.data?.updatedAt);
 
     return Container(
-      height: MediaQuery.of(context).size.height/2-60,
+      height: MediaQuery.of(context).size.height / 2 - 60,
       child: Column(
         children: [
           const SizedBox(height: 10),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -366,7 +370,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           _divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               children: [
                 Expanded(
@@ -379,7 +383,10 @@ class _SearchPageState extends State<SearchPage> {
                       final keyword = widget.data?.keywords![index];
                       final rank = index + 1;
                       return ListTile(
-                        title: Text('${rank}순위 : $keyword',overflow: TextOverflow.ellipsis,),
+                        title: Text(
+                          '$rank순위 : $keyword',
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         onTap: () async {
                           if (keyword != null) {
                             _navigateToSearchResultPage(keyword);
@@ -392,8 +399,7 @@ class _SearchPageState extends State<SearchPage> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ListView.builder(
-                    physics:
-                        const NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: (widget.data?.keywords?.length ?? 0) ~/ 2,
                     itemBuilder: (context, index) {
@@ -402,7 +408,10 @@ class _SearchPageState extends State<SearchPage> {
                       final keyword = widget.data?.keywords![startIndex];
                       final rank = startIndex + 1;
                       return ListTile(
-                        title: Text('${rank}순위 : $keyword',overflow: TextOverflow.ellipsis,),
+                        title: Text(
+                          '$rank순위 : $keyword',
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         onTap: () async {
                           if (keyword != null) {
                             _navigateToSearchResultPage(keyword);
@@ -424,12 +433,12 @@ class _SearchPageState extends State<SearchPage> {
     final formattedDate = _formatDateTime(widget.data?.updatedAt);
 
     return Container(
-      height: MediaQuery.of(context).size.height/2-60,
+      height: MediaQuery.of(context).size.height / 2 - 60,
       child: Column(
         children: [
           const SizedBox(height: 10),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -454,7 +463,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           _divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ListView.builder(
               physics:
                   const NeverScrollableScrollPhysics(), // Disable scrolling
@@ -464,8 +473,10 @@ class _SearchPageState extends State<SearchPage> {
                 final keyword = widget.data?.keywords![index];
                 final rank = index + 1;
                 return ListTile(
-                  title: Text('$rank순위 : $keyword', overflow: TextOverflow.ellipsis,),
-
+                  title: Text(
+                    '$rank순위 : $keyword',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   onTap: () async {
                     if (keyword != null) {
                       _navigateToSearchResultPage(keyword);
@@ -498,11 +509,11 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 '실시간 제품 랭킹',
                 style: TextStyle(
                   fontSize: 18,
@@ -525,10 +536,10 @@ class _SearchPageState extends State<SearchPage> {
         ),
         _divider(),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               for (int index = 0; index < 3; index++)
                 if (index < (widget.data2?.cosmetics?.length ?? 0))
                   _buildProductTile(widget.data2!.cosmetics[index], index + 1),
@@ -546,11 +557,11 @@ class _SearchPageState extends State<SearchPage> {
       },
       child: Container(
         height: 70,
-        margin: EdgeInsets.only(bottom: 10),
+        margin: const EdgeInsets.only(bottom: 10),
         child: ListTile(
           leading:
               (product?.images != null && product.images?.isNotEmpty == true)
-                  ? Container(
+                  ? SizedBox(
                       width: 70,
                       height: 70,
                       child: Image.network(
@@ -567,7 +578,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
           title: Text(
             '${product.name}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               letterSpacing: 0,
             ),

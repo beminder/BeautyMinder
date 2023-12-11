@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:beautyminder/pages/todo/skin_Album_page.dart';
+import 'package:beautyminder/pages/todo/skin_album_page.dart';
 import 'package:beautyminder/pages/todo/skin_timeline.dart';
 import 'package:beautyminder/services/notification_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,9 +10,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:path/path.dart' as path;
 
 import '../../Bloc/TodoPageBloc.dart';
 import '../../State/TodoState.dart';
@@ -27,7 +26,7 @@ import '../home/home_page.dart';
 import '../my/my_page.dart';
 import '../pouch/expiry_page.dart';
 import '../recommend/recommend_bloc_screen.dart';
-import 'Todo_add_page.dart';
+import 'todo_add_page.dart';
 
 late List<Todo>? global_todos;
 
@@ -604,7 +603,7 @@ class Buttons extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const skinAlbumPage()));
+                MaterialPageRoute(builder: (context) => const SkinAlbumPage()));
           },
           icon: const Icon(Icons.album_rounded, color: Color(0xffd86a04)),
           label: const Text(
@@ -621,7 +620,7 @@ class Buttons extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const timeLine()));
+                MaterialPageRoute(builder: (context) => const TimeLine()));
           },
           icon: const Icon(Icons.album_rounded, color: Color(0xffd86a04)),
           label: const Text(

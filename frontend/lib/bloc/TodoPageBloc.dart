@@ -4,9 +4,7 @@ import 'package:beautyminder/event/TodoPageEvent.dart';
 import 'package:beautyminder/services/todo_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../State/TodoState.dart';
-import '../dto/task_model.dart';
 
 class TodoPageBloc extends Bloc<TodoPageEvent, TodoState> {
 

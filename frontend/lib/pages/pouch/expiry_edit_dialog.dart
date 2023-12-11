@@ -1,19 +1,17 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
+
 import '../../dto/cosmetic_expiry_model.dart';
-import '../../dto/vision_response_dto.dart';
-import '../../services/ocr_service.dart';
 
 class ExpiryEditDialog extends StatefulWidget {
   final CosmeticExpiry expiry;
   final Function(CosmeticExpiry) onUpdate;
 
-  ExpiryEditDialog({required this.expiry, required this.onUpdate});
+  const ExpiryEditDialog(
+      {super.key, required this.expiry, required this.onUpdate});
 
   @override
-  _ExpiryEditDialogState createState() => _ExpiryEditDialogState();
+  State<ExpiryEditDialog> createState() => _ExpiryEditDialogState();
 }
 
 class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
@@ -33,10 +31,8 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
     openedDate = widget.expiry.openedDate;
   }
 
-
   Future<void> _selectDate(BuildContext context,
       {bool isExpiryDate = true}) async {
-
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isExpiryDate ? expiryDate : openedDate ?? DateTime.now(),
@@ -74,8 +70,9 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      titlePadding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 50.0),
-      title: Text(
+      titlePadding:
+          const EdgeInsets.symmetric(vertical: 40.0, horizontal: 50.0),
+      title: const Text(
         '제품 정보를 수정해주세요',
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -89,7 +86,7 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text(
+                title: const Text(
                   '제품명',
                   style: TextStyle(
                     fontSize: 18,
@@ -98,8 +95,8 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
                 trailing: Container(
                   width: 150,
                   child: Text(
-                    '${widget.expiry.productName}',
-                    style: TextStyle(
+                    widget.expiry.productName,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                     textAlign: TextAlign.end,
@@ -108,7 +105,7 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
                 ),
               ),
               ListTile(
-                title: Text(
+                title: const Text(
                   '브랜드',
                   style: TextStyle(
                     fontSize: 18,
@@ -118,7 +115,7 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
                   width: 150,
                   child: Text(
                     '${widget.expiry.brandName}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                     textAlign: TextAlign.end,
@@ -127,7 +124,7 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
                 ),
               ),
               SwitchListTile(
-                title: Text(
+                title: const Text(
                   '개봉 여부',
                   style: TextStyle(
                     fontSize: 18,
@@ -149,50 +146,45 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       '유통기한',
                       style: TextStyle(
                         fontSize: 18,
                       ),
                     ),
-                    Spacer(),// 조절 가능한 간격
+                    const Spacer(), // 조절 가능한 간격
                     Text(
-                      expiryDate != null
-                          ? formatDate(expiryDate!)
-                          : '유통기한 선택',
-                      style: TextStyle(
+                      expiryDate != null ? formatDate(expiryDate) : '유통기한 선택',
+                      style: const TextStyle(
                         fontSize: 18,
                       ),
                     ),
                   ],
                 ),
-                trailing: Icon(Icons.calendar_today),
+                trailing: const Icon(Icons.calendar_today),
                 onTap: () => _selectDate(context),
               ),
-
               if (opened)
                 ListTile(
                   title: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         '개봉일',
                         style: TextStyle(
                           fontSize: 18,
                         ),
                       ),
-                      Spacer(),// 조절 가능한 간격
+                      const Spacer(), // 조절 가능한 간격
                       Text(
-                        openedDate != null
-                            ? formatDate(openedDate!)
-                            : '개봉일 선택',
-                        style: TextStyle(
+                        openedDate != null ? formatDate(openedDate!) : '개봉일 선택',
+                        style: const TextStyle(
                           fontSize: 18,
                         ),
                       ),
                     ],
                   ),
-                  trailing: Icon(Icons.calendar_today),
+                  trailing: const Icon(Icons.calendar_today),
                   onTap: () => _selectDate(context, isExpiryDate: false),
                 ),
             ],
@@ -219,13 +211,12 @@ class _ExpiryEditDialogState extends State<ExpiryEditDialog> {
             Navigator.of(context).pop(updatedExpiry);
             Navigator.of(context).pop(updatedExpiry);
           },
-          child: Text(
+          child: const Text(
             '수정',
             style: TextStyle(
                 color: Colors.orange,
                 fontSize: 20,
-                fontWeight: FontWeight.bold
-            ),
+                fontWeight: FontWeight.bold),
           ),
         ),
       ],

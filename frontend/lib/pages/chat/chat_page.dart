@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../config.dart';
@@ -25,19 +26,27 @@ class _ChatPageState extends State<ChatPage> {
   String api = "http://${Config.apiURL}${Config.chatAPI}";
   bool isApiCallProcess = false;
   bool isLoading = true;
-
-  late final accessToken;
-  late final refreshToken;
-
+  String? accessToken;
+  String? refreshToken;
 
   @override
   void initState() {
     super.initState();
     _getTokens();
+
+    if (kIsWeb) {
+      _launchURL(api);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose the web view controller if it's not null
+    webViewController.stopLoading();
+    super.dispose();
   }
 
   Future<void> _getTokens() async {
-
     if (isApiCallProcess) {
       return;
     }
@@ -48,18 +57,15 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     try {
-      final loadedAccessToken = await SharedService.getAccessToken();
-      final loadedRefreshToken = await SharedService.getRefreshToken();
-
-      setState(() {
-        accessToken = loadedAccessToken;
-        refreshToken = loadedRefreshToken;
-      });
-
+      accessToken = await SharedService.getAccessToken();
+      refreshToken = await SharedService.getRefreshToken();
     } catch (e) {
-      print('An error occurred : $e');
-    }
-    finally {
+      Fluttertoast.showToast(
+        msg: 'An error occurred: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+    } finally {
       setState(() {
         isLoading = false;
         isApiCallProcess = false;
@@ -70,7 +76,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Center(
+      return const Center(
         child: SpinKitThreeInOut(
           color: Color(0xffd86a04),
           size: 50.0,
@@ -78,18 +84,48 @@ class _ChatPageState extends State<ChatPage> {
         ),
       );
     } else {
-      if (kIsWeb) {
-        launchUrl(Uri.parse(api));
-        return const Text("Web opened");
-      } else {
-        return Scaffold(
-          appBar: CommonAppBar(
-            automaticallyImplyLeading: true,
-            context: context,
-          ),
-          body: _buildWebView(context),
-        );
-      }
+      return kIsWeb
+          ? Scaffold(
+              appBar: CommonAppBar(
+                automaticallyImplyLeading: true,
+                context: context,
+              ),
+              body: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Opening chat...",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 20),
+                    CircularProgressIndicator(),
+                    SizedBox(height: 20),
+                    Text(
+                        "Please wait or check your browser if the chat does not open automatically.")
+                  ],
+                ),
+              ),
+            )
+          : Scaffold(
+              appBar: CommonAppBar(
+                automaticallyImplyLeading: true,
+                context: context,
+              ),
+              body: _buildWebView(context),
+            );
+    }
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    final url = Uri.parse(urlString);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      Fluttertoast.showToast(
+        msg: 'An error occurred: $urlString',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
@@ -161,7 +197,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<bool> _goBack(BuildContext context) async {
     if (await webViewController.canGoBack()) {
       var result =
-      await webViewController.evaluateJavascript(source: "quit()") as bool;
+          await webViewController.evaluateJavascript(source: "quit()") as bool;
       return Future.value(!result);
     }
     return Future.value(false);

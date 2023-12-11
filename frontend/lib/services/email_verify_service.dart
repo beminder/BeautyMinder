@@ -9,7 +9,7 @@ class EmailVerifyService {
   static Future<Response<dynamic>> emailVerifyRequest(String email) async {
 
     final parameters = {
-      'email': '$email',
+      'email': email,
     };
 
     final url = Uri.http(Config.apiURL, Config.emailVerifyRequestAPI, parameters).toString();
@@ -39,7 +39,7 @@ class EmailVerifyService {
   static Future<Response<dynamic>> emailVerifyTokenRequest(String token) async {
 
     final parameters = {
-      'token': '$token',
+      'token': token,
     };
 
     final url = Uri.http(Config.apiURL, Config.emailTokenRequestAPI, parameters).toString();

@@ -3,6 +3,7 @@ import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../widget/my_page_header.dart';
 import '../../widget/review_card.dart';
@@ -36,7 +37,11 @@ class _MyReviewPageState extends State<MyReviewPage> {
         isLoading = false;
       });
     } catch (e) {
-      print('error is $e');
+      Fluttertoast.showToast(
+        msg: '$e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
@@ -67,18 +72,18 @@ class _MyReviewPageState extends State<MyReviewPage> {
               ),
               Expanded(
                 child: ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    itemCount: reviews?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final reviewJson = reviews?[index];
-                      final review = ReviewResponse.fromJson(reviewJson);
-                      return ReviewCard(
-                        review: review,
-                        updateParentVariable: updateParentVariable,
-                      );
-                    },
-                  ),
+                  padding: const EdgeInsets.only(bottom: 20),
+                  itemCount: reviews?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final reviewJson = reviews?[index];
+                    final review = ReviewResponse.fromJson(reviewJson);
+                    return ReviewCard(
+                      review: review,
+                      updateParentVariable: updateParentVariable,
+                    );
+                  },
                 ),
+              ),
             ],
           );
   }

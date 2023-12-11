@@ -14,10 +14,10 @@ import '../../services/ocr_service.dart';
 class ExpiryInputDialog extends StatefulWidget {
   final Cosmetic cosmetic;
 
-  ExpiryInputDialog({required this.cosmetic});
+  const ExpiryInputDialog({super.key, required this.cosmetic});
 
   @override
-  _ExpiryInputDialogState createState() => _ExpiryInputDialogState();
+  State<ExpiryInputDialog> createState() => _ExpiryInputDialogState();
 }
 
 class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
@@ -40,7 +40,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: (isExpiryDate ? expiryDate : openedDate) ?? DateTime.now(),
-      firstDate: DateTime.now().subtract(Duration(days: 365)),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
       lastDate: DateTime(2101),
       locale: myLocale,
       builder: (BuildContext context, Widget? child) {
@@ -48,21 +48,19 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
           data: ThemeData.light().copyWith(
             primaryColor: Colors.orange,
             hintColor: Colors.orange,
-            colorScheme: ColorScheme.light(primary: Colors.orange),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            colorScheme: const ColorScheme.light(primary: Colors.orange),
+            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.orange, // Button text color
               ),
             ),
-            textTheme: TextTheme(
+            textTheme: const TextTheme(
               headline4: TextStyle(
-                fontFamily: 'YourFontFamily',
                 fontSize: 20.0,
                 color: Colors.black,
               ),
               button: TextStyle(
-                fontFamily: 'YourFontFamily',
                 color: Colors.orange,
               ),
             ),
@@ -154,21 +152,19 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
 
   // 에러 메시지를 보여주는 함수
   void _showErrorDialog(String message) {
-    print("error in OCR : $message");
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(3.0),
         ),
-        title: Text(
+        title: const Text(
           '오류',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         content: Text(
           '$message',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
           ),
         ),
@@ -179,14 +175,14 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             child: TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
-                backgroundColor: Color(0xffdc7e00),
+                backgroundColor: const Color(0xffdc7e00),
                 foregroundColor: Colors.white,
-                side: BorderSide(color: Color(0xffdc7e00)),
+                side: const BorderSide(color: Color(0xffdc7e00)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(2.0),
                 ),
               ),
-              child: Text('확인'),
+              child: const Text('확인'),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -204,7 +200,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        title: Text(
+        title: const Text(
           '유통기한 입력 방법 선택',
           style: TextStyle(
             fontWeight: FontWeight.normal,
@@ -215,8 +211,8 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              leading: Icon(Icons.edit),
-              title: Text(
+              leading: const Icon(Icons.edit),
+              title: const Text(
                 '직접 입력',
                 style: TextStyle(
                   fontSize: 18,
@@ -229,8 +225,8 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text(
                 '카메라로 촬영',
                 style: TextStyle(
                   fontSize: 18,
@@ -243,8 +239,8 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.photo_album),
-              title: Text(
+              leading: const Icon(Icons.photo_album),
+              title: const Text(
                 '앨범에서 선택',
                 style: TextStyle(
                   fontSize: 18,
@@ -269,8 +265,8 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      titlePadding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 50.0),
-      title: Text(
+      titlePadding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 50.0),
+      title: const Text(
         '제품 정보를 입력해주세요',
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -278,7 +274,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
         ),
       ),
       content: isLoading
-          ? Center(
+          ? const Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
           strokeWidth: 5.0,
@@ -288,7 +284,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            title: Text(
+            title: const Text(
               '제품명',
               style: TextStyle(
                 fontSize: 18,
@@ -297,8 +293,8 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             trailing: Container(
               width: 150,
               child: Text(
-                '${widget.cosmetic.name}',
-                style: TextStyle(
+                widget.cosmetic.name,
+                style: const TextStyle(
                   fontSize: 18,
                 ),
                 textAlign: TextAlign.end,
@@ -307,17 +303,17 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             ),
           ),
           ListTile(
-            title: Text(
+            title: const Text(
               '브랜드',
               style: TextStyle(
                 fontSize: 18,
               ),
             ),
-            trailing: Container(
+            trailing: SizedBox(
               width: 150,
               child: Text(
                 '${widget.cosmetic.brand}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                 ),
                 textAlign: TextAlign.end,
@@ -326,7 +322,7 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             ),
           ),
           SwitchListTile(
-            title: Text(
+            title: const Text(
               '개봉 여부',
               style: TextStyle(
                 fontSize: 18,
@@ -348,24 +344,24 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
             title: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   '유통기한',
                   style: TextStyle(
                     fontSize: 18,
                   ),
                 ),
-                Spacer(),// 조절 가능한 간격
+                const Spacer(),// 조절 가능한 간격
                 Text(
                   expiryDate != null
                       ? formatDate(expiryDate!)
                       : '유통기한 선택',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                   ),
                 ),
               ],
             ),
-            trailing: Icon(Icons.calendar_today),
+            trailing: const Icon(Icons.calendar_today),
             onTap: () => _showExpiryDateChoiceDialog(),
           ),
           if (isOpened)
@@ -373,24 +369,24 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
               title: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '개봉일',
                     style: TextStyle(
                       fontSize: 18,
                     ),
                   ),
-                  Spacer(),// 조절 가능한 간격
+                  const Spacer(),// 조절 가능한 간격
                   Text(
                     openedDate != null
                         ? formatDate(openedDate!)
                         : '개봉일 선택',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
                 ],
               ),
-              trailing: Icon(Icons.calendar_today),
+              trailing: const Icon(Icons.calendar_today),
               onTap: () => _selectDate(context, isExpiryDate: false),
             ),
         ],
@@ -399,7 +395,8 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
         TextButton(
           onPressed: () =>
               Navigator.of(context).pop([isOpened, expiryDate, openedDate]),
-          child: Text(
+          style: TextButton.styleFrom(foregroundColor: Colors.orange),
+          child: const Text(
             '등록',
             style: TextStyle(
                 color: Colors.orange,
@@ -407,7 +404,6 @@ class _ExpiryInputDialogState extends State<ExpiryInputDialog> {
                 fontWeight: FontWeight.bold
             ),
           ),
-          style: TextButton.styleFrom(foregroundColor: Colors.orange),
         ),
       ],
     );

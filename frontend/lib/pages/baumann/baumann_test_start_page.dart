@@ -7,12 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/api_service.dart';
 
 class BaumannStartPage extends StatefulWidget {
-  BaumannStartPage({Key? key, this.title}) : super(key: key);
+  const BaumannStartPage({Key? key, this.title}) : super(key: key);
 
   final String? title;
 
   @override
-  _BaumannStartPageState createState() => _BaumannStartPageState();
+  State<BaumannStartPage> createState() => _BaumannStartPageState();
 }
 
 class _BaumannStartPageState extends State<BaumannStartPage> {
@@ -28,7 +28,7 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffffb876),
+      backgroundColor: const Color(0xffffb876),
       body: _baumannStartUI(),
     );
   }
@@ -36,25 +36,25 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
   //바우만 시작페이지 UI
   Widget _baumannStartUI() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           _title(),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           _baumannStartContent(),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           _testStartButton(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _testLaterButton(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           // _label()
@@ -65,7 +65,7 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
 
   //타이틀 UI
   Widget _title() {
-    return Column(
+    return const Column(
       children: [
         Text(
           "바우만 피부 테스트",
@@ -83,7 +83,7 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
 
   //안내사항 UI
   Widget _baumannStartContent() {
-    return Column(
+    return const Column(
       children: [
         Text(
           "정확한 피부 진단을 바탕으로 한 제품 추천을 위해 테스트를 진행합니다.",
@@ -152,19 +152,19 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
       },
       child: Container(
         width: screenWidth,
-        padding: EdgeInsets.symmetric(vertical: 13),
+        padding: const EdgeInsets.symmetric(vertical: 13),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Color(0xffffb876).withAlpha(100),
-                  offset: Offset(2, 4),
+                  color: const Color(0xffffb876).withAlpha(100),
+                  offset: const Offset(2, 4),
                   blurRadius: 8,
                   spreadRadius: 2)
             ],
             color: Colors.white),
-        child: Text(
+        child: const Text(
           '테스트 시작하기',
           style: TextStyle(fontSize: 20, color: Color(0xffffb876)),
         ),
@@ -184,11 +184,11 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3.0),
               ),
-              title: Text(
+              title: const Text(
                 '알림',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              content: Text(
+              content: const Text(
                 '테스트를 보지 않으시면 정확한 제품 추천을 받기 어렵습니다.\n\n*추후 홈 페이지에서 테스트 가능합니다.',
                 style: TextStyle(
                   fontSize: 16,
@@ -200,10 +200,11 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
                   height: 30, // 수정된 부분: 세로 크기 조절
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero, // 내용물과의 간격을 없애기 위해 추가
-                      backgroundColor: Color(0xffdc7e00),
+                      padding: EdgeInsets.zero,
+                      // 내용물과의 간격을 없애기 위해 추가
+                      backgroundColor: const Color(0xffdc7e00),
                       foregroundColor: Colors.white,
-                      side: BorderSide(color: Color(0xffdc7e00)),
+                      side: const BorderSide(color: Color(0xffdc7e00)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(2.0),
                       ),
@@ -212,7 +213,7 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
                       width: 60, // 추가된 부분: 가로 크기 조절
                       height: 30, // 추가된 부분: 세로 크기 조절
                       alignment: Alignment.center,
-                      child: Text(
+                      child: const Text(
                         '확인',
                         style: TextStyle(
                           fontSize: 18,
@@ -221,7 +222,8 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
                       ),
                     ),
                     onPressed: () async {
-                      final userProfileResult = await APIService.getUserProfile();
+                      final userProfileResult =
+                          await APIService.getUserProfile();
                       Navigator.pop(context); // 팝업 닫기
                       Navigator.push(
                         context,
@@ -241,8 +243,8 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero, // 내용물과의 간격을 없애기 위해 추가
                       // backgroundColor: Colors.white,
-                      foregroundColor: Color(0xffdc7e00),
-                      side: BorderSide(color: Color(0xffdc7e00)),
+                      foregroundColor: const Color(0xffdc7e00),
+                      side: const BorderSide(color: Color(0xffdc7e00)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(2.0),
                       ),
@@ -251,7 +253,7 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
                       width: 60, // 추가된 부분: 가로 크기 조절
                       height: 30, // 추가된 부분: 세로 크기 조절
                       alignment: Alignment.center,
-                      child: Text(
+                      child: const Text(
                         '취소',
                         style: TextStyle(
                           fontSize: 18,
@@ -271,13 +273,13 @@ class _BaumannStartPageState extends State<BaumannStartPage> {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 13),
+        padding: const EdgeInsets.symmetric(vertical: 13),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
           border: Border.all(color: Colors.white, width: 2),
         ),
-        child: Text(
+        child: const Text(
           '건너뛰기',
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),

@@ -1,6 +1,5 @@
 import 'package:beautyminder/dto/task_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../dto/todo_model.dart';
 

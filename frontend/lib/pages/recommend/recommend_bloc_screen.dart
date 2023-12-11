@@ -94,16 +94,16 @@ class _RecPage extends State<RecPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RecommendPageBloc()..add(RecommendPageInitEvent()),
+      create: (_) => RecommendPageBloc()..add(const RecommendPageInitEvent()),
       child: Scaffold(
-          appBar:  HomepageAppBar(
+          appBar: HomepageAppBar(
             actions: [
               IconButton(
-                icon: Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh),
                 onPressed: () {
                   CosmeticSearchService.refreshCosmetics();
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => RecPage()),
+                    MaterialPageRoute(builder: (context) => const RecPage()),
                   );
                 },
               ),
@@ -116,7 +116,7 @@ class _RecPage extends State<RecPage> {
                   builder: (context, state) {
                 return Theme(
                   data: Theme.of(context).copyWith(
-                    toggleButtonsTheme: ToggleButtonsThemeData(
+                    toggleButtonsTheme: const ToggleButtonsThemeData(
                         selectedColor: Color(0xffd86a04),
                         selectedBorderColor: Color(0xffd86a04)),
                   ),
@@ -286,7 +286,7 @@ class _RecPageImageWidget extends State<RecPageImageWidget> {
           width: MediaQuery.of(context).size.width,
           height: 100,
           child: GestureDetector(
-            child: SpinKitThreeInOut(
+            child: const SpinKitThreeInOut(
               color: Color(0xffd86a04),
               size: 50.0,
               duration: Duration(seconds: 2),
@@ -298,24 +298,24 @@ class _RecPageImageWidget extends State<RecPageImageWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            const Center(
               child: Text(
                 '추천 가능한 제품이 없습니다.\n바우만 피부 테스트를 진행해주세요.',
                 style: TextStyle(fontSize: 18, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xffd86a04)),
+                    backgroundColor: const Color(0xffd86a04)),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (contextx) => BaumannStartPage()));
+                      builder: (contextx) => const BaumannStartPage()));
                 },
-                child: Text(
+                child: const Text(
                   "바우만 테스트",
                   style: TextStyle(color: Colors.white),
                 ))
@@ -379,7 +379,7 @@ class _RecPageImageWidget extends State<RecPageImageWidget> {
               }
             },
             separatorBuilder: (context, index) {
-              return Divider(
+              return const Divider(
                 height: 20,
                 thickness: 1,
                 indent: 10,

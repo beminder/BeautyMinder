@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import '../../services/search_service.dart';
 
 class CosmeticSearchWidget extends StatefulWidget {
+  const CosmeticSearchWidget({super.key});
+
   @override
-  _CosmeticSearchWidgetState createState() => _CosmeticSearchWidgetState();
+  State<CosmeticSearchWidget> createState() => _CosmeticSearchWidgetState();
 }
 
 class _CosmeticSearchWidgetState extends State<CosmeticSearchWidget> {
@@ -44,10 +46,10 @@ class _CosmeticSearchWidgetState extends State<CosmeticSearchWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xffffecda),
+        backgroundColor: const Color(0xffffecda),
         elevation: 0,
         centerTitle: false,
-        title: Container(
+        title: SizedBox(
           height: 40,
           child: TextField(
             focusNode: _focusNode,
@@ -57,7 +59,7 @@ class _CosmeticSearchWidgetState extends State<CosmeticSearchWidget> {
             onSubmitted: (text) {
               _search();
             },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: '화장품을 검색하세요',
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Color(0xffd86a04)),
@@ -70,7 +72,7 @@ class _CosmeticSearchWidgetState extends State<CosmeticSearchWidget> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               _search();
               // 텍스트 필드에 포커스를 주고자 할 때

@@ -1,8 +1,8 @@
 import 'package:beautyminder/dto/baumann_model.dart';
 import 'package:beautyminder/dto/baumann_result_model.dart';
+import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/shared_service.dart';
 import 'package:dio/dio.dart';
-import 'package:beautyminder/services/api_service.dart';
 
 import '../../config.dart';
 import 'dio_client.dart';

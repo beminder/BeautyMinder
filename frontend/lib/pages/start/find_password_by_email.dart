@@ -6,17 +6,17 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../../services/forget_password_service.dart';
 import '../../widget/appBar.dart';
-import 'find_password_byPhoneNum.dart';
+import 'find_password_by_phone.dart';
 
 class FindPasswordByEmailPage extends StatefulWidget {
   const FindPasswordByEmailPage({Key? key}) : super(key: key);
 
   @override
-  _FindPasswordByEmailPageState createState() => _FindPasswordByEmailPageState();
+  State<FindPasswordByEmailPage> createState() =>
+      _FindPasswordByEmailPageState();
 }
 
 class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
-
   final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   Color emailIconColor = Colors.grey.withOpacity(0.7);
@@ -32,19 +32,21 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UsualAppBar(text: "비밀번호 재설정",),
+      appBar: UsualAppBar(
+        text: "비밀번호 재설정",
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
             ProgressHUD(
+              inAsyncCall: isApiCallProcess,
+              opacity: 0.3,
+              key: UniqueKey(),
               child: Form(
                 key: globalFormKey,
                 child: _findPwdByEmailUI(context),
               ),
-              inAsyncCall: isApiCallProcess,
-              opacity: 0.3,
-              key: UniqueKey(),
             )
           ],
         ),
@@ -54,19 +56,19 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
 
   Widget _findPwdByEmailUI(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: <Widget>[
-          SizedBox(height: 200), // 여백 추가
+          const SizedBox(height: 200), // 여백 추가
           _buildEmailField(), // 이메일 필드
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           _buildSendButton(),
-          SizedBox(height: 80),
+          const SizedBox(height: 80),
           _buildOrText(),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           _buildByPhoneNumText(),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           _buildLoginText(),
         ],
       ),
@@ -78,7 +80,7 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "이메일 입력",
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -86,25 +88,27 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
             fontSize: 16,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Focus(
             onFocusChange: (hasFocus) {
               setState(() {
-                emailIconColor = hasFocus ? Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
+                emailIconColor = hasFocus
+                    ? const Color(0xffd86a04)
+                    : Colors.grey.withOpacity(0.7);
               });
             },
-            child: Container(
+            child: SizedBox(
               height: 60,
               child: TextFormField(
                 focusNode: emailFocusNode,
                 validator: (val) => val!.isEmpty ? '이메일이 입력되지 않았습니다.' : null,
                 onChanged: (val) => email = val,
                 obscureText: false,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: "이메일을 입력하세요",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Color(0xffd86a04), // Change the color as needed
                     ),
@@ -117,12 +121,10 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
                   // ),
                 ),
               ),
-            )
-        ),
+            )),
       ],
     );
   }
-
 
   // 전송 버튼
   Widget _buildSendButton() {
@@ -133,10 +135,10 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
         width: screenWidth, // 원하는 너비 설정
         height: 50, // 원하는 높이 설정
         decoration: BoxDecoration(
-          color: Color(0xfffe9738), // 버튼 배경색 설정
+          color: const Color(0xfffe9738), // 버튼 배경색 설정
           borderRadius: BorderRadius.circular(10.0), // 원하는 모양 설정
         ),
-        child: Center(
+        child: const Center(
           child: Text(
             "이메일로 요청",
             style: TextStyle(
@@ -152,7 +154,8 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
             isApiCallProcess = true;
           });
           try {
-            final response = await ForgetPasswordService.requestByEmailWhenForgetPwd(email!);
+            final response =
+                await ForgetPasswordService.requestByEmailWhenForgetPwd(email!);
 
             if (response == true) {
               print("Here is requestByEmailWhenForgetPwd : ${response}");
@@ -212,7 +215,7 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            FindPasswordByPhoneNumberPage()));
+                            const FindPasswordByPhoneNumberPage()));
                   },
               ),
             ],
@@ -241,8 +244,7 @@ class _FindPasswordByEmailPageState extends State<FindPasswordByEmailPage> {
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            LoginPage()));
+                        builder: (context) => const LoginPage()));
                   },
               ),
             ],

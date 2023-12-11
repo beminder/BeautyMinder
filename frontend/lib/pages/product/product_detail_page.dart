@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:beautyminder/dto/cosmetic_model.dart';
 import 'package:beautyminder/pages/product/review_page.dart';
-import 'package:beautyminder/services/gptReview_service.dart';
 import 'package:beautyminder/services/api_service.dart';
+import 'package:beautyminder/services/gptReview_service.dart';
 import 'package:beautyminder/services/search_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class ProductDetailPage extends StatefulWidget {
   final Function(bool)? updateFavorites;
 
   @override
-  _ProductDetailPageState createState() => _ProductDetailPageState();
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
@@ -56,7 +56,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   // }
 
   //필요한 서비스 호출
-  Future<void> _getAllNeeds(String prouctId) async {
+  Future<void> _getAllNeeds(String productId) async {
     if (isApiCallProcess) {
       return;
     }
@@ -68,7 +68,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     try {
       //즐겨찾기 제품 호출
       final loadedFavoriteList = await FavoritesService.getFavorites();
-      print("Hihihihi : ${widget.searchResults.id}");
       final loadedCosmeticInfo = await SearchService.searchCosmeticById(widget.searchResults.id);
 
       setState(() {
@@ -101,7 +100,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Scaffold(
       appBar: CommonAppBar(automaticallyImplyLeading: true, context: context,),
       body: isApiCallProcess || isLoading
-          ? SpinKitThreeInOut(
+          ? const SpinKitThreeInOut(
         color: Color(0xffd86a04),
         size: 50.0,
         duration: Duration(seconds: 2),
@@ -147,7 +146,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       child: Center(
         child: Text(
           widget.searchResults.name,
-          style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
       ),
@@ -157,7 +156,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget _displayImages() {
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: 200,
           child: CarouselSlider(
             options: CarouselOptions(
@@ -198,7 +197,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             (index) => Container(
           width: 8,
           height: 8,
-          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _currentImageIndex == index ? Colors.orange : Colors.grey,
@@ -215,10 +214,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         if (snapshot.hasData) {
           return Text(
             ' ${snapshot.data}', // Display the count
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           );
         } else {
-          return Text(
+          return const Text(
             ' 0', // Default value or loading state
             style: TextStyle(fontSize: 16),
           );
@@ -254,7 +253,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               } else {
                 print("Failed to upload favorites");
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('즐겨찾기 등록에 실패하였습니다.'),
                     duration: Duration(seconds: 2),
                   ),
@@ -279,7 +278,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               } else {
                 print("Failed to delete favorites");
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('즐겨찾기 제거에 실패하였습니다.'),
                     duration: Duration(seconds: 2),
                   ),
@@ -315,7 +314,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         widget.searchResults.brand == null
         ? '브랜드: 정보 없음'
         : '브랜드: ${widget.searchResults.brand}',
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
@@ -327,7 +326,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         widget.searchResults.category == null
             ? '카테고리: 정보 없음'
             : '카테고리: ${widget.searchResults.category}',
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
@@ -339,7 +338,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         widget.searchResults.keywords == null
             ? '키워드: 정보 없음'
             : '키워드: ${widget.searchResults.keywords}',
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
@@ -352,7 +351,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Text(
+          const Text(
             '별점: ',
             style: TextStyle(fontSize: 18),
           ),
@@ -363,20 +362,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             allowHalfRating: true,
             itemCount: 5,
             itemSize: 20,
-            itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+            itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
             itemBuilder: (context, index) {
               if (index < fullStar) {
-                return Icon(
+                return const Icon(
                   Icons.star,
                   color: Colors.amber,
                 );
               } else if (index == fullStar && halfStar > 0) {
-                return Icon(
+                return const Icon(
                   Icons.star_half_outlined,
                   color: Colors.amber,
                 );
               } else {
-                return Icon(
+                return const Icon(
                   Icons.star_border,
                   color: Colors.grey,
                 );
@@ -386,7 +385,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
           Text(
             '(${averageRating})',
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
           ),
         ],
       ),
@@ -409,7 +408,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 height: 30,
                 child: Theme(
                   data: Theme.of(context).copyWith(
-                    toggleButtonsTheme: ToggleButtonsThemeData(
+                    toggleButtonsTheme: const ToggleButtonsThemeData(
                       selectedColor: Color(0xffd86a04),
                       selectedBorderColor: Color(0xffd86a04),
                     ),
@@ -418,12 +417,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     children: [
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                         child: Text(
                           '높은 평정 요약',
                           style: TextStyle(
                             color:
-                                isPositive ? Color(0xffd86a04) : Colors.black,
+                                isPositive ? const Color(0xffd86a04) : Colors.black,
                             fontWeight: isPositive
                                 ? FontWeight.bold
                                 : FontWeight.normal,
@@ -432,12 +431,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                         child: Text(
                           '낮은 평점 요약',
                           style: TextStyle(
                             color:
-                                !isPositive ? Color(0xffd86a04) : Colors.black,
+                                !isPositive ? const Color(0xffd86a04) : Colors.black,
                             fontWeight: !isPositive
                                 ? FontWeight.bold
                                 : FontWeight.normal,
@@ -468,12 +467,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(8.0),
             ),
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               showPositiveReview
                   ? gptReviewInfo.positive
                   : gptReviewInfo.negative,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
               textAlign: TextAlign.justify,
             ),
           ),
@@ -490,7 +489,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       future: _gptReviewInfo,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return SpinKitThreeInOut(
+          return const SpinKitThreeInOut(
             color: Color(0xffd86a04),
             size: 25.0,
             duration: Duration(seconds: 2),
@@ -509,7 +508,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       height: 30,
                       child: Theme(
                         data: Theme.of(context).copyWith(
-                          toggleButtonsTheme: ToggleButtonsThemeData(
+                          toggleButtonsTheme: const ToggleButtonsThemeData(
                             selectedColor: Color(0xffd86a04),
                             selectedBorderColor: Color(0xffd86a04),
                           ),
@@ -517,13 +516,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         child: ToggleButtons(
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 0),
                               child: Text(
                                 '높은 평정 요약',
                                 style: TextStyle(
                                   color: isPositive
-                                      ? Color(0xffd86a04)
+                                      ? const Color(0xffd86a04)
                                       : Colors.black,
                                   fontWeight: isPositive
                                       ? FontWeight.bold
@@ -532,13 +531,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 0),
                               child: Text(
                                 '낮은 평점 요약',
                                 style: TextStyle(
                                   color: !isPositive
-                                      ? Color(0xffd86a04)
+                                      ? const Color(0xffd86a04)
                                       : Colors.black,
                                   fontWeight: !isPositive
                                       ? FontWeight.bold
@@ -564,9 +563,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ],
                 ),
               ),
-              Padding(
+              const Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                 child: Center(
                   child: Text(
                     '요약된 GPT Review가 없습니다.',
@@ -607,7 +606,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           backgroundColor: Colors.white, // Set background color to transparent
           elevation: 0, // Remove the button shadow
         ),
-        child: Text(
+        child: const Text(
           '작성된 후기 전체보기  >',
           style: TextStyle(
             color: Colors.black,
@@ -648,8 +647,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               "ChatGPT로 최근 후기를 요약했어요",
               style: TextStyle(
@@ -678,12 +677,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xffefefef),
-          border: Border.all(color: Color(0xffc6c6c6)),
+          color: const Color(0xffefefef),
+          border: Border.all(color: const Color(0xffc6c6c6)),
           borderRadius: BorderRadius.circular(5),
         ),
         padding: const EdgeInsets.all(10),
-        child: Center(
+        child: const Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

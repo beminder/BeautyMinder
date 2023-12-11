@@ -1,6 +1,5 @@
 import 'package:beautyminder/pages/home/home_page.dart';
 import 'package:beautyminder/pages/start/agreement_page.dart';
-import 'package:beautyminder/pages/start/register_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -11,7 +10,7 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 import '../../dto/login_request_model.dart';
 import '../../services/api_service.dart';
 import '../../widget/appBar.dart';
-import 'find_password_byEmail.dart';
+import 'find_password_by_email.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -87,13 +86,13 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             ProgressHUD(
+              inAsyncCall: isApiCallProcess,
+              opacity: 0.3,
+              key: UniqueKey(),
               child: Form(
                 key: globalFormKey,
                 child: _loginUI(context),
               ),
-              inAsyncCall: isApiCallProcess,
-              opacity: 0.3,
-              key: UniqueKey(),
             )
           ],
         ),
@@ -104,29 +103,29 @@ class _LoginPageState extends State<LoginPage> {
   // 로그인 UI
   Widget _loginUI(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: <Widget>[
-          SizedBox(height: 200), // 여백 추가
+          const SizedBox(height: 200), // 여백 추가
           _buildEmailField(), // 이메일 필드
 
-          SizedBox(height: 30), // 여백 추가
+          const SizedBox(height: 30), // 여백 추가
           _buildPasswordField(), // 비밀번호 필드
 
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           _checkboxRememberEmail(),
 
-          SizedBox(height: 80), // 여백 추가
+          const SizedBox(height: 80), // 여백 추가
           _buildLoginButton(), // 로그인 버튼
 
-          SizedBox(height: 80), // 여백 추가
+          const SizedBox(height: 80), // 여백 추가
           _buildOrText(), // OR 텍스트
 
-          SizedBox(height: 30), // 여백 추가
+          const SizedBox(height: 30), // 여백 추가
           _buildForgetPassword(), // 비밀번호 찾기
 
-          SizedBox(height: 20), // 여백 추가
+          const SizedBox(height: 20), // 여백 추가
           _buildSignupText(), // 회원가입 텍스트
         ],
       ),
@@ -137,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "이메일 입력",
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -145,12 +144,12 @@ class _LoginPageState extends State<LoginPage> {
             fontSize: 16,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Focus(
           onFocusChange: (hasFocus) {
             setState(() {
               emailIconColor =
-                  hasFocus ? Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
+                  hasFocus ? const Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
             });
           },
           child: Container(
@@ -162,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                   validator: (val) => val!.isEmpty ? '이메일이 입력되지 않았습니다.' : null,
                   onChanged: (val) => email = val,
                   obscureText: false,
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     hintText: "이메일을 입력하세요",
                     hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
@@ -170,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                       Icons.person,
                       color: emailIconColor,
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xffd86a04), // Change the color as needed
                       ),
@@ -194,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "비밀번호 입력",
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -202,12 +201,12 @@ class _LoginPageState extends State<LoginPage> {
             fontSize: 16,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Focus(
           onFocusChange: (hasFocus) {
             setState(() {
               passwordIconColor =
-                  hasFocus ? Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
+                  hasFocus ? const Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
             });
           },
           child: Container(
@@ -218,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
               validator: (val) => val!.isEmpty ? '비밀번호가 입력되지 않았습니다.' : null,
               onChanged: (val) => password = val,
               obscureText: hidePassword,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 hintText: "비밀번호를 입력하세요",
                 hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
@@ -236,10 +235,10 @@ class _LoginPageState extends State<LoginPage> {
                     hidePassword ? Icons.visibility_off : Icons.visibility,
                     color: hidePassword
                         ? Colors.grey.withOpacity(0.7)
-                        : Color(0xffd86a04),
+                        : const Color(0xffd86a04),
                   ),
                 ),
-                focusedBorder: UnderlineInputBorder(
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: Color(0xffd86a04), // Change the color as needed
                   ),
@@ -268,9 +267,9 @@ class _LoginPageState extends State<LoginPage> {
               rememberEmail = value!;
             });
           },
-          activeColor: Color(0xffd86a04),
+          activeColor: const Color(0xffd86a04),
         ),
-        Text("이메일 기억하기"),
+        const Text("이메일 기억하기"),
       ],
     );
   }
@@ -284,10 +283,10 @@ class _LoginPageState extends State<LoginPage> {
         width: screenWidth, // 원하는 너비 설정
         height: 50, // 원하는 높이 설정
         decoration: BoxDecoration(
-          color: Color(0xfffe9738), // 버튼 배경색 설정
+          color: const Color(0xfffe9738), // 버튼 배경색 설정
           borderRadius: BorderRadius.circular(10.0), // 원하는 모양 설정
         ),
-        child: Center(
+        child: const Center(
           child: Text(
             "로그인",
             style: TextStyle(
@@ -319,10 +318,10 @@ class _LoginPageState extends State<LoginPage> {
                 MaterialPageRoute(
                   builder: (context) => FutureBuilder(
                     // Use FutureBuilder to show a loading spinner until the data is loaded
-                    future: Future.delayed(Duration(seconds: 2), () => userProfileResult.value),
+                    future: Future.delayed(const Duration(seconds: 2), () => userProfileResult.value),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Scaffold(
+                        return const Scaffold(
                           body: Center(
                             child: SpinKitThreeInOut(
                               color: Color(0xffd86a04),
@@ -379,7 +378,7 @@ class _LoginPageState extends State<LoginPage> {
                   ..onTap = () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
-                              FindPasswordByEmailPage()));
+                              const FindPasswordByEmailPage()));
                   },
               ),
             ],
@@ -423,7 +422,7 @@ class _LoginPageState extends State<LoginPage> {
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            AgreementPage()));
+                            const AgreementPage()));
                   },
               ),
             ],

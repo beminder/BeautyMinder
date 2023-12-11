@@ -1,7 +1,7 @@
-import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/favorites_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../dto/cosmetic_model.dart';
 import '../../widget/appBar.dart';
@@ -33,7 +33,11 @@ class _MyFavoritePageState extends State<MyFavoritePage> {
         isLoading = false;
       });
     } catch (e) {
-      print(e);
+      Fluttertoast.showToast(
+        msg: '$e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
@@ -42,39 +46,36 @@ class _MyFavoritePageState extends State<MyFavoritePage> {
       context,
       MaterialPageRoute(
         builder: (context) => ProductDetailPage(
-          searchResults: Cosmetic(
-            id: favorites[index]['id'] ?? '',
-            name: favorites[index]['name'] ?? '',
-            brand: favorites[index]['brand'],
-            images: List<String>.from(favorites[index]['images'] ?? []),
-            glowpickUrl: favorites[index]['glowpickUrl'],
-            expirationDate: favorites[index]['expirationDate'] != null
-                ? DateTime.tryParse(favorites[index]['expirationDate'])
-                : null,
-            createdAt: favorites[index]['createdAt'] != null
-                ? DateTime.parse(favorites[index]['createdAt'])
-                : DateTime.now(),
-            purchasedDate: favorites[index]['purchasedDate'] != null
-                ? DateTime.tryParse(favorites[index]['purchasedDate'])
-                : null,
-            category: favorites[index]['category'] ?? 'Unknown',
-            averageRating:
-            (favorites[index]['averageRating'] as num?)?.toDouble() ?? 0.0,
-            reviewCount: favorites[index]['reviewCount'] as int? ?? 0,
-            totalRating: favorites[index]['totalRating'] as int? ?? 0,
-            keywords:
-            List<String>.from(favorites[index]['keywords'] ?? []),
-          ),
-          updateFavorites:(isFavorite) {
-            if(!isFavorite) {
-              print("@@@@2 : $isFavorite");
-              setState(() {
-                favorites.removeAt(index);
-                print("@@@@3 : ${favorites.toString()}");
-              });
-            }
-          }
-        ),
+            searchResults: Cosmetic(
+              id: favorites[index]['id'] ?? '',
+              name: favorites[index]['name'] ?? '',
+              brand: favorites[index]['brand'],
+              images: List<String>.from(favorites[index]['images'] ?? []),
+              glowpickUrl: favorites[index]['glowpickUrl'],
+              expirationDate: favorites[index]['expirationDate'] != null
+                  ? DateTime.tryParse(favorites[index]['expirationDate'])
+                  : null,
+              createdAt: favorites[index]['createdAt'] != null
+                  ? DateTime.parse(favorites[index]['createdAt'])
+                  : DateTime.now(),
+              purchasedDate: favorites[index]['purchasedDate'] != null
+                  ? DateTime.tryParse(favorites[index]['purchasedDate'])
+                  : null,
+              category: favorites[index]['category'] ?? 'Unknown',
+              averageRating:
+                  (favorites[index]['averageRating'] as num?)?.toDouble() ??
+                      0.0,
+              reviewCount: favorites[index]['reviewCount'] as int? ?? 0,
+              totalRating: favorites[index]['totalRating'] as int? ?? 0,
+              keywords: List<String>.from(favorites[index]['keywords'] ?? []),
+            ),
+            updateFavorites: (isFavorite) {
+              if (!isFavorite) {
+                setState(() {
+                  favorites.removeAt(index);
+                });
+              }
+            }),
       ),
     );
 
@@ -93,44 +94,43 @@ class _MyFavoritePageState extends State<MyFavoritePage> {
         context: context,
       ),
       body: isLoading
-          ? SpinKitThreeInOut(
-        color: Color(0xffd86a04),
-        size: 50.0,
-        duration: Duration(seconds: 2),
-      )
+          ? const SpinKitThreeInOut(
+              color: Color(0xffd86a04),
+              size: 50.0,
+              duration: Duration(seconds: 2),
+            )
           : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: MyPageHeader('즐겨찾기 제품'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: favorites.length,
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  _navigateToProductDetailPage(index);
-                },
-                child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  leading: Image.network(
-                    favorites[index]['images'][0] ?? '',
-                    height: 80,
-                    width: 80,
-                  ),
-                  title: Text(
-                    favorites[index]['name'],
-                    style: TextStyle(
-                        fontSize: 18
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: MyPageHeader('즐겨찾기 제품'),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: favorites.length,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () {
+                        _navigateToProductDetailPage(index);
+                      },
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        leading: Image.network(
+                          favorites[index]['images'][0] ?? '',
+                          height: 80,
+                          width: 80,
+                        ),
+                        title: Text(
+                          favorites[index]['name'],
+                          style: const TextStyle(fontSize: 18),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

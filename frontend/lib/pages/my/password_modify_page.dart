@@ -2,6 +2,7 @@ import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/shared_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../dto/user_model.dart';
 import '../../widget/appBar.dart';
@@ -42,7 +43,11 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
         isLoading = false;
       });
     } catch (e) {
-      print(e);
+      Fluttertoast.showToast(
+        msg: '$e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
@@ -170,9 +175,9 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
     //새 비밀번호와 재확인 비밀번호가 일치하지 않을 때
     if (_newPasswordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.'),
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
       return;
@@ -181,9 +186,9 @@ class _PasswordModifyPageState extends State<PasswordModifyPage> {
     //현재 비밀번호와 새 비밀번호가 같을 때
     if (_currentPasswordController.text == _newPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('현재 비밀번호와 동일합니다. 새로운 비밀번호를 입력해주세요.'),
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
       return;
@@ -324,7 +329,7 @@ class UserInfoEditItem extends StatelessWidget {
               child: TextFormField(
                 controller: controller,
                 validator: _validator,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Color(0xfffe9738)),
                   ),

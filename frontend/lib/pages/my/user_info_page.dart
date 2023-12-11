@@ -7,6 +7,7 @@ import 'package:beautyminder/services/shared_service.dart';
 import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../dto/baumann_result_model.dart';
@@ -24,7 +25,7 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage> {
   User? user;
-  List<BaumannResult> baumannresultList = [];
+  List<BaumannResult> baumannResultList = [];
 
   bool isLoading = true;
 
@@ -40,26 +41,28 @@ class _UserInfoPageState extends State<UserInfoPage> {
       final info = await SharedService.loginDetails();
       final loadedBaumannResult = await BaumannService.getBaumannHistory();
       setState(() {
-        user = info!.user ?? null;
-        baumannresultList = loadedBaumannResult.value ?? [];
+        user = info!.user;
+        baumannResultList = loadedBaumannResult.value ?? [];
         isLoading = false;
       });
-      print("hihi user info page2 : ${user?.baumann}");
     } catch (e) {
-      print(e);
+      Fluttertoast.showToast(
+        msg: '$e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print("hihi user info page3 : ${user?.baumann}");
     return Scaffold(
         appBar: CommonAppBar(
           automaticallyImplyLeading: true,
           context: context,
         ),
         body: isLoading
-            ? SpinKitThreeInOut(
+            ? const SpinKitThreeInOut(
           color: Color(0xffd86a04),
           size: 50.0,
           duration: Duration(seconds: 2),
@@ -69,33 +72,33 @@ class _UserInfoPageState extends State<UserInfoPage> {
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ListView(children: [
-                  MyPageHeader('회원정보'),
-                  SizedBox(height: 20),
+                  const MyPageHeader('회원정보'),
+                  const SizedBox(height: 20),
                   UserInfoProfile(
                     nickname: user!.nickname ?? user!.email,
                     profileImage: user!.profileImage ?? '',
                     onImageTap: _changeProfileImage,
                     onButtonTap: _changeNickName,
                   ),
-                  SizedBox(height: 20),
-                  MyDivider(),
+                  const SizedBox(height: 20),
+                  const MyDivider(),
                   PhoneInfo(
                     title: '전화번호',
                     content: user!.phoneNumber ?? '',
                     onTap: _changePhone,
                   ),
-                  MyDivider(),
+                  const MyDivider(),
                   UserInfoItem(title: '이메일', content: user!.email),
-                  MyDivider(),
+                  const MyDivider(),
                   UserInfoItem(
                       title: '피부타입',
-                      content: (baumannresultList.isEmpty)
+                      content: (baumannResultList.isEmpty)
                           ? "없음"
-                          : baumannresultList.last.baumannType),
-                  MyDivider(),
+                          : baumannResultList.last.baumannType),
+                  const MyDivider(),
                   UserInfoItem(
                       title: '가입시각', content: user!.createdAt.toString()),
-                  MyDivider(),
+                  const MyDivider(),
                   // SizedBox(height: 200),
                 ])),
             Positioned(
@@ -238,7 +241,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             await _updateUser(nickname: newNickname);
             await _showSnackBar(
               title: '닉네임 변경에 성공하였습니다.',
-              body: '변경된 닉네임은 ${newNickname}입니다.',
+              body: '변경된 닉네임은 $newNickname입니다.',
             );
           } else {
             await _showSnackBar(

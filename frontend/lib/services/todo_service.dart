@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:beautyminder/dto/task_model.dart';
+import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/dio_client.dart';
 import 'package:intl/intl.dart';
-import 'package:beautyminder/services/api_service.dart';
 
 import '../../config.dart';
 import '../dto/todo_model.dart';
@@ -210,16 +210,16 @@ class TodoService {
       'Cookie': 'XRT=$refreshToken',
     };
 
-    List<Map<String, dynamic>>? add_tasks =
+    List<Map<String, dynamic>>? addTasks =
         tasks?.map((task) => task.toJson()).toList() ?? [];
 
-    Map<String, dynamic> taskUpdate = {"tasksToAdd": add_tasks};
+    Map<String, dynamic> taskUpdate = {"tasksToAdd": addTasks};
 
     try {
       final response = await DioClient.sendRequest('PUT', url,
           body: taskUpdate, headers: headers);
 
-      print("response : ${response}");
+      print("response : $response");
       return Result.success(response.data);
     } catch (e) {
       return Result.failure("An error occurred: $e");

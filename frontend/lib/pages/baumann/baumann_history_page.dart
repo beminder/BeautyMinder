@@ -2,7 +2,6 @@ import 'package:beautyminder/pages/baumann/baumann_test_start_page.dart';
 import 'package:beautyminder/pages/baumann/watch_result_page.dart';
 import 'package:beautyminder/services/baumann_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dto/baumann_result_model.dart';
 import '../../services/api_service.dart';
@@ -17,9 +16,10 @@ class BaumannHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("This is History Page : $resultData");
     return Scaffold(
-      appBar: CommonAppBar(automaticallyImplyLeading: false,),
+      appBar: CommonAppBar(
+        automaticallyImplyLeading: false,
+      ),
       body: Column(
         children: [
           _baumannHistoryUI(),
@@ -34,13 +34,13 @@ class BaumannHistoryPage extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   _retestButton(context),
                 ],
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Expanded(
@@ -50,8 +50,8 @@ class BaumannHistoryPage extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         // padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-        padding: EdgeInsets.only(left: 20, right:20, top:5, bottom:50),
-        child: Container(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 50),
+        child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () async {
@@ -60,8 +60,8 @@ class BaumannHistoryPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => HomePage(
-                      user: userProfileResult.value,
-                    )),
+                          user: userProfileResult.value,
+                        )),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -71,7 +71,7 @@ class BaumannHistoryPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5.0),
               ),
             ),
-            child: Text(
+            child: const Text(
               '홈으로 가기',
               style: TextStyle(
                 color: Colors.white,
@@ -85,7 +85,7 @@ class BaumannHistoryPage extends StatelessWidget {
   }
 
   Widget _baumannHistoryUI() {
-    return Align(
+    return const Align(
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +94,7 @@ class BaumannHistoryPage extends StatelessWidget {
             height: 30,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20),
+            padding: EdgeInsets.only(left: 20),
             child: Text(
               "바우만 피부 타입 결과",
               style: TextStyle(
@@ -117,7 +117,7 @@ class BaumannHistoryPage extends StatelessWidget {
 
         return Column(
           children: [
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             _resultButton(context, result, isEven),
           ],
         );
@@ -142,20 +142,22 @@ class BaumannHistoryPage extends StatelessWidget {
   //   }
   // }
 
-  Widget _resultButton(BuildContext context, BaumannResult result, bool isEven) {
-    Color buttonColor = isEven ? Colors.white : Color(0xffffca97);
+  Widget _resultButton(
+      BuildContext context, BaumannResult result, bool isEven) {
+    Color buttonColor = isEven ? Colors.white : const Color(0xffffca97);
     Color textColor = isEven ? Colors.black : Colors.white;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Dismissible(
         key: UniqueKey(),
-        direction: DismissDirection.endToStart, // Set direction to right-to-left
+        direction: DismissDirection.endToStart,
+        // Set direction to right-to-left
         background: Container(
           color: Colors.red,
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           alignment: AlignmentDirectional.centerEnd,
-          child: Icon(
+          child: const Icon(
             Icons.delete,
             color: Colors.white,
           ),
@@ -165,19 +167,19 @@ class BaumannHistoryPage extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("정말로 삭제하시겠습니까?"),
+                title: const Text("정말로 삭제하시겠습니까?"),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(false); // 삭제 취소
                     },
-                    child: Text("취소"),
+                    child: const Text("취소"),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(true); // 삭제 진행
                     },
-                    child: Text("삭제"),
+                    child: const Text("삭제"),
                   ),
                 ],
               );
@@ -187,19 +189,19 @@ class BaumannHistoryPage extends StatelessWidget {
             bool deletionSuccessful = false;
 
             try {
-              final deletionResult = await BaumannService.deleteBaumannHistory(
-                  result.id);
+              final deletionResult =
+                  await BaumannService.deleteBaumannHistory(result.id);
               if (deletionResult == "Success to Delete") {
                 deletionSuccessful = true;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text("삭제되었습니다."),
                   ),
                 );
               } else {
                 deletionSuccessful = false;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text("삭제에 실패했습니다."),
                   ),
                 );
@@ -210,15 +212,13 @@ class BaumannHistoryPage extends StatelessWidget {
                 resultData?.remove(result);
               }
               return deletionSuccessful; // 항목이 성공적으로 삭제되었을 때만 true 반환
-
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text("삭제하는 데 오류가 발생했습니다."),
                 ),
               );
             }
-
           } else {
             return false; // 삭제가 취소되었을 때는 false 반환
           }
@@ -226,7 +226,7 @@ class BaumannHistoryPage extends StatelessWidget {
 
         child: Container(
           height: 100,
-          margin: EdgeInsets.symmetric(vertical: 5),
+          margin: const EdgeInsets.symmetric(vertical: 5),
           child: ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -234,7 +234,7 @@ class BaumannHistoryPage extends StatelessWidget {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: buttonColor,
-              side: BorderSide(color: Color(0xffffca97)),
+              side: const BorderSide(color: Color(0xffffca97)),
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
@@ -251,7 +251,7 @@ class BaumannHistoryPage extends StatelessWidget {
                             color: textColor,
                             fontSize: 18,
                             fontWeight: FontWeight.bold)),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Text('일시: ${result.date}',
                         style: TextStyle(color: textColor, fontSize: 12)),
                   ],
@@ -264,11 +264,9 @@ class BaumannHistoryPage extends StatelessWidget {
     );
   }
 
-
-
   Widget _retestButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Align(
         alignment: Alignment.topRight,
         child: SizedBox(
@@ -280,14 +278,14 @@ class BaumannHistoryPage extends StatelessWidget {
               ));
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xffefefef), // Background color
+              backgroundColor: const Color(0xffefefef), // Background color
               elevation: 0, // color
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0), // Rounded corners
-                side: BorderSide(color: Colors.blueGrey),
+                side: const BorderSide(color: Colors.blueGrey),
               ),
             ),
-            child: Padding(
+            child: const Padding(
               padding: EdgeInsets.all(0.0),
               child: Text(
                 '다시 테스트하기',
@@ -313,14 +311,12 @@ class BaumannHistoryPage extends StatelessWidget {
   }
 }
 
-
-
-
-
 //글씨 애니메이션
 class AnimatedTrainText extends StatefulWidget {
+  const AnimatedTrainText({super.key});
+
   @override
-  _AnimatedTrainTextState createState() => _AnimatedTrainTextState();
+  State<AnimatedTrainText> createState() => _AnimatedTrainTextState();
 }
 
 class _AnimatedTrainTextState extends State<AnimatedTrainText>
@@ -333,13 +329,13 @@ class _AnimatedTrainTextState extends State<AnimatedTrainText>
     super.initState();
 
     _animationController = AnimationController(
-      duration: Duration(seconds: 10),
+      duration: const Duration(seconds: 10),
       vsync: this,
     );
 
     _animation = Tween<Offset>(
-      begin: Offset(1, 0),
-      end: Offset(-1, 0),
+      begin: const Offset(1, 0),
+      end: const Offset(-1, 0),
     ).animate(
       CurvedAnimation(
         parent: _animationController,
@@ -354,7 +350,7 @@ class _AnimatedTrainTextState extends State<AnimatedTrainText>
   Widget build(BuildContext context) {
     return SlideTransition(
       position: _animation,
-      child: Text(
+      child: const Text(
         "* 결과 삭제를 원하실 경우 좌측으로 슬라이드 해주세요",
         style: TextStyle(fontSize: 16),
       ),

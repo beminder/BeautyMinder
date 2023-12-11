@@ -1,6 +1,6 @@
+import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/shared_service.dart';
 import 'package:dio/dio.dart';
-import 'package:beautyminder/services/api_service.dart';
 
 import '../../config.dart';
 import '../dto/keywordRank_model.dart';

@@ -1,6 +1,5 @@
 // import 'package:frontend/dto/user_model.dart';
 import 'package:beautyminder/dto/task_model.dart';
-import 'package:intl/intl.dart';
 
 import 'user_model.dart';
 

@@ -1,6 +1,6 @@
+import 'package:beautyminder/services/api_service.dart';
 import 'package:beautyminder/services/dio_client.dart';
 import 'package:beautyminder/services/shared_service.dart';
-import 'package:beautyminder/services/api_service.dart';
 
 import '../config.dart';
 import '../dto/cosmetic_model.dart';

@@ -1,30 +1,23 @@
 import 'dart:io';
 
-import 'package:beautyminder/pages/todo/todo_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../widget/appBar.dart';
-import '../../widget/bottomNavigationBar.dart';
-import '../my/my_page.dart';
-import '../pouch/expiry_page.dart';
-import '../recommend/recommend_bloc_screen.dart';
-import 'FullScreenImagePage.dart';
+import 'fullscr_image_page.dart';
 
-class skinAlbumPage extends StatefulWidget {
-  const skinAlbumPage({Key? key}) : super(key: key);
+class SkinAlbumPage extends StatefulWidget {
+  const SkinAlbumPage({Key? key}) : super(key: key);
 
   @override
-  _skinAlbumPage createState() => _skinAlbumPage();
+  State<SkinAlbumPage> createState() => _SkinAlbumPage();
 }
 
-class _skinAlbumPage extends State<skinAlbumPage> {
+class _SkinAlbumPage extends State<SkinAlbumPage> {
   String selectedFilter = "all";
   String title = '전체';
 
@@ -35,12 +28,6 @@ class _skinAlbumPage extends State<skinAlbumPage> {
       Permission.accessMediaLocation,
       Permission.storage
     ].request();
-
-    print("statuses[Permission.camera] : ${statuses[Permission.camera]}");
-    print("Permission.photos : ${statuses[Permission.photos]}");
-    print(
-        "Permission.accessMediaLocation : ${statuses[Permission.accessMediaLocation]}");
-    print("Permission.storage : ${statuses[Permission.storage]}");
   }
 
   // List<LocalImage> images = [];

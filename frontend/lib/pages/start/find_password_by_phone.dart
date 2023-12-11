@@ -1,6 +1,5 @@
 import 'package:beautyminder/pages/start/agreement_page.dart';
 import 'package:beautyminder/pages/start/login_page.dart';
-import 'package:beautyminder/pages/start/register_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,11 +12,12 @@ class FindPasswordByPhoneNumberPage extends StatefulWidget {
   const FindPasswordByPhoneNumberPage({Key? key}) : super(key: key);
 
   @override
-  _FindPasswordByPhoneNumberPageState createState() => _FindPasswordByPhoneNumberPageState();
+  State<FindPasswordByPhoneNumberPage> createState() =>
+      _FindPasswordByPhoneNumberPageState();
 }
 
-class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumberPage> {
-
+class _FindPasswordByPhoneNumberPageState
+    extends State<FindPasswordByPhoneNumberPage> {
   final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   Color emailIconColor = Colors.grey.withOpacity(0.7);
@@ -33,19 +33,21 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UsualAppBar(text: "비밀번호 재설정",),
+      appBar: UsualAppBar(
+        text: "비밀번호 재설정",
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
             ProgressHUD(
+              inAsyncCall: isApiCallProcess,
+              opacity: 0.3,
+              key: UniqueKey(),
               child: Form(
                 key: globalFormKey,
                 child: _findPwdByEmailUI(context),
               ),
-              inAsyncCall: isApiCallProcess,
-              opacity: 0.3,
-              key: UniqueKey(),
             )
           ],
         ),
@@ -55,19 +57,19 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
 
   Widget _findPwdByEmailUI(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: <Widget>[
-          SizedBox(height: 200), // 여백 추가
+          const SizedBox(height: 200), // 여백 추가
           _buildPhoneNumberField(), // 이메일 필드
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           _buildSendButton(),
-          SizedBox(height: 80),
+          const SizedBox(height: 80),
           _buildOrText(),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           _buildRegisterText(),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           _buildLoginText(),
         ],
       ),
@@ -79,7 +81,7 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "전화번호 입력",
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -87,11 +89,12 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
             fontSize: 16,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Focus(
             onFocusChange: (hasFocus) {
               setState(() {
-                emailIconColor = hasFocus ? Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
+                emailIconColor =
+                    hasFocus ? const Color(0xffd86a04) : Colors.grey.withOpacity(0.7);
               });
             },
             child: Container(
@@ -101,19 +104,18 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
                 validator: (val) {
                   if (val!.isEmpty) {
                     return '전화번호가 입력되지 않았습니다.';
-                  }
-                  else if(!isValidPhoneNumber(val)) {
+                  } else if (!isValidPhoneNumber(val)) {
                     return '전화번호 형식을 다시 확인해주세요. ex) 01011112222';
                   }
                   return null;
                 },
                 onChanged: (val) => email = val,
                 obscureText: false,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: "전화번호를 입력하세요.('-' 없이 입력하세요.)",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Color(0xffd86a04), // Change the color as needed
                     ),
@@ -126,12 +128,10 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
                   // ),
                 ),
               ),
-            )
-        ),
+            )),
       ],
     );
   }
-
 
   // 전송 버튼
   Widget _buildSendButton() {
@@ -142,10 +142,10 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
         width: screenWidth, // 원하는 너비 설정
         height: 50, // 원하는 높이 설정
         decoration: BoxDecoration(
-          color: Color(0xfffe9738), // 버튼 배경색 설정
+          color: const Color(0xfffe9738), // 버튼 배경색 설정
           borderRadius: BorderRadius.circular(10.0), // 원하는 모양 설정
         ),
-        child: Center(
+        child: const Center(
           child: Text(
             "전화번호로 요청",
             style: TextStyle(
@@ -161,7 +161,9 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
             isApiCallProcess = true;
           });
           try {
-            final response = await ForgetPasswordService.requestByPhoneNumWhenForgetPwd(email!);
+            final response =
+                await ForgetPasswordService.requestByPhoneNumWhenForgetPwd(
+                    email!);
 
             if (response == true) {
               print("Here is requestByEmailWhenForgetPwd : ${response}");
@@ -220,8 +222,7 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            AgreementPage()));
+                        builder: (context) => const AgreementPage()));
                   },
               ),
             ],
@@ -249,9 +250,8 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            LoginPage()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const LoginPage()));
                   },
               ),
             ],
@@ -274,5 +274,4 @@ class _FindPasswordByPhoneNumberPageState extends State<FindPasswordByPhoneNumbe
     final RegExp regex = RegExp(r'^010\d{8}$');
     return regex.hasMatch(input);
   }
-
 }

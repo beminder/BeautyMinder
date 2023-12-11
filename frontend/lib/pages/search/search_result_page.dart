@@ -2,8 +2,8 @@ import 'package:beautyminder/pages/product/product_detail_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../dto/cosmetic_model.dart';
+import '../../services/keyword_rank_service.dart';
 import '../../services/search_service.dart';
-import '../../services/keywordRank_service.dart';
 import '../../widget/appBar.dart';
 
 class SearchResultPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class SearchResultPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SearchResultPageState createState() => _SearchResultPageState();
+  State<SearchResultPage> createState() => _SearchResultPageState();
 }
 
 class _SearchResultPageState extends State<SearchResultPage> {
@@ -51,7 +51,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
       setState(() {
         searchHistory = loadedHistory ?? [];
       });
-
     } catch (e) {
       print('An error occurred while loading expiries: $e');
     } finally {
@@ -81,13 +80,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
   }
 
   Widget _title() {
-    return Container(
+    return SizedBox(
       height: 40,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Flexible(
@@ -122,7 +121,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 8,
           ),
           IconButton(
@@ -143,7 +142,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 print('Error searching anything: $e');
               }
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.search,
               color: Color(0xffd86a04),
             ),
@@ -154,8 +153,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   }
 
   Widget _searchResultPageUI() {
-    return Container(
-        child: Column(
+    return Column(
       children: <Widget>[
         const SizedBox(height: 40),
         _resultText(),
@@ -174,7 +172,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
               )
             : _productList(),
       ],
-    ));
+    );
   }
 
   Widget _resultText() {
@@ -183,11 +181,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width/1.5,
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 1.5,
             child: Text(
               "검색 결과 : ${widget.searchQuery}",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Color(0xffd86a04),
@@ -197,7 +195,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           ),
           Text(
             "${widget.searchResults.length}개의 제품",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               color: Colors.grey,
             ),
@@ -212,16 +210,16 @@ class _SearchResultPageState extends State<SearchResultPage> {
       child: ListView.builder(
         itemCount: widget.searchResults.length,
         itemBuilder: (context, index) {
-          final product = widget.searchResults![index];
+          final product = widget.searchResults[index];
           return GestureDetector(
             onTap: () async {
               _navigateToProductDetailPage(product);
             },
-            child: Container(
+            child: SizedBox(
               height: 70,
               child: ListTile(
                 leading: (product?.images != null && product.images!.isNotEmpty)
-                    ? Container(
+                    ? SizedBox(
                         width: 70,
                         height: 70,
                         child: Image.network(
@@ -238,7 +236,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       ),
                 title: Text(
                   product.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     letterSpacing: 0,
                   ),
@@ -257,11 +255,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
     try {
       print(product);
 
-      Navigator.of(context).push(MaterialPageRoute(
+      Navigator.of(context)
+          .push(MaterialPageRoute(
         builder: (context) => ProductDetailPage(
           searchResults: product,
         ),
-      )).then((value) {
+      ))
+          .then((value) {
         // 이전 페이지로부터 데이터가 반환되었을 때, 현재 페이지를 다시 새로 고침
         if (value != null && value is bool && value) {
           _getAllNeeds();

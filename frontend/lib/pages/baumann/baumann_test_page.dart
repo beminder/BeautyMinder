@@ -3,9 +3,7 @@ import 'package:beautyminder/pages/baumann/baumann_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../config.dart';
 import '../../services/baumann_service.dart';
-import '../../services/shared_service.dart';
 import '../../widget/appBar.dart';
 
 class BaumannTestPage extends StatefulWidget {
@@ -64,15 +62,15 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
 
   Widget baumannTestUI() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10), // 좌우 여백 10
+      padding: const EdgeInsets.symmetric(horizontal: 10), // 좌우 여백 10
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 50), // 위 여백 추가
+          const SizedBox(height: 50), // 위 여백 추가
           _textUIs(),
-          SizedBox(height: 80), // 아래 여백 추가
+          const SizedBox(height: 80), // 아래 여백 추가
           _btnType(),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
         ],
       ),
     );
@@ -86,7 +84,7 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
     return ListTile(
       title: Text(
         '문항 번호 : ${currentPageData.surveyKey}',
-        style: TextStyle(
+        style: const TextStyle(
           color: Color(0xffd86a04),
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -95,16 +93,16 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 30), // 여백 추가
+          const SizedBox(height: 30), // 여백 추가
           Text(
-            '${currentPageData.question}', //문제
-            style: TextStyle(
+            currentPageData.question, //문제
+            style: const TextStyle(
               color: Color(0xff545454),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 60), // 여백 추가
+          const SizedBox(height: 60), // 여백 추가
           Column(
             children: currentPageData.options.asMap().entries.map((entry) {
               int index = entry.key + 1;
@@ -118,8 +116,8 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
                   });
                 },
                 title: Text(
-                  '${option.description}',//선택지
-                  style: TextStyle(
+                  option.description,//선택지
+                  style: const TextStyle(
                     color: Color(0xff545454),
                     fontSize: 18,
                   ),
@@ -180,7 +178,6 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
   Widget _resultBtn() {
     return ElevatedButton(
       onPressed: () async {
-        print('Selected Option Indices : ');
         selectedOptionIndices.forEach((key, value) {
           print('$key: ${value != null ? value + 1 : null}');
         });
@@ -221,7 +218,6 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
         // 이후 결과 페이지로 이동하거나 다른 작업을 수행
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => BaumannResultPage(resultData: response)));
-        print(response);
       } else {
         // 전송 실패 또는 오류 발생
         // 오류 메시지를 사용자에게 표시
@@ -234,7 +230,11 @@ class _BaumannTestPageState extends State<BaumannTestPage> {
       }
     } catch (e) {
       // 예외 처리
-      print('An error occurred: $e');
+      Fluttertoast.showToast(
+        msg: 'An error occurred: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 

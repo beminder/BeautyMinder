@@ -1,13 +1,11 @@
 import 'package:beautyminder/pages/baumann/baumann_history_page.dart';
-
 import 'package:beautyminder/pages/todo/todo_page.dart';
 import 'package:beautyminder/services/Cosmetic_Recommend_Service.dart';
-import 'package:beautyminder/services/keywordRank_service.dart';
-import 'package:flutter/cupertino.dart';
-
+import 'package:beautyminder/services/keyword_rank_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+
 import '../../dto/baumann_result_model.dart';
 import '../../dto/cosmetic_expiry_model.dart';
 import '../../dto/todo_model.dart';
@@ -15,14 +13,12 @@ import '../../dto/user_model.dart';
 import '../../services/baumann_service.dart';
 import '../../services/expiry_service.dart';
 import '../../services/search_service.dart';
-
 import '../../services/todo_service.dart';
 import '../../widget/appBar.dart';
 import '../../widget/bottomNavigationBar.dart';
 import '../baumann/baumann_test_start_page.dart';
 import '../chat/chat_page.dart';
 import '../my/my_page.dart';
-import '../my/user_info_page.dart';
 import '../pouch/expiry_page.dart';
 import '../recommend/recommend_bloc_screen.dart';
 import '../search/search_page.dart';
@@ -67,11 +63,13 @@ class _HomePageState extends State<HomePage> {
 
     try {
       //유통기한
-      List<CosmeticExpiry> loadedExpiries = await ExpiryService.getAllExpiries();
+      List<CosmeticExpiry> loadedExpiries =
+          await ExpiryService.getAllExpiries();
       for (var expiry in loadedExpiries) {
         try {
           // 예시: productName을 이용하여 관련 이미지 URL 검색
-          var cosmetic = await SearchService.searchCosmeticsByName(expiry.productName);
+          var cosmetic =
+              await SearchService.searchCosmeticsByName(expiry.productName);
           if (cosmetic.isNotEmpty) {
             expiry.imageUrl = cosmetic.first.images.isNotEmpty
                 ? cosmetic.first.images.first
@@ -99,7 +97,6 @@ class _HomePageState extends State<HomePage> {
         todayTodos = loadedTodos.value ?? null;
         baumannresultList = loadedBaumannResult.value ?? [];
       });
-
     } catch (e) {
       print('An error occurred while loading expiries: $e');
     } finally {
@@ -116,7 +113,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: HomepageAppBar(actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.search),
+          icon: const Icon(Icons.search),
           onPressed: () async {
             // 이미 API 호출이 진행 중인지 확인
             if (isApiCallProcess) {
@@ -144,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SearchPage(
+                    builder: (context) => const SearchPage(
                       data: null,
                       data2: null,
                     ),
@@ -155,7 +152,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SearchPage(data: null, data2: null),
+                  builder: (context) => const SearchPage(data: null, data2: null),
                 ),
               );
             } finally {
@@ -169,14 +166,14 @@ class _HomePageState extends State<HomePage> {
       ]),
       body: Center(
         child: isApiCallProcess || isLoading
-            ? SpinKitThreeInOut(
+            ? const SpinKitThreeInOut(
                 color: Color(0xffd86a04),
                 size: 50.0,
                 duration: Duration(seconds: 2),
               )
             : SingleChildScrollView(
-          child: _homePageUI(),
-        ),
+                child: _homePageUI(),
+              ),
       ),
       bottomNavigationBar: _underNavigation(),
     );
@@ -184,25 +181,25 @@ class _HomePageState extends State<HomePage> {
 
   Widget _homePageUI() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           _invalidProductBtn(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               _recommendProductBtn(),
-              Spacer(),
+              const Spacer(),
               Column(
                 // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   _personalSkinTypeBtn(),
-                  SizedBox(
+                  const SizedBox(
                     height: 25,
                   ),
                   _chatBtn(),
@@ -210,7 +207,7 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _routineBtn(),
@@ -218,7 +215,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 
   //유통기한
   Widget _invalidProductBtn() {
@@ -237,15 +233,14 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(builder: (context) => CosmeticExpiryPage()));
         } catch (e) {
           print('An error occurred: $e');
-        }
-        finally {
+        } finally {
           setState(() {
             isApiCallProcess = false;
           });
         }
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xffffb876),
+        backgroundColor: const Color(0xffffb876),
         foregroundColor: Colors.white,
         elevation: 0,
         minimumSize: Size(screenWidth, 200.0),
@@ -256,42 +251,44 @@ class _HomePageState extends State<HomePage> {
       child: Align(
           alignment: Alignment.topLeft,
           child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "유통기한 임박 화장품 ",
-                            style: TextStyle(
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                          ),
-                        ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "유통기한 임박 화장품 ",
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
-                      _selectExpiryScreen(),
-                    ],
-                  ),
-                )
-      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                    ),
+                  ],
+                ),
+                _selectExpiryScreen(),
+              ],
+            ),
+          )),
     );
   }
 
   Widget _selectExpiryScreen() {
     if (!isApiCallProcess && !isLoading) {
-      if (expiries != null && expiries.isNotEmpty && expiries.length != 0) {
+      if (expiries.isNotEmpty) {
         return _buildExpiryInfo();
       } else {
         return _buildDefaultText();
       }
     } else {
-      return SpinKitCircle(color: Colors.white, duration: Duration(seconds: 3),);
+      return const SpinKitCircle(
+        color: Colors.white,
+        duration: Duration(seconds: 3),
+      );
     }
   }
 
@@ -307,10 +304,10 @@ class _HomePageState extends State<HomePage> {
           bool isDatePassed = difference.isNegative;
           // Customize this part according to your expiry model
           return Container(
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
@@ -332,15 +329,15 @@ class _HomePageState extends State<HomePage> {
                             fit: BoxFit.cover,
                           ) // 이미지가 없는 경우
                     ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 // Display D-day or any other information here
                 Text(
                   isDatePassed
                       ? 'D+${difference.inDays.abs()}'
-                      : 'D-${difference.inDays+1}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      : 'D-${difference.inDays + 1}',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -356,11 +353,11 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Container(
             height: 130,
             alignment: Alignment.center,
-            child: Text(
+            child: const Text(
               "등록된 화장품이 없습니다.\n화장품 등록하기",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
@@ -370,8 +367,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 
   //추천 버튼
   Widget _recommendProductBtn() {
@@ -383,8 +378,8 @@ class _HomePageState extends State<HomePage> {
             .push(MaterialPageRoute(builder: (context) => const RecPage()));
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xffffecda),
-        foregroundColor: Color(0xffff820e),
+        backgroundColor: const Color(0xffffecda),
+        foregroundColor: const Color(0xffff820e),
         elevation: 0,
         minimumSize: Size(screenWidth, 200.0),
         shape: RoundedRectangleBorder(
@@ -394,45 +389,49 @@ class _HomePageState extends State<HomePage> {
       child: Align(
           alignment: Alignment.topLeft,
           child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "추천 제품 ",
-                            style: TextStyle(
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                          ),
-                        ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "추천 제품 ",
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _selectRecommendScreen(),
-                    ],
-                  ),
-                )
-              ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                _selectRecommendScreen(),
+              ],
+            ),
+          )),
     );
   }
 
   Widget _selectRecommendScreen() {
     if (!isApiCallProcess && !isLoading) {
-      if (recommends != null && recommends.isNotEmpty && recommends.length != 0) {
+      if (recommends != null &&
+          recommends.isNotEmpty &&
+          recommends.length != 0) {
         return _buildRecommendText();
       } else {
         return _buildRecommendDefaultText();
       }
     } else {
-      return SpinKitCircle(color: Colors.white, duration: Duration(seconds: 3),);
+      return const SpinKitCircle(
+        color: Colors.white,
+        duration: Duration(seconds: 3),
+      );
     }
   }
 
@@ -450,15 +449,18 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.grey,
                 backgroundImage: (item.images[0] != null)
                     ? NetworkImage(item.images[0])
-                    : AssetImage('assets/images/noImg.jpg') as ImageProvider,
+                    : const AssetImage('assets/images/noImg.jpg') as ImageProvider,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 alignment: Alignment.center,
                 width: MediaQuery.of(context).size.width / 2 - 100,
                 child: Text(
                   item.name,
-                  style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                 ),
@@ -471,7 +473,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildRecommendDefaultText() {
-    return Center(
+    return const Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -485,7 +487,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 
   //피부타입 버튼
   Widget _personalSkinTypeBtn() {
@@ -503,7 +504,7 @@ class _HomePageState extends State<HomePage> {
         }
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xfffe9738),
+        backgroundColor: const Color(0xfffe9738),
         foregroundColor: Colors.white,
         elevation: 0,
         minimumSize: Size(screenWidth, 90.0),
@@ -517,7 +518,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -533,9 +534,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              SizedBox(height: 5),
-              Text((baumannresultList.isEmpty) ? "테스트하기":"${baumannresultList.last.baumannType}",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 5),
+              Text(
+                  (baumannresultList.isEmpty)
+                      ? "테스트하기"
+                      : "${baumannresultList.last.baumannType}",
+                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -550,18 +554,18 @@ class _HomePageState extends State<HomePage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ChatPage()));
+            .push(MaterialPageRoute(builder: (context) => const ChatPage()));
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xffffd1a6),
-        foregroundColor: Color(0xffd86a04),
+        backgroundColor: const Color(0xffffd1a6),
+        foregroundColor: const Color(0xffd86a04),
         elevation: 0,
         minimumSize: Size(screenWidth, 90.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0), // 모서리를 더 둥글게 설정
         ),
       ),
-      child: Align(
+      child: const Align(
         alignment: Alignment.topLeft,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -584,7 +588,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   //오늘의 루틴 버튼
   Widget _routineBtn() {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -592,11 +595,11 @@ class _HomePageState extends State<HomePage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => CalendarPage()));
+            .push(MaterialPageRoute(builder: (context) => const CalendarPage()));
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xffe7e4e1),
-        foregroundColor: Color(0xffff820e),
+        backgroundColor: const Color(0xffe7e4e1),
+        foregroundColor: const Color(0xffff820e),
         elevation: 0,
         minimumSize: Size(screenWidth, 200.0),
         shape: RoundedRectangleBorder(
@@ -606,42 +609,47 @@ class _HomePageState extends State<HomePage> {
       child: Align(
           alignment: Alignment.topLeft,
           child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "오늘의 루틴 확인하기 ",
-                            style: TextStyle(
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                          ),
-                        ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "오늘의 루틴 확인하기 ",
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
-                      _selectTodocreen(),
-                    ],
-                  ),
-                )
-      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                    ),
+                  ],
+                ),
+                _selectTodocreen(),
+              ],
+            ),
+          )),
     );
   }
 
   Widget _selectTodocreen() {
     if (!isApiCallProcess && !isLoading) {
-      if (todayTodos != null && todayTodos?.tasks != null && todayTodos!.tasks.isNotEmpty && todayTodos!.tasks.length != 0) {
+      if (todayTodos != null &&
+          todayTodos?.tasks != null &&
+          todayTodos!.tasks.isNotEmpty &&
+          todayTodos!.tasks.length != 0) {
         return _buildTodoText();
       } else {
         return _buildTodoDefaultText();
       }
     } else {
-      return SpinKitCircle(color: Colors.white, duration: Duration(seconds: 3),);
+      return const SpinKitCircle(
+        color: Colors.white,
+        duration: Duration(seconds: 3),
+      );
     }
   }
 
@@ -653,7 +661,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Container(
           height: 120,
-          margin: EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center, // 세로축을 기준으로 중앙 정렬
             children: [
@@ -661,20 +669,20 @@ class _HomePageState extends State<HomePage> {
                 width: MediaQuery.of(context).size.width / 2 - 50,
                 child: todayTodos != null && todayTodos!.tasks.isNotEmpty
                     ? Column(
-                  children: todayTodos!.tasks
-                      .take(3)
-                      .map((task) => Column(
-                    children: [
-                      Text(
-                        task.description,
-                        style: TextStyle(
-                            color: Colors.black, fontSize: 18),
-                      ),
-                      SizedBox(height: 10)
-                    ],
-                  ))
-                      .toList(),
-                )
+                        children: todayTodos!.tasks
+                            .take(3)
+                            .map((task) => Column(
+                                  children: [
+                                    Text(
+                                      task.description,
+                                      style: const TextStyle(
+                                          color: Colors.black, fontSize: 18),
+                                    ),
+                                    const SizedBox(height: 10)
+                                  ],
+                                ))
+                            .toList(),
+                      )
                     : _buildTodoDefaultText(),
               ),
             ],
@@ -684,20 +692,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Widget _buildTodoDefaultText() {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Container(
             height: 130,
             alignment: Alignment.center,
-            child: Text(
+            child: const Text(
               "등록된 루틴이 없습니다.\n화장품 사용 루틴 등록하기",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ),
@@ -717,7 +727,6 @@ class _HomePageState extends State<HomePage> {
           } else if (index == 1) {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => CosmeticExpiryPage()));
-
           } else if (index == 3) {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const CalendarPage()));

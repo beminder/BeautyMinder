@@ -1,8 +1,8 @@
 import 'package:beautyminder/pages/todo/todo_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../dto/task_model.dart';
 import '../../dto/todo_model.dart';
@@ -15,8 +15,6 @@ import '../home/home_page.dart';
 import '../my/my_page.dart';
 import '../pouch/expiry_page.dart';
 import '../recommend/recommend_bloc_screen.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class TodoAddPage extends StatefulWidget {
   final List<Todo>? todos;
@@ -24,18 +22,18 @@ class TodoAddPage extends StatefulWidget {
   const TodoAddPage({Key? key, this.todos = const []}) : super(key: key);
 
   @override
-  _TodoAddPage createState() => _TodoAddPage();
+  State<TodoAddPage> createState() => _TodoAddPage();
 }
 
 class _TodoAddPage extends State<TodoAddPage> {
-  int _currentIndex = 3;
+  final int _currentIndex = 3;
   late List<TextEditingController> _controllers = [];
   TextEditingController _dateController = TextEditingController();
-  List<List<bool>> _toggleSelections = [];
-  List<String> categorys = [];
+  final List<List<bool>> _toggleSelections = [];
+  List<String> categories = [];
   Todo? todo;
   DateTime? pickedDate; //  공통으로 사용할 날짜 변수
-  List<DateTime>? routine_time = []; // 각자 알람 시간으로 정할 수 있음
+  List<DateTime>? routineTime = []; // 각자 알람 시간으로 정할 수 있음
   bool isEmptyTextField = false;
   List<String?> dates = [];
 
@@ -53,10 +51,6 @@ class _TodoAddPage extends State<TodoAddPage> {
     _toggleSelections.add([false, false, true]);
     pickedDate = DateTime.parse(_dateController.text);
     dates = widget.todos?.map((e) => e.date).toList() ?? [];
-    print("dates : ${dates}");
-    print("picked: ${pickedDate}");
-    // print("DateTime.now() : ${}")
-    print(dates.contains(formatDate(DateTime.now())));
   }
 
   String formatDate(DateTime date) {
@@ -66,9 +60,9 @@ class _TodoAddPage extends State<TodoAddPage> {
 
   @override
   void dispose() {
-    _controllers.forEach((controller) {
+    for (var controller in _controllers) {
       controller.dispose();
-    });
+    }
     _dateController.dispose();
     super.dispose();
   }
@@ -97,14 +91,14 @@ class _TodoAddPage extends State<TodoAddPage> {
   }
 
   void _showMaxTextFieldDialog(BuildContext context) {
-    final snackBar = SnackBar(
+    const snackBar = SnackBar(
       content: Text('루틴은 최대 20까지 등록할 수 있습니다.'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _showMinTextFieldSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
+    const snackBar = SnackBar(
       content: Text('항목을 제거할 수 없습니다. 최소 하나의 항목이 존재해야 합니다.'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -115,7 +109,7 @@ class _TodoAddPage extends State<TodoAddPage> {
   }
 
   void _showEmptyTextFieldSnackBar() {
-    final snackBar = SnackBar(
+    const snackBar = SnackBar(
       content: Text('내용을 작성해주세요.'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -126,7 +120,7 @@ class _TodoAddPage extends State<TodoAddPage> {
     pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now().subtract(Duration(days: 30)),
+        firstDate: DateTime.now().subtract(const Duration(days: 30)),
         lastDate: DateTime(2101),
         builder: (context, child) {
           return Theme(
@@ -187,8 +181,8 @@ class _TodoAddPage extends State<TodoAddPage> {
 
       print("finalDateTime : ${finalDateTime.toString()}");
 
-      routine_time!.add(finalDateTime);
-      print("routine_time : ${routine_time}");
+      routineTime!.add(finalDateTime);
+      print("routine_time : ${routineTime}");
     }
   }
 
@@ -205,7 +199,7 @@ class _TodoAddPage extends State<TodoAddPage> {
       }
     }
 
-    return tasks.length < 1 ? [] : tasks;
+    return tasks.isEmpty ? [] : tasks;
   }
 
   Todo? createRoutine() {
@@ -243,7 +237,7 @@ class _TodoAddPage extends State<TodoAddPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Padding(
@@ -256,7 +250,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                     child: TextField(
                       controller: _dateController,
                       decoration: InputDecoration(
-                          prefixStyle: TextStyle(color: Color(0xffd86a04)),
+                          prefixStyle:
+                              const TextStyle(color: Color(0xffd86a04)),
                           labelText: '날짜 및 시간',
                           hintText: '날짜 및 시간 선택',
                           icon: const Icon(
@@ -267,7 +262,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(
                                   color: Colors.black, width: 1.0)),
-                          contentPadding: EdgeInsets.all(10)),
+                          contentPadding: const EdgeInsets.all(10)),
                     ),
                   ),
                 )),
@@ -297,20 +292,21 @@ class _TodoAddPage extends State<TodoAddPage> {
                                       color: Color(0xfffe9738), width: 2.0))),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Visibility(
                         visible: !kIsWeb, // kIsWeb이 false일 때만 보이도록 설정합니다.
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Color(0xfffe9738), width: 4),
-                            color: Color(0xfffe9738),
+                            border: Border.all(
+                                color: const Color(0xfffe9738), width: 4),
+                            color: const Color(0xfffe9738),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
                             iconSize: 25,
-                            icon: Icon(Icons.alarm_add_outlined),
+                            icon: const Icon(Icons.alarm_add_outlined),
                             onPressed: () {
                               if (!kIsWeb) {
                                 _selectTime();
@@ -336,12 +332,12 @@ class _TodoAddPage extends State<TodoAddPage> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(10),
                         // selectedColor: Colors.white,
-                        fillColor: Color(0xfffe9738),
+                        fillColor: const Color(0xfffe9738),
                         borderColor: Colors.grey,
-                        selectedBorderColor: Color(0xfffe9738),
+                        selectedBorderColor: const Color(0xfffe9738),
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '저녁',
                               style: TextStyle(
@@ -352,7 +348,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '아침',
                               style: TextStyle(
@@ -363,7 +359,7 @@ class _TodoAddPage extends State<TodoAddPage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '기타',
                               style: TextStyle(
@@ -382,10 +378,8 @@ class _TodoAddPage extends State<TodoAddPage> {
               height: MediaQuery.of(context).size.height * 0.07,
               width: MediaQuery.of(context).size.width * 0.9,
               child: TextButton(
-                child: Text('등록',
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
                 style: TextButton.styleFrom(
-                  backgroundColor: Color(0xfffe9738),
+                  backgroundColor: const Color(0xfffe9738),
                   minimumSize: Size(MediaQuery.of(context).size.width - 50, 30),
                 ),
                 onPressed: () async {
@@ -406,11 +400,11 @@ class _TodoAddPage extends State<TodoAddPage> {
                                 pickedDate!), // Provide a default value (null) if no match is found
                       );
                       if (!kIsWeb) {
-                        if (todo!.tasks.length > routine_time!.length) {
-                          for (int i = routine_time!.length;
+                        if (todo!.tasks.length > routineTime!.length) {
+                          for (int i = routineTime!.length;
                               i <= todo!.tasks.length;
                               i++) {
-                            routine_time?.add(DateTime.now());
+                            routineTime?.add(DateTime.now());
                           }
                         }
 
@@ -421,8 +415,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                             pickedDate!.year,
                             pickedDate!.month,
                             pickedDate!.day,
-                            routine_time![i].hour,
-                            routine_time![i].minute,
+                            routineTime![i].hour,
+                            routineTime![i].minute,
                           );
                           if (!date.isBefore(tz.TZDateTime.now(
                               tz.getLocation('Asia/Seoul')))) {
@@ -441,11 +435,11 @@ class _TodoAddPage extends State<TodoAddPage> {
                       print("todo : ${todo}");
                       print("_dateController.text : ${_dateController.text}");
                       if (!kIsWeb) {
-                        if (todo!.tasks.length > routine_time!.length) {
-                          for (int i = routine_time!.length;
+                        if (todo!.tasks.length > routineTime!.length) {
+                          for (int i = routineTime!.length;
                               i <= todo!.tasks.length;
                               i++) {
-                            routine_time?.add(DateTime.now());
+                            routineTime?.add(DateTime.now());
                           }
                         }
 
@@ -456,8 +450,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                             pickedDate!.year,
                             pickedDate!.month,
                             pickedDate!.day,
-                            routine_time![i].hour,
-                            routine_time![i].minute,
+                            routineTime![i].hour,
+                            routineTime![i].minute,
                           );
                           if (!date.isBefore(tz.TZDateTime.now(
                               tz.getLocation('Asia/Seoul')))) {
@@ -472,6 +466,8 @@ class _TodoAddPage extends State<TodoAddPage> {
                     }
                   }
                 },
+                child: const Text('등록',
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
               ),
             ),
           ],

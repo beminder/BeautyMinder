@@ -7,7 +7,7 @@ class AgreementPage extends StatefulWidget {
   const AgreementPage({Key? key}) : super(key: key);
 
   @override
-  _AgreementPageState createState() => _AgreementPageState();
+  State<AgreementPage> createState() => _AgreementPageState();
 }
 
 class _AgreementPageState extends State<AgreementPage> {
@@ -45,12 +45,12 @@ class _AgreementPageState extends State<AgreementPage> {
                     },
                     activeColor: Colors.orange,
                   ),
-                  Text('모두 동의합니다.'),
+                  const Text('모두 동의합니다.'),
                 ],
               ),
             ),
             // 2. Divider
-            Divider(),
+            const Divider(),
             // 3. "[필수] 서비스 이용약관 동의" 체크박스 + 오른쪽 화살표 아이콘 버튼
             buildCheckboxListTile(
               title: '[필수] 서비스 이용약관 동의',
@@ -60,8 +60,8 @@ class _AgreementPageState extends State<AgreementPage> {
                   serviceAgreed = value!;
                 });
               },
-              dialogTitle:Text('서비스 이용약관 동의'),
-              dialogContent: SingleChildScrollView(
+              dialogTitle:const Text('서비스 이용약관 동의'),
+              dialogContent: const SingleChildScrollView(
                 child: Text('''
 제 1 장 총칙
 
@@ -219,8 +219,8 @@ class _AgreementPageState extends State<AgreementPage> {
                   privacyAgreed = value!;
                 });
               },
-              dialogTitle:Text('개인정보 수집/이용 동의'),
-              dialogContent: SingleChildScrollView(
+              dialogTitle:const Text('개인정보 수집/이용 동의'),
+              dialogContent: const SingleChildScrollView(
                 child: Text('''
 1. 개인정보의 수집항목 및 수집방법 
 통계청 나라통계사이트에서는 기본적인 회원 서비스 제공을 위한 필수정보로 실명인증정보와 가입정보로 구분하여 다음의 정보를 수집하고 있습니다. 필수정보를 입력해주셔야 회원 서비스 이용이 가능합니다.
@@ -277,8 +277,8 @@ class _AgreementPageState extends State<AgreementPage> {
                   receiveAgreed = value!;
                 });
               },
-              dialogTitle:Text('광고성 정보 수신 동의'),
-              dialogContent: SingleChildScrollView(
+              dialogTitle:const Text('광고성 정보 수신 동의'),
+              dialogContent: const SingleChildScrollView(
                 child: Text('''
 1. 광고성 정보의 이용목적
 BeautyMinder가 제공하는 이용자 맞춤형 서비스, 뉴스레터 발송, 새로운 기능의 안내, 각종 경품 행사, 이벤트 등의 광고성 정보를 전자우편이나 서신우편, 문자(SMS), 푸시 등을 통해 이용자에게 제공합니다. 이메일 및 SMS 수신거부와 관계없이 광고나 영리성 목적 외의 약관안내 및 서비스내용, 회사의 주요 정책 관련 변경에 따른 안내 등 의무적으로 안내되어야 하는 메일은 정상적으로 발송됩니다.
@@ -304,10 +304,10 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
               )
             ),
             // 6. "다음" 버튼
-            SizedBox(height: 16),
-            Spacer(),
+            const SizedBox(height: 16),
+            const Spacer(),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
               child: SizedBox(
                 width: screenWidth, // 버튼의 너비를 화면 너비와 동일하게 설정
                 height: 50,
@@ -318,26 +318,26 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RegisterPage(),
+                          builder: (context) => const RegisterPage(),
                         ),
                       );
                     } else {
                       // 필수 약관에 동의하지 않은 경우, snackBar 표시
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text('필수 약관에 동의해주세요.'),
                         ),
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xfffe9738), // 버튼 배경색 설정
+                    backgroundColor: const Color(0xfffe9738), // 버튼 배경색 설정
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0), // 원하는 모양 설정
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     '다음',
                     style: TextStyle(
                       color: Colors.white, // 텍스트 색상 설정
@@ -373,7 +373,7 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
         ],
       ),
       trailing: IconButton(
-        icon: Icon(Icons.arrow_forward_ios),
+        icon: const Icon(Icons.arrow_forward_ios),
         onPressed: () {
           showDialog(
             context: context,
@@ -381,7 +381,7 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
               title: dialogTitle,
               content: Container(
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child:  dialogContent,
                 ),
                 decoration: BoxDecoration(
@@ -394,7 +394,7 @@ BeautyMinder에서 제공하는 마케팅 정보를 원하지 않을 경우 마�
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
+                  child: const Text(
                     '확인',
                     style: TextStyle(color: Colors.orange, fontSize: 20),
                   ),

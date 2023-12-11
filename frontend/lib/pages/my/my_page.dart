@@ -6,6 +6,7 @@ import 'package:beautyminder/services/shared_service.dart';
 import 'package:beautyminder/widget/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../services/api_service.dart';
 import '../../widget/bottomNavigationBar.dart';
@@ -20,17 +21,16 @@ class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
 
   @override
-  _MyPageState createState() => _MyPageState();
+  State<MyPage> createState() => _MyPageState();
 }
 
 class _MyPageState extends State<MyPage> {
   User? user;
   bool isLoading = true;
-  int _currentIndex = 4;
+  final int _currentIndex = 4;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getUserInfo();
   }
@@ -43,14 +43,18 @@ class _MyPageState extends State<MyPage> {
         isLoading = false;
       });
     } catch (e) {
-      print(e);
+      Fluttertoast.showToast(
+        msg: '$e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? SpinKitThreeInOut(
+        ? const SpinKitThreeInOut(
       color: Color(0xffd86a04),
       size: 50.0,
       duration: Duration(seconds: 2),
@@ -169,12 +173,12 @@ class MyPageProfile extends StatelessWidget {
         onTap: () async => await _navigateToUserInfoPage(context),
         child: Row(
           children: [
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             CircleAvatar(
               radius: 30,
-              backgroundImage: NetworkImage(profileImage!),
+              backgroundImage: NetworkImage(profileImage),
             ),
-            SizedBox(width: 30),
+            const SizedBox(width: 30),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +196,7 @@ class MyPageProfile extends StatelessWidget {
                         textAlign: TextAlign.left,
                       ),
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_right,
                           color: Color(0xFFFE9738),
                         ),
@@ -220,9 +224,9 @@ class MyPageProfile extends StatelessWidget {
 
 class MyPageMenu extends StatelessWidget {
   final String title;
-  VoidCallback? onTap;
+  final VoidCallback? onTap;
 
-  MyPageMenu({super.key, required this.title, this.onTap});
+  const MyPageMenu({super.key, required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +247,7 @@ class MyPageMenu extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_right,
                   color: Color(0xFFFE9738),
                 ),
