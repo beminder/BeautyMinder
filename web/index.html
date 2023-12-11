@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+  <base href="/dashboard/">
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="BeautyMinder Web Admin Dashboard">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    Fore more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-  -->
-    <!-- <base href="/"> -->
-    <base href="$FLUTTER_BASE_HREF" />
-
-    <meta charset="UTF-8" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <meta name="description" content="A new Flutter project." />
-
-    <!-- iOS meta tags & icons -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="admin" />
-    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
-
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="BeautyMinder">
+  <meta property="og:title" content="BeautyMinder Admin Dashboard">
+  <meta property="og:description" content="뷰티마인더 웹사이트 버전입니다.">
+  <meta property="og:image" content="https://repository-images.githubusercontent.com/712897912/14ff5ab8-5e9f-4c43-bb75-9c96ecdbfeb5">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png" />
 
@@ -102,6 +94,12 @@
         -o-animation-delay: 1.2s;
         -moz-animation-delay: 1.2s;
         -webkit-animation-delay: 1.2s;
+      }
+      #load div:nth-child(8) {
+        animation-delay: 1.4s;
+        -o-animation-delay: 1.4s;
+        -moz-animation-delay: 1.4s;
+        -webkit-animation-delay: 1.4s;
       }
 
       @keyframes move {
@@ -215,13 +213,14 @@
   <body>
     <!-- Loading Indicator -->
     <div id="load">
-      <div>G</div>
-      <div>N</div>
+      <div>B</div>
+      <div>E</div>
+      <div>M</div>
       <div>I</div>
+      <div>N</div>
       <div>D</div>
-      <div>A</div>
-      <div>O</div>
-      <div>L</div>
+      <div>E</div>
+      <div>R</div>
     </div>
     <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
