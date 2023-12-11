@@ -77,7 +77,7 @@ class ReviewService {
   // 리뷰 삭제 함수
   static Future<void> deleteReview(String reviewId) async {
     final accessToken = await SharedService.getAccessToken();
-    final url = Uri.http(Config.apiURL, Config.AllReviewAPI + reviewId).toString();
+    final url = Uri.http(Config.apiURL, Config.getReviewAPI + reviewId).toString();
 
     var response = await DioClient.sendRequest(
         'DELETE',
