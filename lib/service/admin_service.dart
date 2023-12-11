@@ -9,7 +9,7 @@ class AdminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.kickUserAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.kickUserAPI).toString();
 
     final Map<String, dynamic> body = {"username": "$id"};
 
@@ -41,7 +41,7 @@ class AdminService {
 
     Map<String, dynamic> queryParameter = {'page': page.toString()};
 
-    final url = Uri.https(Config.apiURL, Config.getAllReviewAPI, queryParameter)
+    final url = Uri.http(Config.apiURL, Config.getAllReviewAPI, queryParameter)
         .toString();
 
     final headers = {
@@ -75,7 +75,7 @@ class AdminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getFilteredReviews).toString();
+    final url = Uri.http(Config.apiURL, Config.getFilteredReviews).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -112,7 +112,7 @@ class AdminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(
+    final url = Uri.http(
             Config.apiURL, Config.updateReviewStatus + reviewId + "/status")
         .toString();
 
@@ -142,7 +142,7 @@ class AdminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getUsageCpuAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.getUsageCpuAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -172,7 +172,7 @@ class AdminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getUpTimeAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.getUpTimeAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -203,7 +203,7 @@ class AdminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.getAverage1M).toString();
+    final url = Uri.http(Config.apiURL, Config.getAverage1M).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

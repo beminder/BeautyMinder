@@ -23,7 +23,7 @@ BCSYMBOLMAP_DIR="BCSymbolMaps"
 
 
 # This protects against multiple targets copying the same framework dependency at the same time. The solution
-# was originally proposed here: https://lists.samba.org/archive/rsync/2008-February/020158.html
+# was originally proposed here: http://lists.samba.org/archive/rsync/2008-February/020158.html
 RSYNC_PROTECT_TMP_FILES=(--filter "P .*.??????")
 
 # Copies and strips a vendored framework

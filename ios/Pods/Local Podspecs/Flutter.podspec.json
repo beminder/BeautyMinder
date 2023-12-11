@@ -2,7 +2,7 @@
   "name": "Flutter",
   "version": "1.0.0",
   "summary": "A UI toolkit for beautiful and fast apps.",
-  "homepage": "https://flutter.dev",
+  "homepage": "http://flutter.dev",
   "license": {
     "type": "BSD"
   },
@@ -10,7 +10,7 @@
     "Flutter Dev Team": "flutter-dev@googlegroups.com"
   },
   "source": {
-    "git": "https://github.com/flutter/engine",
+    "git": "http://github.com/flutter/engine",
     "tag": "1.0.0"
   },
   "platforms": {

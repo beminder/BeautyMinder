@@ -10,7 +10,7 @@ import 'shared_service.dart';
 class APIService {
   // 로그인하고 관리자 인증까지 같이함
   static Future<Result<bool>> login(LoginRequestModel model) async {
-    final url = Uri.https(Config.apiURL, Config.loginAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
     final formData = FormData.fromMap({
       'email': model.email ?? '',
       'password': model.password ?? '',
@@ -39,7 +39,7 @@ class APIService {
   // //회원가입
   // static Future<Result<RegisterResponseModel>> register(
   //     RegisterRequestModel model) async {
-  //   final url = Uri.https(Config.apiURL, Config.registerAPI).toString();
+  //   final url = Uri.http(Config.apiURL, Config.registerAPI).toString();
   //
   //   try {
   //     final response =
@@ -55,7 +55,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.certificateAdminAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.certificateAdminAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -84,7 +84,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.userProfileAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.userProfileAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -114,7 +114,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.https(Config.apiURL, Config.logoutAPI).toString();
+    final url = Uri.http(Config.apiURL, Config.logoutAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

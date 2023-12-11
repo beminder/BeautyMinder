@@ -21,7 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _nicknameController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Key for the form
 
-  final String _url = Uri.https(Config.apiURL, Config.webSocket).toString();
+  final String _url = Uri.http(Config.apiURL, Config.webSocket).toString();
   late StompClient stompClient;
 
   bool isApiCallProcess = false;
@@ -205,21 +205,22 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       SizedBox(height: defaultPadding),
                       Divider(),
-                      // Text("실시간 채팅방 유저 리스트", style: TextStyle(color: Colors.white54),),
+                      SizedBox(height: 20),
                       Container(
-                        // height: MediaQuery.of(context).size.height*0.5,
-                        height: 500,
-                        child: Expanded(
-                          flex: 5,
-                          child: ListView.builder(
-                            itemCount: userList.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(userList[index]),
-                                onTap: () => kickUser(userList[index]),
-                              );
-                            },
-                          ),
+                        height: MediaQuery.of(context).size.height*0.7,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white54),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        // height: 500,
+                        child: ListView.builder(
+                          itemCount: userList.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(userList[index]),
+                              onTap: () => kickUser(userList[index]),
+                            );
+                          },
                         ),
                       )
                     ],
