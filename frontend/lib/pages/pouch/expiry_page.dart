@@ -344,46 +344,102 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
               clipBehavior: Clip.antiAlias,
               color: Color(0xffffffff),
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 이미지 표시
-                    cosmetic.imageUrl != null
-                        ? Image.network(cosmetic.imageUrl!,
-                        width: 120, height: 120, fit: BoxFit.cover)
-                        : Image.asset('assets/images/noImg.jpg',
-                        width: 120, height: 120, fit: BoxFit.cover),
-                    SizedBox(height: 8,),
-                    // 제품 이름
-                    Text(
-                      cosmetic.productName,
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: EdgeInsets.all(8.0), // Adjust the padding to control the distance of the border from the content
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: (isDatePassed ||
+                            (!isDatePassed && difference.inDays + 1 <= 100))
+                            ? Colors.orange
+                            : Colors.black54,
+                        width: 1.0, // Set the border width
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // 이미지 표시
+                      cosmetic.imageUrl != null
+                          ? Image.network(cosmetic.imageUrl!,
+                          width: 120, height: 120, fit: BoxFit.cover)
+                          : Image.asset('assets/images/noImg.jpg',
+                          width: 120, height: 120, fit: BoxFit.cover),
+                      SizedBox(height: 8,),
+                      // 제품 이름
+                      Text(
+                        cosmetic.productName,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
 
-                    SizedBox(height: 10,),
+                      SizedBox(height: 10,),
 
-                    // D-Day
-                    isDatePassed ?
-                    Text(
-                      'D+${difference.inDays.abs()}',
-                      style: TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
-                    ) : Text(
-                        'D-${difference.inDays+1}',
-                        style: (difference.inDays+1<=100) ?
-                        TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
-                            : TextStyle(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.bold)
-                    ),
-                  ],
+                      // D-Day
+                      isDatePassed ?
+                      Text(
+                        'D+${difference.inDays.abs()}',
+                        style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
+                      ) : Text(
+                          'D-${difference.inDays+1}',
+                          style: (difference.inDays+1<=100) ?
+                          TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
+                              : TextStyle(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.bold)
+                      ),
+                    ],
+                  ),
                 ),
               ),
-
             ),
+            // child: Card(
+            //   clipBehavior: Clip.antiAlias,
+            //   color: Color(0xffffffff),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(15.0),
+            //     child: Column(
+            //       mainAxisSize: MainAxisSize.min,
+            //       children: [
+            //         // 이미지 표시
+            //         cosmetic.imageUrl != null
+            //             ? Image.network(cosmetic.imageUrl!,
+            //             width: 120, height: 120, fit: BoxFit.cover)
+            //             : Image.asset('assets/images/noImg.jpg',
+            //             width: 120, height: 120, fit: BoxFit.cover),
+            //         SizedBox(height: 8,),
+            //         // 제품 이름
+            //         Text(
+            //           cosmetic.productName,
+            //           style: TextStyle(
+            //               fontSize: 15,
+            //               fontWeight: FontWeight.bold
+            //           ),
+            //           overflow: TextOverflow.ellipsis,
+            //           textAlign: TextAlign.center,
+            //         ),
+            //
+            //         SizedBox(height: 10,),
+            //
+            //         // D-Day
+            //         isDatePassed ?
+            //         Text(
+            //           'D+${difference.inDays.abs()}',
+            //           style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
+            //         ) : Text(
+            //             'D-${difference.inDays+1}',
+            //             style: (difference.inDays+1<=100) ?
+            //             TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
+            //                 : TextStyle(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.bold)
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            //
+            // ),
           );
         },
       );
