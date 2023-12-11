@@ -208,7 +208,7 @@ class adminService {
         print("UP time: $upTime");
 
         // 시간 단위로 변경
-        return Result.success(upTime / 3600);
+        return Result.success(upTime);
       } else {
         return Result.failure("error occured in get cpu usage");
       }
