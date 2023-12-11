@@ -92,7 +92,10 @@ class DashboardScreen extends StatelessWidget {
                                 snapshot.data!.value == null) {
                               return Text('No server uptime data available');
                             } else {
-                              final uptimeHours = snapshot.data!.value!;
+                              final upTimeInSeconds = snapshot.data!.value!;
+                              final hours = upTimeInSeconds ~/ 3600;
+                              final minutes = (upTimeInSeconds % 3600) ~/ 60;
+
                               return Container(
                                 width: MediaQuery.of(context).size.width/4,
                                 height: MediaQuery.of(context).size.height*0.7,
@@ -103,18 +106,17 @@ class DashboardScreen extends StatelessWidget {
                                 ),
                                 padding: EdgeInsets.all(defaultPadding),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    SizedBox(height: 135),
                                     Text(
                                       "서버 가동 시간",
                                       style: TextStyle(fontSize: 24),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      "${uptimeHours.toStringAsFixed(2)} hours",
-                                      style: TextStyle(fontSize: 30, color: Colors.white54),
-                                    )
+                                    SizedBox(height: 60),
+                                  Text(
+                                    "${hours}시간 ${minutes}분",
+                                    style: TextStyle(fontSize: 30, color: Colors.white54),
+                                  )
                                   ],
                                 ),
                               );
