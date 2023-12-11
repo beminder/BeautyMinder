@@ -1,30 +1,27 @@
-import 'dart:developer';
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
-import '/dto/review_request_model.dart';
-import '/dto/review_response_model.dart';
-import '/dto/user_model.dart';
-import '/services/review_service.dart';
-import '/services/shared_service.dart';
 import '../../services/search_service.dart';
 import '../../widget/appBar.dart';
+import '/dto/user_model.dart';
+import '/services/shared_service.dart';
+import '/dto/review_request_model.dart';
+import '/dto/review_response_model.dart';
+import '/services/review_service.dart';
 
 class CosmeticReviewPage extends StatefulWidget {
   final String cosmeticId;
   final void Function(double)? onReviewAdded;
 
-  const CosmeticReviewPage(
-      {Key? key, required this.cosmeticId, this.onReviewAdded})
-      : super(key: key);
+  CosmeticReviewPage({Key? key, required this.cosmeticId, this.onReviewAdded}) : super(key: key);
 
   @override
-  State<CosmeticReviewPage> createState() => _CosmeticReviewPageState();
+  _CosmeticReviewPageState createState() => _CosmeticReviewPageState();
 }
 
 class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
@@ -39,25 +36,31 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   int _totalPages = 0;
   List productDetails = [];
   double updateAverageRating = 0.0;
+  User? _currentUser;
+
 
   @override
   void initState() {
     super.initState();
+    _fetchCurrentUser();
     _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage);
   }
+
+  void _fetchCurrentUser() async {
+    _currentUser = await SharedService.getUser();
+    setState(() {});
+  }
+
 
   void _fetchReviewsForCosmetic(String cosmeticId, int pageNumber) async {
     setState(() => _isLoading = true);
     try {
-      ReviewPageResponse reviewPageResponse =
-          await ReviewService.getReviewsForCosmetic(cosmeticId, pageNumber);
-      User? currentUser = await SharedService.getUser();
-      final loadedCosmeticInfo =
-          await SearchService.searchCosmeticById(cosmeticId);
+      ReviewPageResponse reviewPageResponse = await ReviewService.getReviewsForCosmetic(cosmeticId, pageNumber);
+      final loadedCosmeticInfo = await SearchService.searchCosmeticById(cosmeticId);
 
-      if (currentUser != null) {
+      if (_currentUser != null) {
         // 사용자가 작성한 리뷰를 맨 위로 이동
-        _moveCurrentUserReviewToTop(reviewPageResponse.reviews, currentUser.id);
+        _moveCurrentUserReviewToTop(reviewPageResponse.reviews, _currentUser!.id);
       }
 
       setState(() {
@@ -74,15 +77,14 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     }
   }
 
-  void _moveCurrentUserReviewToTop(
-      List<ReviewResponse> reviews, String userId) {
-    int userReviewIndex =
-        reviews.indexWhere((review) => review.user.id == userId);
+  void _moveCurrentUserReviewToTop(List<ReviewResponse> reviews, String userId) {
+    int userReviewIndex = reviews.indexWhere((review) => review.user.id == userId);
     if (userReviewIndex != -1) {
       ReviewResponse userReview = reviews.removeAt(userReviewIndex);
       reviews.insert(0, userReview);
     }
   }
+
 
   Future<void> pickImage() async {
     try {
@@ -101,7 +103,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
         _showSnackBar('이미지가 선택되지 않았습니다');
       }
     } on PlatformException catch (e) {
-      log('Unsupported operation : $e');
+      log('Unsupported operation : ' + e.toString());
     } catch (e) {
       log(e.toString());
       _showSnackBar('이미지 선택에 실패하였습니다');
@@ -113,8 +115,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     User? user = await SharedService.getUser();
     if (user != null) {
       // 중복 리뷰 확인
-      bool hasReviewed =
-          _cosmeticReviews.any((review) => review.user.id == user.id);
+      bool hasReviewed = _cosmeticReviews.any((review) => review.user.id == user.id);
       if (hasReviewed) {
         _showSnackBar('이미 리뷰를 작성하셨습니다.');
         return;
@@ -125,6 +126,101 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     }
   }
 
+  // Future<void> _editReview(ReviewResponse review) async {
+  //   TextEditingController _editContentController = TextEditingController(text: review.content);
+  //   int _editRating = review.rating;
+  //   List<PlatformFile>? _editImageFiles = []; // 이미지 파일을 저장할 리스트
+  //
+  //   // 이미지 선택 함수
+  //   Future<void> _pickEditImage() async {
+  //     final ImagePicker _picker = ImagePicker();
+  //     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  //
+  //     if (image != null) {
+  //       PlatformFile file = PlatformFile(
+  //         name: image.name,
+  //         path: image.path,
+  //         size: await image.length(),
+  //         bytes: await image.readAsBytes(),
+  //       );
+  //       _editImageFiles?.add(file);
+  //     }
+  //   }
+  //
+  //   // Show edit dialog
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: Text('Edit Review'),
+  //         content: SingleChildScrollView(
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               TextField(
+  //                 controller: _editContentController,
+  //                 decoration: InputDecoration(labelText: 'Review'),
+  //                 maxLines: 3,
+  //               ),
+  //               DropdownButton<int>(
+  //                 value: _editRating,
+  //                 items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('${index + 1} Stars'))),
+  //                 onChanged: (value) => _editRating = value!,
+  //               ),
+  //               // 이미지 추가 버튼
+  //               ElevatedButton(
+  //                 onPressed: _pickEditImage,
+  //                 child: Text('Add Image'),
+  //               ),
+  //               // 이미지 미리보기
+  //               ...(_editImageFiles ?? []).map((file) => Image.file(File(file.path!))),
+  //             ],
+  //           ),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: Text('Cancel'),
+  //             onPressed: () => Navigator.of(context).pop(),
+  //           ),
+  //           TextButton(
+  //             child: Text('Update'),
+  //             onPressed: () async {
+  //               ReviewRequest updatedRequest = ReviewRequest(
+  //                 content: _editContentController.text,
+  //                 rating: _editRating,
+  //                 cosmeticId: review.cosmetic.id,
+  //               );
+  //               try {
+  //                 // Call the update service
+  //                 await ReviewService.updateReview(review.id, updatedRequest, _editImageFiles);
+  //                 _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage); // Refresh the list
+  //                 Navigator.of(context).pop();
+  //               } catch (e) {
+  //                 // Handle errors, e.g., show a snackbar
+  //               }
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  Future<void> _deleteReview(ReviewResponse review) async {
+    try {
+      log('리뷰 삭제 시도: ${review.id}');
+      await ReviewService.deleteReview(review.id);
+      log('리뷰 삭제 성공: ${review.id}');
+
+      _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage);
+    } catch (e) {
+      log('리뷰 삭제 실패: $e');
+      _showSnackBar('리뷰 삭제에 실패하였습니다.');
+    }
+  }
+
+
+
   String parseAndFormatBaumannAnalysis(String nlpAnalysis) {
     RegExp exp = RegExp(r'([ODRSPNTW]): (\d\.\d)');
     var matches = exp.allMatches(nlpAnalysis);
@@ -133,11 +229,12 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
     for (var match in matches) {
       String key = match.group(1)!;
       double value = double.parse(match.group(2)!) * 100;
-      formattedItems.add('$key: ${value.toStringAsFixed(0)}%');
+      formattedItems.add('${key}: ${value.toStringAsFixed(0)}%');
     }
 
     return formattedItems.join(', ');
   }
+
 
   void _showReviewDialog({required String userId}) {
     _warningMessage = '';
@@ -151,22 +248,23 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
-              title: const Text(
+              title: Text(
                 '리뷰 작성',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontFamily: 'YourCustomFont',
+                    fontWeight: FontWeight.bold
+                ),
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('*실제 사용 확인을 위해 이미지 등록은 필수입니다.'),
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    Text('*실제 사용 확인을 위해 이미지 등록은 필수입니다.'),
+                    SizedBox(height: 15,),
                     TextField(
                       controller: _contentController,
-                      cursorColor: const Color(0xffd77c00),
-                      decoration: const InputDecoration(
+                      cursorColor: Color(0xffd77c00),
+                      decoration: InputDecoration(
                         hintText: '리뷰를 작성해주세요',
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -177,12 +275,12 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                       ),
                       maxLines: 3,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     DropdownButton<int>(
                       value: _localRating,
                       items: List.generate(
                         5,
-                        (index) => DropdownMenuItem(
+                            (index) => DropdownMenuItem(
                           value: index + 1,
                           child: Text('${index + 1} Stars'),
                         ),
@@ -197,23 +295,22 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                         await pickImage();
                         setDialogState(() {}); // Update StatefulBuilder state
                       },
+                      child: Text(_imageFiles != null && _imageFiles!.isNotEmpty ? '사진 변경' : '사진 추가'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: const Color(0xfff3bb88),
+                        backgroundColor: Color(0xfff3bb88),
                       ),
-                      child: Text(_imageFiles != null && _imageFiles!.isNotEmpty
-                          ? '사진 변경'
-                          : '사진 추가'),
                     ),
                     // 경고 메시지
                     if (_warningMessage.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: 10),
                         child: Text(
                           _warningMessage,
-                          style: const TextStyle(color: Colors.red),
+                          style: TextStyle(color: Colors.red),
                         ),
                       )
+
                   ],
                 ),
               ),
@@ -223,10 +320,8 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text(
-                    '취소',
-                    style: TextStyle(color: Color(0xfff3bb88)),
-                  ),
+                  child: Text('취소',
+                    style: TextStyle(color: Color(0xfff3bb88)),),
                 ),
                 TextButton(
                   onPressed: () async {
@@ -236,10 +331,10 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                       return;
                     }
 
-                    if (_imageFiles == null || _imageFiles!.isEmpty) {
-                      setDialogState(() => _warningMessage = '리뷰 이미지를 추가해주세요.');
-                      return;
-                    }
+                    // if (_imageFiles == null || _imageFiles!.isEmpty) {
+                    //   setDialogState(() => _warningMessage = '리뷰 이미지를 추가해주세요.');
+                    //   return;
+                    // }
                     // 리뷰 추가 로직
                     ReviewRequest newReviewRequest = ReviewRequest(
                       content: content,
@@ -248,33 +343,26 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                     );
 
                     try {
-                      ReviewResponse responseReview =
-                          await ReviewService.addReview(
-                              newReviewRequest, _imageFiles!);
-                      final loadedCosmeticInfo =
-                          await SearchService.searchCosmeticById(
-                              widget.cosmeticId);
+                      ReviewResponse responseReview = await ReviewService.addReview(
+                          newReviewRequest, _imageFiles ?? []);
+                      final loadedCosmeticInfo = await SearchService.searchCosmeticById(widget.cosmeticId);
 
-                      double newAverageRating =
-                          loadedCosmeticInfo.first.averageRating ?? 0.0;
+                      double newAverageRating = loadedCosmeticInfo.first.averageRating ?? 0.0;
 
                       setState(() {
                         _cosmeticReviews.insert(0, responseReview);
                         updateAverageRating = newAverageRating;
                       });
 
-                      Navigator.of(context)
-                          .pop(updateAverageRating); // 다이얼로그 닫기
+                      Navigator.of(context).pop(updateAverageRating); // 다이얼로그 닫기
                       widget.onReviewAdded!(newAverageRating);
                       _showSnackBar('리뷰가 추가되었습니다');
                     } catch (e) {
-                      _showSnackBar('리뷰 추가 실패하였습니다.');
+                      _showSnackBar('리뷰 추가 실패하였습니다.:$e');
                     }
                   },
-                  child: const Text(
-                    '제출',
-                    style: TextStyle(color: Color(0xfff3bb88)),
-                  ),
+                  child: Text('제출',
+                    style: TextStyle(color: Color(0xfff3bb88)),),
                 ),
               ],
             );
@@ -286,68 +374,61 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
 
   void _showSnackBar(String message) {
     if (mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
   Widget _buildReviewList() {
-    if (_cosmeticReviews.isEmpty) {}
     return Expanded(
       child: ListView.separated(
         itemCount: _cosmeticReviews.length,
-        separatorBuilder: (context, index) =>
-            const Divider(height: 1, color: Colors.grey),
+        separatorBuilder: (context, index) => Divider(height: 1, color: Colors.grey),
         itemBuilder: (context, index) {
           var review = _cosmeticReviews[index];
-          String baumannString =
-              parseAndFormatBaumannAnalysis(review.nlpAnalysis);
+          bool isUserReview = _currentUser != null && review.user.id == _currentUser!.id;
+          String baumannString = parseAndFormatBaumannAnalysis(review.nlpAnalysis);
           return Card(
             elevation: 2,
-            margin: const EdgeInsets.all(8),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Column(children: [
-              ListTile(
-                // leading: Padding(padding:EdgeInsets.symmetric(horizontal: 10),child:Icon(Icons.person)), // 사용자 아이콘을 표시합니다.
-                title: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(review.user.email)), // 사용자 이름을 표시합니다.
-                subtitle: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
-                    children: [
-                      ...List.generate(5, (starIndex) {
-                        return Icon(
-                          starIndex < review.rating
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: Colors.amber,
-                          size: 20,
-                        );
-                      }),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${review.rating} Stars',
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
+            margin: EdgeInsets.all(8),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Column(
+                children: [
+            ListTile(
+            // leading: Padding(padding:EdgeInsets.symmetric(horizontal: 10),child:Icon(Icons.person)), // 사용자 아이콘을 표시합니다.
+            title: Padding(padding:EdgeInsets.symmetric(horizontal: 10),child:Text(review.user.email)), // 사용자 이름을 표시합니다.
+            subtitle: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
+                children: [
+                  ...List.generate(5, (starIndex) {
+                    return Icon(
+                      starIndex < review.rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 20,
+                    );
+                  }),
+                  SizedBox(width: 8),
+                  Text(
+                    '${review.rating} Stars',
+                    style: TextStyle(color: Colors.grey),
                   ),
-                ),
+                ],
               ),
+            ),
+          ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         review.content,
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Wrap(
                       spacing: 8.0,
                       runSpacing: 4.0,
@@ -359,29 +440,42 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                             width: 100,
                             height: 100,
                             fit: BoxFit.cover,
-                            errorBuilder: (BuildContext context,
-                                Object exception, StackTrace? stackTrace) {
-                              return const SizedBox.shrink();
+                            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                              return SizedBox.shrink();
                             },
                           ),
                         );
                       }).toList(),
                     ),
-                    const SizedBox(height: 10),
+                    if (isUserReview) // Show edit/delete only for user's reviews
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // IconButton(
+                          //   icon: Icon(Icons.edit),
+                          //   onPressed: () => _editReview(review), // Implement this method
+                          // ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () => _deleteReview(review), // Implement this method
+                          ),
+                        ],
+                      ),
+                    SizedBox(height: 10),
                     if (review.nlpAnalysis.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        // 여기서 원하는 패딩 값을 설정하세요.
+                        padding: EdgeInsets.all(20.0), // 여기서 원하는 패딩 값을 설정하세요.
                         child: Text(
                           '바우만 분석: $baumannString',
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12),
                           softWrap: true, // 필요에 따라 줄바꿈
                         ),
                       ),
                   ],
                 ),
               ),
-            ]),
+            ]
+            ),
           );
         },
       ),
@@ -391,52 +485,50 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
   // 리뷰페이지 넘기기
   Widget _buildPaginationControls() {
     return _totalPages != 0
-        ? Padding(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: _currentPage > 0
-                      ? () => _fetchReviewsForCosmetic(
-                          widget.cosmeticId, _currentPage - 1)
-                      : null,
-                ),
-                Text('Page ${_currentPage + 1} of $_totalPages'),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  onPressed: _currentPage < _totalPages - 1
-                      ? () => _fetchReviewsForCosmetic(
-                          widget.cosmeticId, _currentPage + 1)
-                      : null,
-                ),
-              ],
+      ? Padding(
+      padding: EdgeInsets.fromLTRB(5, 10, 5, 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: _currentPage > 0
+                ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage - 1)
+                : null,
+          ),
+          Text('Page ${_currentPage + 1} of $_totalPages'),
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios),
+            onPressed: _currentPage < _totalPages - 1
+                ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage + 1)
+                : null,
+          ),
+        ],
+      ),
+    ) : Padding(
+          padding: EdgeInsets.fromLTRB(5, 10, 5, 20),
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: _currentPage > 0
+              ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage - 1)
+                  : null,
             ),
-          )
-        : Padding(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: _currentPage > 0
-                      ? () => _fetchReviewsForCosmetic(
-                          widget.cosmeticId, _currentPage - 1)
-                      : null,
-                ),
-                Text('Page ${_currentPage + 1} of 1'),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  onPressed: _currentPage < _totalPages - 1
-                      ? () => _fetchReviewsForCosmetic(
-                          widget.cosmeticId, _currentPage + 1)
-                      : null,
-                ),
-              ],
-            ));
+            Text('Page ${_currentPage + 1} of 1'),
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              onPressed: _currentPage < _totalPages - 1
+              ? () => _fetchReviewsForCosmetic(widget.cosmeticId, _currentPage + 1)
+                  : null,
+            ),
+          ],
+        )
+    );
   }
+
+
 
   // 사진 선택 및 미리보기 위젯
   Widget _buildImagePreview(StateSetter setDialogState) {
@@ -444,35 +536,34 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
       spacing: 8.0,
       runSpacing: 4.0,
       children: _imageFiles?.map((file) {
-            return Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.file(
-                    File(file.path!),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  right: -10,
-                  top: -10,
-                  child: IconButton(
-                    icon: const Icon(Icons.remove_circle),
-                    color: Colors.red,
-                    onPressed: () {
-                      setState(() {
-                        _imageFiles!.remove(file);
-                      });
-                      setDialogState(() {}); // StatefulBuilder의 상태 업데이트
-                    },
-                  ),
-                ),
-              ],
-            );
-          }).toList() ??
-          [],
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.file(
+                File(file.path!),
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              right: -10,
+              top: -10,
+              child: IconButton(
+                icon: Icon(Icons.remove_circle),
+                color: Colors.red,
+                onPressed: () {
+                  setState(() {
+                    _imageFiles!.remove(file);
+                  });
+                  setDialogState(() {}); // StatefulBuilder의 상태 업데이트
+                },
+              ),
+            ),
+          ],
+        );
+      }).toList() ?? [],
     );
   }
 
@@ -490,7 +581,7 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
       body: Column(
         children: [
           if (_isLoading)
-            const Expanded(
+            Expanded(
               child: Center(
                 child: SpinKitThreeInOut(
                   color: Color(0xffd86a04),
@@ -499,31 +590,36 @@ class _CosmeticReviewPageState extends State<CosmeticReviewPage> {
                 ),
               ),
             )
-          else if (_cosmeticReviews.isEmpty)
-            const Expanded(
-                child: Center(
-                    child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "해당 제품의 리뷰가 존재하지 않습니다.\n리뷰를 등록해주세요.",
-                  style: TextStyle(color: Colors.grey, fontSize: 18),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            )))
           else
-            _buildReviewList(),
+            if(_cosmeticReviews.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "해당 제품의 리뷰가 존재하지 않습니다.\n리뷰를 등록해주세요.",
+                        style: TextStyle(color: Colors.grey, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  )
+                )
+              )
+
+            else
+              _buildReviewList(),
           _buildPaginationControls(),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _addReview(); // 리뷰 추가 다이얼로그를 여는 버튼으로 변경
         },
-        child: const Icon(Icons.edit),
-        backgroundColor: const Color(0xffd86a04),
+        child: Icon(Icons.edit),
+        backgroundColor: Color(0xffd86a04),
       ),
     );
   }

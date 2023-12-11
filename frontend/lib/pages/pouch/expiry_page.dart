@@ -6,9 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../dto/cosmetic_expiry_model.dart';
 import '../../dto/cosmetic_model.dart';
-import '../../pages/pouch/flutter_notification.dart';
 import '../../services/api_service.dart';
 import '../../services/expiry_service.dart';
+import '../../pages/pouch/flutter_notification.dart';
 import '../../services/search_service.dart';
 import '../../widget/bottomNavigationBar.dart';
 import '../home/home_page.dart';
@@ -25,7 +25,7 @@ class CosmeticExpiryPage extends StatefulWidget {
 }
 
 class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
-  final int _currentIndex = 1;
+  int _currentIndex = 1;
   List<CosmeticExpiry> expiries = [];
   bool isLoading = true;
   int _notificationDays = 30;
@@ -41,6 +41,8 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
     return DateFormat('yyyy-MM-dd').format(date); // 날짜를 'yyyy-MM-dd' 형식으로 변환
   }
 
+
+
   Future<void> _loadNotificationSetting() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -48,40 +50,60 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
     });
   }
 
+
   Future<void> _saveNotificationSetting(int days) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('notificationDays', days);
   }
 
+
 // 알림 설정 다이얼로그
   void _showNotificationSettingDialog() {
+    final TextEditingController _controller = TextEditingController(text: _notificationDays.toString());
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('알림 설정'),
-          content: DropdownButtonFormField<int>(
-            value: _notificationDays,
-            items: [30, 60, 90].map((int value) {
-              return DropdownMenuItem<int>(
-                value: value,
-                child: Text('$value 일 전'),
-              );
-            }).toList(),
-            onChanged: (int? newValue) {
+          title: Text('알림 설정',
+              style: TextStyle(color: Colors.orange, fontSize: 18)),
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              labelText: '알림 받을 일수를 입력하세요',
+              labelStyle: TextStyle(color: Colors.orange),
+              border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder( // 포커스 상태에서 주황색 테두리
+                borderSide: BorderSide(color: Color(0xffd86a04)),
+              ),
+              enabledBorder: OutlineInputBorder( // 기본 테두리
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              // 입력값 변경 시 상태 업데이트
+              final int? newValue = int.tryParse(value);
               if (newValue != null) {
-                _saveNotificationSetting(newValue).then((_) {
-                  setState(() {
-                    _notificationDays = newValue;
-                  });
-                });
+                _notificationDays = newValue;
               }
             },
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('확인'),
+              onPressed: () async {
+                // 입력값을 int로 변환하고 저장
+                final int? newValue = int.tryParse(_controller.text);
+                if (newValue != null) {
+                  await _saveNotificationSetting(newValue);
+                  setState(() {
+                    _notificationDays = newValue;
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('저장',
+                style: TextStyle(color: Colors.orange, fontSize: 14),),
             ),
           ],
         );
@@ -109,28 +131,28 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
       for (var i = 0; i < expiryData.length; i++) {
         var expiry = expiryData[i];
 
-        futures.add(SearchService.searchCosmeticsByName(expiry.productName)
-            .then((cosmetics) {
-          if (cosmetics.isNotEmpty) {
-            expiry.imageUrl = cosmetics.first.images.isNotEmpty
-                ? cosmetics.first.images.first
-                : null;
-          }
-        }).catchError((e) {
-          print("Error loading cosmetic data for ${expiry.productName}: $e");
-        }));
+        futures.add(
+            SearchService.searchCosmeticsByName(expiry.productName).then((cosmetics) {
+              if (cosmetics.isNotEmpty) {
+                expiry.imageUrl = cosmetics.first.images.isNotEmpty
+                    ? cosmetics.first.images.first
+                    : null;
+              }
+            }).catchError((e) {
+              print("Error loading cosmetic data for ${expiry.productName}: $e");
+            })
+        );
 
         DateTime expiryDate = expiry.expiryDate ?? DateTime.now();
-        var notifyTime = FlutterLocalNotification.makeDateForExpiry(
-            expiryDate, _notificationDays);
+        var notifyTime = FlutterLocalNotification.makeDateForExpiry(expiryDate, _notificationDays);
 
         if (notifyTime != null) {
           FlutterLocalNotification.showNotification_time(
               "유통기한 알림",
-              "${expiry.productName}의 유통기한이 $_notificationDays일 이내입니다!",
+              "${expiry.productName}의 유통기한이 ${_notificationDays}일 이내입니다!",
               notifyTime,
               i // 고유한 ID
-              );
+          );
         }
       }
 
@@ -147,6 +169,7 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
       });
     }
   }
+
 
   void _deleteExpiry(String expiryId, int index) async {
     try {
@@ -184,7 +207,7 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
           cosmeticId: selectedCosmetic.id,
         );
         final CosmeticExpiry addedExpiry =
-            await ExpiryService.createCosmeticExpiry(newExpiry);
+        await ExpiryService.createCosmeticExpiry(newExpiry);
 
         setState(() {
           expiries.add(addedExpiry);
@@ -211,7 +234,7 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
     if (updatedExpiry != null) {
       try {
         final CosmeticExpiry updated =
-            await ExpiryService.updateExpiry(expiry.id!, updatedExpiry);
+        await ExpiryService.updateExpiry(expiry.id!, updatedExpiry);
         setState(() {
           expiries[index] = updated;
         });
@@ -243,50 +266,48 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xffffecda),
+          backgroundColor: Color(0xffffecda),
           elevation: 0,
           centerTitle: false,
           title: const Text(
             "BeautyMinder",
-            style: TextStyle(
-                color: Color(0xffd86a04), fontWeight: FontWeight.bold),
+            style: TextStyle(color: Color(0xffd86a04), fontWeight: FontWeight.bold),
           ),
           iconTheme: const IconThemeData(
             color: Color(0xffd86a04),
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.add),
+              icon: Icon(Icons.add),
               onPressed: _addCosmetic,
             ),
             IconButton(
-              icon: const Icon(Icons.settings),
+              icon: Icon(Icons.settings),
               onPressed: _showNotificationSettingDialog,
             ),
           ]),
       body: isLoading
-          ? const Center(
-              child: SpinKitThreeInOut(
-                color: Color(0xffd86a04),
-                size: 50.0,
-                duration: Duration(seconds: 2),
-              ),
-            )
-          : _selectUI(),
+          ? Center(
+        child: SpinKitThreeInOut(
+          color: Color(0xffd86a04),
+          size: 50.0,
+          duration: Duration(seconds: 2),
+        ),
+      ) : _selectUI(),
       bottomNavigationBar: CommonBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (int index) async {
           // 페이지 전환 로직 추가
           if (index == 0) {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const RecPage()));
+                .push(MaterialPageRoute(builder: (context) => RecPage()));
           } else if (index == 2) {
             final userProfileResult = await APIService.getUserProfile();
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => HomePage(user: userProfileResult.value)));
           } else if (index == 3) {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const CalendarPage()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => CalendarPage()));
           } else if (index == 4) {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => const MyPage()));
@@ -297,9 +318,9 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
   }
 
   Widget _selectUI() {
-    if (expiries.isNotEmpty) {
+    if(expiries.isNotEmpty && expiries.length != 0) {
       return GridView.builder(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
           crossAxisSpacing: 8,
@@ -321,7 +342,7 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
             },
             child: Card(
               clipBehavior: Clip.antiAlias,
-              color: const Color(0xffffffff),
+              color: Color(0xffffffff),
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
@@ -330,53 +351,45 @@ class _CosmeticExpiryPageState extends State<CosmeticExpiryPage> {
                     // 이미지 표시
                     cosmetic.imageUrl != null
                         ? Image.network(cosmetic.imageUrl!,
-                            width: 120, height: 120, fit: BoxFit.cover)
+                        width: 120, height: 120, fit: BoxFit.cover)
                         : Image.asset('assets/images/noImg.jpg',
-                            width: 120, height: 120, fit: BoxFit.cover),
-                    const SizedBox(
-                      height: 8,
-                    ),
+                        width: 120, height: 120, fit: BoxFit.cover),
+                    SizedBox(height: 8,),
                     // 제품 이름
                     Text(
                       cosmetic.productName,
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold
+                      ),
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10,),
 
                     // D-Day
-                    isDatePassed
-                        ? Text(
-                            'D+${difference.inDays.abs()}',
-                            style: const TextStyle(
-                                fontSize: 15,
-                                color: Colors.deepOrangeAccent,
-                                fontWeight: FontWeight.bold),
-                          )
-                        : Text('D-${difference.inDays + 1}',
-                            style: (difference.inDays + 1 <= 100)
-                                ? const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.deepOrangeAccent,
-                                    fontWeight: FontWeight.bold)
-                                : const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold)),
+                    isDatePassed ?
+                    Text(
+                      'D+${difference.inDays.abs()}',
+                      style: TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
+                    ) : Text(
+                        'D-${difference.inDays+1}',
+                        style: (difference.inDays+1<=100) ?
+                        TextStyle(fontSize: 15, color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold)
+                            : TextStyle(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.bold)
+                    ),
                   ],
                 ),
               ),
+
             ),
           );
         },
       );
-    } else {
-      return const Center(
+    }
+    else {
+      return Center(
         child: Text(
           "등록된 화장품이 없습니다.\n보유하신 제품을 등록해주세요.",
           style: TextStyle(color: Colors.grey, fontSize: 18),
