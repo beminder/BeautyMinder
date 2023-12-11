@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../controllers/MenuAppController.dart';
-
+import '../../../controllers/menu_app_controller.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -18,11 +17,13 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-            // child: Image.asset("assets/images/logo.png", height: 20, width: 20,),
-            child: Center(
-              child: Text('BeautyMinder', style: TextStyle(fontSize: 20),),
-            )
-          ),
+              // child: Image.asset("assets/images/logo.png", height: 20, width: 20,),
+              child: Center(
+            child: Text(
+              'BeautyMinder',
+              style: TextStyle(fontSize: 20),
+            ),
+          )),
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashboard.svg",
@@ -43,7 +44,9 @@ class SideMenu extends StatelessWidget {
             title: "Filtered Review",
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
-              context.read<MenuAppController>().setSelectedScreen('filtered review');
+              context
+                  .read<MenuAppController>()
+                  .setSelectedScreen('filtered review');
             },
             selected: selectedScreen == 'filtered review',
           ),
@@ -97,9 +100,8 @@ class DrawerListTile extends StatelessWidget {
       title: Text(
         title,
         style: TextStyle(
-          color: selected ? Colors.white : Colors.white54,
-          fontWeight: selected ? FontWeight.bold : FontWeight.normal
-        ),
+            color: selected ? Colors.white : Colors.white54,
+            fontWeight: selected ? FontWeight.bold : FontWeight.normal),
       ),
     );
   }

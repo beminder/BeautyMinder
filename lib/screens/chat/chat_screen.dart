@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:admin/Service/admin_Service.dart';
+import 'package:beautyminder_dashboard/Service/admin_service.dart';
 import 'package:flutter/material.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
+
 import '../../Service/api_service.dart';
-import '../../Service/dio_client.dart';
 import '../../Service/shared_service.dart';
 import '../../config.dart';
 import '../../constants.dart';
@@ -21,7 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _nicknameController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Key for the form
 
-  final String _url = 'http://ec2-43-202-92-163.ap-northeast-2.compute.amazonaws.com:8080/ws/chat';
+  final String _url = Uri.https(Config.apiURL, Config.webSocket).toString();
   late StompClient stompClient;
 
   bool isApiCallProcess = false;
@@ -33,7 +33,6 @@ class _ChatScreenState extends State<ChatScreen> {
   List<String> userList = [];
 
   Future<void> _getTokens() async {
-
     if (isApiCallProcess) {
       return;
     }
@@ -51,11 +50,9 @@ class _ChatScreenState extends State<ChatScreen> {
         accessToken = loadedAccessToken;
         refreshToken = loadedRefreshToken;
       });
-
     } catch (e) {
       print('An error occurred : $e');
-    }
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
         isApiCallProcess = false;
@@ -76,23 +73,16 @@ class _ChatScreenState extends State<ChatScreen> {
             await Future.delayed(const Duration(milliseconds: 200));
             print('connecting...');
           },
-          onDebugMessage: (dynamic error) => {
-            print('$error')
-          },
-          onWebSocketError: (dynamic error) =>
-          {
+          onDebugMessage: (dynamic error) => {print('$error')},
+          onWebSocketError: (dynamic error) => {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('웹소켓 연결에 실패했습니다. 다시 시도해주세요.'),
+                content: Text('웹소켓 연결에 실패 했습니다. 다시 시도 해주세요.'),
               ),
             )
           },
-          stompConnectHeaders: {
-            'access-token': '$accessToken'
-          },
-          webSocketConnectHeaders: {
-            'access-token': '$accessToken'
-          },
+          stompConnectHeaders: {'access-token': '$accessToken'},
+          webSocketConnectHeaders: {'access-token': '$accessToken'},
         ),
       );
       stompClient.activate();
@@ -102,30 +92,31 @@ class _ChatScreenState extends State<ChatScreen> {
   void onConnect(StompFrame frame) {
     // Subscribe to get the current and updated list of users
     stompClient.subscribe(
-      destination: '/topic/room/currentUsers',
-      callback: (frame)
-      {
+      destination: Config.webSocketUserList,
+      callback: (frame) {
         List<String> currentUsers = List<String>.from(json.decode(frame.body!));
 
         setState(() {
           userList = currentUsers;
         });
-      },);
+      },
+    );
   }
 
   Future<void> kickUser(String kickoutUserNickname) async {
     try {
-      final response = await adminService.kickUser(kickoutUserNickname);
+      final response = await AdminService.kickUser(kickoutUserNickname);
       if (response.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 성공하였습니다.'),
+            content: Text('사용자 ($kickoutUserNickname)를 강제 퇴장시키는 데 성공하였습니다.'),
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('사용자(${kickoutUserNickname})를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
+            content: Text(
+                '사용자 ($kickoutUserNickname)를 강제 퇴장시키는 데 실패하였습니다. 입력하신 이메일을 다시 확인해주세요.'),
           ),
         );
       }
@@ -159,7 +150,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     final userProfileResult = snapshot.data;
                     return Header(
                       headTitle: "Chat",
-                      userProfileResult: userProfileResult, // Pass userProfileResult
+                      userProfileResult:
+                          userProfileResult, // Pass userProfileResult
                     );
                   }
                 },
@@ -197,19 +189,18 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           SizedBox(width: 20),
                           ElevatedButton(
-                            onPressed: () async {
-                              // Validate the form before performing any action
-                              if (_formKey.currentState!.validate()) {
-                                print("퇴장: ${_nicknameController.text}");
-                                String kickoutUserNickname = _nicknameController.text;
-                                kickUser(kickoutUserNickname);
-                              }
-                            },
-                            child: Text("퇴장"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: secondaryColor
-                            )
-                          ),
+                              onPressed: () async {
+                                // Validate the form before performing any action
+                                if (_formKey.currentState!.validate()) {
+                                  print("퇴장: ${_nicknameController.text}");
+                                  String kickoutUserNickname =
+                                      _nicknameController.text;
+                                  kickUser(kickoutUserNickname);
+                                }
+                              },
+                              child: Text("퇴장"),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: secondaryColor)),
                         ],
                       ),
                       SizedBox(height: defaultPadding),
@@ -217,9 +208,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       // Text("실시간 채팅방 유저 리스트", style: TextStyle(color: Colors.white54),),
                       Container(
                         // height: MediaQuery.of(context).size.height*0.5,
-                        height:500,
-                        child:
-                        Expanded(
+                        height: 500,
+                        child: Expanded(
                           flex: 5,
                           child: ListView.builder(
                             itemCount: userList.length,

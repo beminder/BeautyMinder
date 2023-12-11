@@ -1,4 +1,3 @@
-
 import '../dto/user_model.dart';
 import 'cosmetic_model.dart';
 
@@ -49,7 +48,6 @@ class ReviewResponse {
         'createdAt: $createdAt, nlpAnalysis: $nlpAnalysis, '
         'isFiltered: $isFiltered)';
   }
-
 }
 
 class ReviewPageResponse {

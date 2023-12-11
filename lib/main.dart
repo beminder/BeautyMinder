@@ -1,15 +1,12 @@
-
-import 'package:admin/Service/admin_Service.dart';
-import 'package:admin/constants.dart';
-import 'package:admin/controllers/MenuAppController.dart';
-import 'package:admin/screens/chat/chat_screen.dart';
-import 'package:admin/screens/dashboard/dashboard_screen.dart';
-import 'package:admin/screens/main/main_screen.dart';
-import 'package:admin/screens/profile/profile_screen.dart';
-import 'package:admin/screens/review/filtered_Review_screen.dart';
-import 'package:admin/screens/review/review_screen.dart';
-import 'package:admin/screens/start/splash_screen.dart';
-import 'package:admin/screens/test.dart';
+import 'package:beautyminder_dashboard/constants.dart';
+import 'package:beautyminder_dashboard/controllers/menu_app_controller.dart';
+import 'package:beautyminder_dashboard/screens/chat/chat_screen.dart';
+import 'package:beautyminder_dashboard/screens/dashboard/dashboard_screen.dart';
+import 'package:beautyminder_dashboard/screens/main/main_screen.dart';
+import 'package:beautyminder_dashboard/screens/profile/profile_screen.dart';
+import 'package:beautyminder_dashboard/screens/review/filtered_Review_screen.dart';
+import 'package:beautyminder_dashboard/screens/review/review_screen.dart';
+import 'package:beautyminder_dashboard/screens/start/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +18,6 @@ void main() {
       child: MyApp(),
     ),
   );
-
 }
 
 class MyApp extends StatelessWidget {
@@ -49,7 +45,7 @@ class MyApp extends StatelessWidget {
       // ),
       home: SplashScreen(),
       routes: {
-        '/main' : (context) => MainScreen(),
+        '/main': (context) => MainScreen(),
         '/dashboard': (context) => DashboardScreen(),
         '/review': (context) => ReviewScreen(),
         '/Filtered Review': (context) => filteredReviewScreen(),

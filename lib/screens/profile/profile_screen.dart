@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../Service/api_service.dart';
@@ -8,7 +7,6 @@ import '../main/components/header.dart';
 import '../start/splash_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // return Text('Chat Page');
@@ -30,7 +28,8 @@ class ProfileScreen extends StatelessWidget {
                     final userProfileResult = snapshot.data;
                     return Header(
                       headTitle: "Profile",
-                      userProfileResult: userProfileResult, // Pass userProfileResult
+                      userProfileResult:
+                          userProfileResult, // Pass userProfileResult
                     );
                   }
                 },
@@ -45,7 +44,7 @@ class ProfileScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height/1.5,
+                      height: MediaQuery.of(context).size.height / 1.5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +54,9 @@ class ProfileScreen extends StatelessWidget {
                             backgroundImage: NetworkImage(
                                 userProfileResult?.profileImage ?? ''),
                           ),
-                          SizedBox(height: 30,),
+                          SizedBox(
+                            height: 30,
+                          ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +179,7 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () async {
                     try {
                       final logoutResponse = await APIService.logout();
-                      if(logoutResponse.isSuccess) {
+                      if (logoutResponse.isSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('로그아웃에 성공하였습니다.'),
@@ -187,10 +188,10 @@ class ProfileScreen extends StatelessWidget {
                         );
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => SplashScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => SplashScreen()),
                         );
-                      }
-                      else {
+                      } else {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -199,8 +200,7 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         );
                       }
-                    }
-                    catch (e) {
+                    } catch (e) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

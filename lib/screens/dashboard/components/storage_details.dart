@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
-import 'chart.dart';
 import 'storage_info_card.dart';
 
 class StorageDetails extends StatelessWidget {
@@ -28,7 +27,7 @@ class StorageDetails extends StatelessWidget {
             ),
           ),
           SizedBox(height: defaultPadding),
-         // Chart(),
+          // Chart(),
           StorageInfoCard(
             svgSrc: "assets/icons/Documents.svg",
             title: "Documents Files",

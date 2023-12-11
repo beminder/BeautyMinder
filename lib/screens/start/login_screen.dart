@@ -69,7 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login'),backgroundColor: secondaryColor,),
+      appBar: AppBar(
+        title: Text('Login'),
+        backgroundColor: secondaryColor,
+      ),
       backgroundColor: bgColor,
       body: SingleChildScrollView(
         child: Column(
@@ -95,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
         height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width/2,
+        width: MediaQuery.of(context).size.width / 2,
         child: Column(
           children: <Widget>[
             SizedBox(height: 200), // 여백 추가
@@ -109,7 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
             SizedBox(height: 80), // 여백 추가
             _buildLoginButton(context), // 로그인 버튼
-
           ],
         ),
       ),
@@ -303,7 +305,6 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
-
 
   // 입력 유효성 검사
   bool validateAndSave() {

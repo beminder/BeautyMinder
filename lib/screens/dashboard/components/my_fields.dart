@@ -1,5 +1,5 @@
-import 'package:admin/models/MyFiles.dart';
-import 'package:admin/responsive.dart';
+import 'package:beautyminder_dashboard/models/my_file.dart';
+import 'package:beautyminder_dashboard/responsive.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';

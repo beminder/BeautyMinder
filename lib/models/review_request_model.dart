@@ -3,6 +3,7 @@ class ReviewRequest {
   final int rating;
   final String cosmeticId; // 새로 추가
   final List<String>? imagesToDelete;
+
   // final String userId; // 새로 추가
 
   ReviewRequest({

@@ -1,15 +1,15 @@
-import 'package:admin/Service/dio_client.dart';
-import 'package:admin/Service/shared_service.dart';
-import 'package:admin/models/review_response_model.dart';
+import 'package:beautyminder_dashboard/Service/dio_client.dart';
+import 'package:beautyminder_dashboard/Service/shared_service.dart';
+import 'package:beautyminder_dashboard/models/review_response_model.dart';
 
 import '../config.dart';
 
-class adminService {
+class AdminService {
   static Future<Result<String>> kickUser(String id) async {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.kickUserAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.kickUserAPI).toString();
 
     final Map<String, dynamic> body = {"username": "$id"};
 
@@ -30,7 +30,7 @@ class adminService {
         return Result.failure("Failed to kick user");
       }
     } catch (e) {
-      return Result.failure("An error occured : $e");
+      return Result.failure("An error occurred : $e");
     }
   }
 
@@ -39,9 +39,9 @@ class adminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    Map<String, dynamic> queryparameter = {'page': page.toString()};
+    Map<String, dynamic> queryParameter = {'page': page.toString()};
 
-    final url = Uri.http(Config.apiURL, Config.getAllReviewAPI, queryparameter)
+    final url = Uri.https(Config.apiURL, Config.getAllReviewAPI, queryParameter)
         .toString();
 
     final headers = {
@@ -53,9 +53,6 @@ class adminService {
       final response =
           await DioClient.sendRequest('GET', url, headers: headers);
 
-      print("page : ${page}");
-      print(response.data.runtimeType);
-      print(response.data);
       // response.date는 map형식
       if (response.statusCode == 200) {
         print(response.data.runtimeType);
@@ -78,7 +75,7 @@ class adminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.getFilteredReviews).toString();
+    final url = Uri.https(Config.apiURL, Config.getFilteredReviews).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -110,16 +107,16 @@ class adminService {
   }
 
   static Future<Result<String>> updateReviewStatus(
-      String reviewid, String stat) async {
+      String reviewId, String stat) async {
 
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(
-            Config.apiURL, Config.updateReviewStatus + reviewid + "/status")
+    final url = Uri.https(
+            Config.apiURL, Config.updateReviewStatus + reviewId + "/status")
         .toString();
 
-    print("url : ${url}");
+    print("url : $url");
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -128,24 +125,15 @@ class adminService {
 
     Map<String, dynamic> body = {"status": "${stat}"};
 
-    print("url1 : ${url}");
-
     try {
       final response = await DioClient.sendRequest('PATCH', url,
           headers: headers, body: body);
-      print("url2 : ${url}");
-
       if (response.statusCode == 200) {
-        print("response : ${response.data}");
-        print("url3 : ${url}");
-
         return Result.success(response.data);
       } else {
-        print("url4 : ${url}");
         return Result.failure('Failed to update review status');
       }
     } catch (e) {
-      print("url5 : ${url}, $e");
       return Result.failure("An error occured : $e");
     }
   }
@@ -154,9 +142,8 @@ class adminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.getUsageCpuAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.getUsageCpuAPI).toString();
 
-    print("url : ${url}");
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
@@ -167,16 +154,13 @@ class adminService {
           await DioClient.sendRequest('GET', url, headers: headers);
 
       if (response.statusCode == 200) {
-        print("response : ${response.data}");
-
         // JSON 데이터에서 value 추출
         final cpuUsage = response.data['measurements'][0]['value'];
-        print("CPU Usage: $cpuUsage");
 
         // 퍼센트로 나누기위해 *100
         return Result.success(cpuUsage * 100);
       } else {
-        return Result.failure("error occured in get cpu usage");
+        return Result.failure("error occurred in get cpu usage");
       }
     } catch (e) {
       print("Error: $e");
@@ -188,9 +172,8 @@ class adminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.getUpTimeAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.getUpTimeAPI).toString();
 
-    print("url : ${url}");
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
@@ -205,8 +188,6 @@ class adminService {
 
         // JSON 데이터에서 value 추출
         final upTime = response.data['measurements'][0]['value'];
-        print("UP time: $upTime");
-
         // 시간 단위로 변경
         return Result.success(upTime);
       } else {
@@ -222,9 +203,8 @@ class adminService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.getAverage1M).toString();
+    final url = Uri.https(Config.apiURL, Config.getAverage1M).toString();
 
-    print("url : ${url}");
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',

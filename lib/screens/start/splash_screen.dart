@@ -1,5 +1,5 @@
-import 'package:admin/constants.dart';
-import 'package:admin/screens/start/login_screen.dart';
+import 'package:beautyminder_dashboard/constants.dart';
+import 'package:beautyminder_dashboard/screens/start/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,21 +20,20 @@ class _SplashScreenState extends State<SplashScreen> {
       },
       child: Center(
         child: Container(
-          width: MediaQuery.of(context).size.width/3,
+          width: MediaQuery.of(context).size.width / 3,
           padding: EdgeInsets.symmetric(vertical: 13),
           alignment: Alignment.center,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               color: secondaryColor),
           child: Text(
-            '로그인하기',
+            '로그인 하기',
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
       ),
     );
   }
-
 
   Widget _title() {
     return RichText(
@@ -43,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
           text: 'BeautyMinder',
           style: TextStyle(
             fontFamily: 'Oswald',
-            fontSize: 30,
+            fontSize: 40,
             fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
@@ -75,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
             children: <Widget>[
               _title(),
               SizedBox(
-                height: MediaQuery.of(context).size.height*0.1,
+                height: MediaQuery.of(context).size.height * 0.1,
               ),
               _submitButton(),
             ],

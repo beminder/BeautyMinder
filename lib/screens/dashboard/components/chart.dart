@@ -1,21 +1,21 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 
 class Chart extends StatelessWidget {
-  final double Usage;
+  final double usage;
   final Color color;
 
   const Chart({
     Key? key,
-    required this.Usage, required this.color,
+    required this.usage,
+    required this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final usedSpace = Usage;
+    final usedSpace = usage;
     final freeSpace = 100 - usedSpace;
 
     List<PieChartSectionData> sections = [
@@ -54,10 +54,10 @@ class Chart extends StatelessWidget {
                 Text(
                   "${usedSpace.toStringAsFixed(1)}%",
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    height: 0.5,
-                  ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        height: 0.5,
+                      ),
                 ),
                 Text("of 100%")
               ],

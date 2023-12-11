@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 
 import '../config.dart';
@@ -9,10 +8,9 @@ import 'dio_client.dart';
 import 'shared_service.dart';
 
 class APIService {
-
-  // 로그인하고 관리자인증까지 같이함
+  // 로그인하고 관리자 인증까지 같이함
   static Future<Result<bool>> login(LoginRequestModel model) async {
-    final url = Uri.http(Config.apiURL, Config.loginAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.loginAPI).toString();
     final formData = FormData.fromMap({
       'email': model.email ?? '',
       'password': model.password ?? '',
@@ -28,7 +26,8 @@ class APIService {
         if (certResult.isSuccess) {
           return Result.success(true);
         } else {
-          return Result.failure("Certificate Admin failed: ${certResult.error}");
+          return Result.failure(
+              "Certificate Admin failed: ${certResult.error}");
         }
       }
       return Result.failure("Login failed");
@@ -40,7 +39,7 @@ class APIService {
   // //회원가입
   // static Future<Result<RegisterResponseModel>> register(
   //     RegisterRequestModel model) async {
-  //   final url = Uri.http(Config.apiURL, Config.registerAPI).toString();
+  //   final url = Uri.https(Config.apiURL, Config.registerAPI).toString();
   //
   //   try {
   //     final response =
@@ -52,41 +51,40 @@ class APIService {
   //   }
   // }
 
-  static Future<Result<String>> certificateAdmin() async{
+  static Future<Result<String>> certificateAdmin() async {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
-    
-    final url = Uri.http(Config.apiURL, Config.certificateAdminAPI).toString();
+
+    final url = Uri.https(Config.apiURL, Config.certificateAdminAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Cookie': 'XRT=$refreshToken',
     };
-    
-    try{
-      final response = await DioClient.sendRequest('GET', url, headers: headers);
+
+    try {
+      final response =
+          await DioClient.sendRequest('GET', url, headers: headers);
 
       print("response : ${response.data}");
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         print("관리자 페이지 입장.");
         return Result.success(response.data);
-      }else{
-        return Result.failure("Failed to certificate adming");
+      } else {
+        return Result.failure("Failed to certificate admin");
       }
-    }catch(e){
-      return Result.failure("An erroe occured : $e");
+    } catch (e) {
+      return Result.failure("An error occured : $e");
     }
-
   }
 
   //사용자 프로필 조회
   static Future<Result<User>> getUserProfile() async {
-
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.userProfileAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.userProfileAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',
@@ -116,7 +114,7 @@ class APIService {
     final accessToken = await SharedService.getAccessToken();
     final refreshToken = await SharedService.getRefreshToken();
 
-    final url = Uri.http(Config.apiURL, Config.logoutAPI).toString();
+    final url = Uri.https(Config.apiURL, Config.logoutAPI).toString();
 
     final headers = {
       'Authorization': 'Bearer $accessToken',

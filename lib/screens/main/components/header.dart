@@ -1,6 +1,6 @@
-import 'package:admin/Service/api_service.dart';
-import 'package:admin/controllers/MenuAppController.dart';
-import 'package:admin/responsive.dart';
+import 'package:beautyminder_dashboard/Service/api_service.dart';
+import 'package:beautyminder_dashboard/controllers/menu_app_controller.dart';
+import 'package:beautyminder_dashboard/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +9,9 @@ import '../../start/splash_screen.dart';
 
 class Header extends StatelessWidget {
   const Header({
-    Key? key, required this.headTitle, required this.userProfileResult,
+    Key? key,
+    required this.headTitle,
+    required this.userProfileResult,
   }) : super(key: key);
 
   final String headTitle;
@@ -39,7 +41,8 @@ class Header extends StatelessWidget {
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
-    Key? key, required this.userProfileResult,
+    Key? key,
+    required this.userProfileResult,
   }) : super(key: key);
 
   final dynamic userProfileResult;
@@ -53,20 +56,32 @@ class ProfileCard extends StatelessWidget {
         PopupMenuItem<String>(
           value: 'editProfile',
           child: ListTile(
-            leading: Icon(Icons.edit, color: Colors.white54,),
-            title: Text('프로필 정보', style: TextStyle(color: Colors.white54),),
+            leading: Icon(
+              Icons.edit,
+              color: Colors.white54,
+            ),
+            title: Text(
+              '프로필 정보',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
         ),
         PopupMenuItem<String>(
           value: 'logout',
           child: ListTile(
-            leading: Icon(Icons.logout, color: Colors.white54,),
-            title: Text('로그아웃', style: TextStyle(color: Colors.white54),),
+            leading: Icon(
+              Icons.logout,
+              color: Colors.white54,
+            ),
+            title: Text(
+              '로그아웃',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           onTap: () async {
             try {
               final logoutResponse = await APIService.logout();
-              if(logoutResponse.isSuccess) {
+              if (logoutResponse.isSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('로그아웃에 성공하였습니다.'),
@@ -77,8 +92,7 @@ class ProfileCard extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => SplashScreen()),
                 );
-              }
-              else {
+              } else {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -87,8 +101,7 @@ class ProfileCard extends StatelessWidget {
                   ),
                 );
               }
-            }
-            catch (e) {
+            } catch (e) {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -121,7 +134,7 @@ class ProfileCard extends StatelessWidget {
             if (!Responsive.isMobile(context))
               Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+                    const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
                 child: Text("${userProfileResult.value?.nickname}"),
               ),
             Icon(Icons.keyboard_arrow_down),

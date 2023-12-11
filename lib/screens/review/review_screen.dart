@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:admin/Service/admin_Service.dart' as admin;
-import 'package:admin/Service/api_service.dart' as api;
+import 'package:beautyminder_dashboard/Service/admin_service.dart' as admin;
+import 'package:beautyminder_dashboard/Service/api_service.dart' as api;
 import '../../constants.dart';
 import '../../dto/user_model.dart';
 import '../../models/review_response_model.dart';
@@ -44,12 +44,10 @@ class _ReviewScreen extends State<ReviewScreen> {
       isFetching = true;
     });
 
-    final result = await admin.adminService.getAllReviews(currentPage);
+    final result = await admin.AdminService.getAllReviews(currentPage);
     if (result.isSuccess && result.value != null) {
       setState(() {
         reviews.addAll(result.value!); // 현재 reviews 리스트에 새로운 리뷰를 추가
-        print("reviews length : ${reviews.length}");
-        print("reviews : ${reviews}");
         currentPage++;
         isFetching = false;
       });
@@ -100,7 +98,7 @@ class _ReviewScreen extends State<ReviewScreen> {
   // 리뷰를 차단하는 함수
   Future<void> _blockReview(String reviewId) async {
     final result =
-        await admin.adminService.updateReviewStatus(reviewId, 'denied');
+        await admin.AdminService.updateReviewStatus(reviewId, 'denied');
     if (result.isSuccess) {
       setState(() {
         reviews.removeWhere((review) => review.id == reviewId);
